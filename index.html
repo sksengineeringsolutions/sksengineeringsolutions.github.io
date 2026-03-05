@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SKS Engineering Solutions | Trusted Electrical Engineers – Pune, Maharashtra</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0c1f3f;--navy2:#112755;--orange:#e8580a;--orange2:#ff7a35;
+  --orange-lt:#fff3ec;--white:#ffffff;--offwhite:#f7f8fc;--light:#eef1f8;
+  --border:#dde3f0;--text:#1a2540;--muted:#5a6a8a;--ltxt:#8898b8;
+  --green:#16a34a;
+  --sh-sm:0 2px 8px rgba(12,31,63,.08);
+  --sh:0 8px 32px rgba(12,31,63,.12);
+  --sh-lg:0 20px 60px rgba(12,31,63,.16);
+  --r:12px;--r-lg:20px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:#fff;overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+button{cursor:pointer;font-family:inherit}
+img{max-width:100%;display:block}
+
+.container{max-width:1180px;margin:0 auto;padding:0 24px}
+.sp{padding:88px 0}
+.sp-sm{padding:56px 0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;font-family:inherit;font-weight:700;transition:all .25s;text-decoration:none;white-space:nowrap;cursor:pointer}
+.btn-orange{background:var(--orange);color:#fff;padding:14px 28px;border-radius:10px;font-size:15px}
+.btn-orange:hover{background:var(--orange2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(232,88,10,.38)}
+.btn-orange-lg{background:var(--orange);color:#fff;padding:17px 34px;border-radius:10px;font-size:16px}
+.btn-orange-lg:hover{background:var(--orange2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(232,88,10,.4)}
+.btn-outline{background:transparent;color:var(--text);border:2px solid var(--border);padding:14px 28px;border-radius:10px;font-size:15px}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy);background:var(--offwhite)}
+.btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3);padding:16px 32px;border-radius:10px;font-size:16px;font-weight:700}
+.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.btn-white{background:#fff;color:var(--orange);padding:17px 34px;border-radius:10px;font-size:16px;font-weight:800}
+.btn-white:hover{background:var(--offwhite);box-shadow:var(--sh-lg)}
+
+/* SECTION LABELS */
+.stag{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:14px}
+.stag::before{content:'';width:24px;height:2px;background:var(--orange)}
+.stag.center{justify-content:center}
+.stag.center::before{display:none}
+
+.sh2{font-family:'Syne',sans-serif;font-size:clamp(30px,4vw,50px);font-weight:800;line-height:1.1;color:var(--navy);letter-spacing:-.5px}
+.sh2 span{color:var(--orange)}
+.sub{font-size:16px;line-height:1.8;color:var(--muted);margin-top:14px;max-width:540px}
+
+/* TRUST TOP BAR */
+.trust-bar{background:var(--navy);padding:10px 0;overflow:hidden}
+.tb-inner{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;padding:0 16px}
+.tb-item{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.5px;color:rgba(255,255,255,.72);white-space:nowrap}
+.tb-item strong{color:#fff}
+.tb-div{width:1px;height:14px;background:rgba(255,255,255,.2)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:999;background:#fff;border-bottom:1px solid var(--border);transition:box-shadow .3s}
+nav.scrolled{box-shadow:var(--sh)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:70px;max-width:1180px;margin:0 auto;padding:0 24px}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-mark{width:42px;height:42px;background:var(--navy);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:24px;height:24px}
+.logo-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--navy);display:block;line-height:1.2}
+.logo-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block}
+.nav-links{display:flex;gap:2px}
+.nav-links a{padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted);transition:all .2s}
+.nav-links a:hover{color:var(--navy);background:var(--offwhite)}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.nav-call{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);transition:all .2s}
+.nav-call:hover{border-color:var(--navy);background:var(--offwhite)}
+.ham{display:none;background:none;border:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer}
+.ham span{width:22px;height:2px;background:var(--navy);border-radius:2px;display:block;transition:all .3s}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mob-nav{display:none;background:#fff;border-top:1px solid var(--border);padding:12px 20px 20px}
+.mob-nav.show{display:block}
+.mob-nav a{display:block;padding:13px 0;font-size:16px;font-weight:600;color:var(--text);border-bottom:1px solid var(--border)}
+.mob-cta{margin-top:16px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 55%,#1a3570 100%);position:relative;overflow:hidden;padding:72px 0 0}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 75% 50%,rgba(232,88,10,.1) 0%,transparent 65%);pointer-events:none}
+.hero-wrap{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding-bottom:64px}
+.hero-eyebrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;font-weight:500}
+.pill-orange{background:rgba(232,88,10,.18);color:#ff9a6c;border:1px solid rgba(232,88,10,.3)}
+.pill-white{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15)}
+.pill-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;animation:pblink 2s infinite}
+@keyframes pblink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-h1{font-family:'Syne',sans-serif;font-size:clamp(34px,5vw,62px);font-weight:800;line-height:1.05;color:#fff;letter-spacing:-1px;margin-bottom:20px}
+.hero-h1 .accent{color:var(--orange2)}
+.hero-p{font-size:17px;line-height:1.8;color:rgba(255,255,255,.7);margin-bottom:30px;max-width:500px}
+.hero-p strong{color:#fff}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.hero-free{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hero-free-item{display:flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.6);font-weight:500}
+.hero-free-item .hfi-chk{color:#4ade80;font-size:14px}
+
+/* Hero right card */
+.hero-card{background:#fff;border-radius:var(--r-lg);padding:26px;box-shadow:var(--sh-lg);position:relative}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:var(--r-lg) var(--r-lg) 0 0}
+.hc-head{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.hc-ico{width:46px;height:46px;background:var(--orange-lt);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.hc-label{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--navy)}
+.hc-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.hc-prog{margin-bottom:14px}
+.hcp-top{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px}
+.hcp-top span{font-family:'DM Mono',monospace;color:var(--green)}
+.hcp-bar{height:7px;background:var(--light);border-radius:100px;overflow:hidden}
+.hcp-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--orange),var(--orange2));animation:barfill 2s ease both}
+@keyframes barfill{from{width:0}}
+.hcp-fill.green{background:linear-gradient(90deg,var(--green),#4ade80)}
+.hc-list{display:flex;flex-direction:column;gap:9px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.hcl-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text);font-weight:500}
+.hcl-chk{width:19px;height:19px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex-shrink:0}
+/* Floating chips on card */
+.hf-chip{position:absolute;background:#fff;border-radius:10px;box-shadow:var(--sh);padding:12px 16px;display:flex;align-items:center;gap:9px;animation:fy 3s ease-in-out infinite}
+.hf-chip.top{top:-18px;right:-18px}
+.hf-chip.bot{bottom:-18px;left:-18px;animation-delay:.5s}
+@keyframes fy{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.hfc-icon{font-size:20px}
+.hfc-num{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--navy);display:block;line-height:1}
+.hfc-lbl{font-size:11px;color:var(--muted)}
+
+/* Hero stats bottom */
+.hero-stats-bar{border-top:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.22);position:relative;z-index:2}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:1180px;margin:0 auto;padding:0 24px}
+.hs-item{padding:24px 12px;border-right:1px solid rgba(255,255,255,.08);text-align:center}
+.hs-item:last-child{border-right:none}
+.hs-num{font-family:'Syne',sans-serif;font-size:clamp(26px,3.5vw,40px);font-weight:800;color:#fff;display:block;line-height:1}
+.hs-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);display:block;margin-top:6px}
+
+/* CLIENTS */
+.clients{background:var(--offwhite);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 0}
+.clients-lbl{text-align:center;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ltxt);margin-bottom:20px}
+.clients-row{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}
+.client-badge{padding:11px 22px;border-radius:8px;background:#fff;border:1px solid var(--border);font-family:'Syne',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;color:var(--ltxt);transition:all .25s;white-space:nowrap}
+.client-badge:hover{color:var(--navy);border-color:var(--navy);transform:translateY(-2px)}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+.about-vis{position:relative}
+.about-box{background:var(--offwhite);border-radius:var(--r-lg);border:1px solid var(--border);overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+.panel-mock{width:88%;max-width:370px}
+.pm-head{background:var(--navy);border-radius:9px 9px 0 0;padding:13px 18px;display:flex;align-items:center;justify-content:space-between}
+.pm-dots{display:flex;gap:5px}
+.pm-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.25)}
+.pm-title{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase}
+.pm-status{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;color:#4ade80}
+.pm-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pblink 2s infinite}
+.pm-body{background:var(--navy2);border-radius:0 0 9px 9px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.pm-cell{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:10px 12px}
+.pm-cell.pm-orange{background:rgba(232,88,10,.14);border-color:rgba(232,88,10,.28)}
+.pm-cell.pm-green{background:rgba(22,163,74,.14);border-color:rgba(22,163,74,.28)}
+.pm-cell.pm-full{grid-column:span 2}
+.pmc-l{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:3px}
+.pmc-v{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff}
+.pm-cell.pm-orange .pmc-v{color:#ff9a6c}
+.pm-cell.pm-green .pmc-v{color:#4ade80}
+.about-float-1{position:absolute;bottom:-20px;right:-20px;background:var(--orange);border-radius:var(--r);padding:16px 20px;text-align:center;box-shadow:var(--sh);animation:fy 4s ease-in-out infinite}
+.af-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;display:block;line-height:1}
+.af-lbl{font-size:12px;color:rgba(255,255,255,.85);margin-top:2px}
+.about-float-2{position:absolute;top:-18px;left:-18px;background:#fff;border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);animation:fy 3.5s ease-in-out infinite .7s}
+.af2-stars{color:#f59e0b;font-size:13px;letter-spacing:2px}
+.af2-t{font-size:12px;font-weight:700;color:var(--text);margin-top:3px}
+.af2-s{font-size:11px;color:var(--muted)}
+.about-text .sh2{margin-bottom:18px}
+.about-text p{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:14px}
+.about-text p strong{color:var(--text)}
+.about-pills{display:flex;flex-wrap:wrap;gap:9px;margin:24px 0 30px}
+.ap{padding:7px 16px;border-radius:100px;background:var(--orange-lt);border:1px solid rgba(232,88,10,.18);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--orange)}
+.about-minis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.am-item{background:var(--offwhite);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;transition:all .3s}
+.am-item:hover{border-color:rgba(232,88,10,.3);background:var(--orange-lt);transform:translateY(-2px)}
+.am-ico{font-size:22px;margin-bottom:8px}
+.am-label{font-size:14px;font-weight:700;color:var(--navy)}
+.am-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* BIG NUMBERS */
+.nums-bar{background:var(--navy);padding:56px 0}
+.nums-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1);border-radius:var(--r-lg);overflow:hidden}
+.ng-item{background:var(--navy);padding:32px 20px;text-align:center;transition:background .3s}
+.ng-item:hover{background:var(--navy2)}
+.ng-icon{font-size:32px;margin-bottom:12px;display:block}
+.ng-num{font-family:'Syne',sans-serif;font-size:clamp(36px,4vw,54px);font-weight:800;color:#fff;display:block;line-height:1}
+.ng-num em{color:var(--orange2);font-style:normal}
+.ng-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);display:block;margin-top:8px}
+
+/* SERVICES */
+.svc-top{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:flex-end;margin-bottom:48px}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.svc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:30px 26px;transition:all .35s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--orange2));transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.svc-card:hover{border-color:rgba(232,88,10,.22);transform:translateY(-6px);box-shadow:var(--sh-lg)}
+.svc-card:hover::before{transform:scaleX(1)}
+.svc-card.svc-feat{background:var(--navy);border-color:var(--navy);grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.svc-card.svc-feat::before{background:var(--orange2)}
+.svc-card.svc-feat .svc-name{color:#fff}
+.svc-card.svc-feat .svc-desc{color:rgba(255,255,255,.6)}
+.svc-card.svc-feat .svc-chip{border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.65)}
+.svc-card.svc-feat .svc-chip:hover{border-color:var(--orange2);color:var(--orange2)}
+.svc-n{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--ltxt);margin-bottom:18px;display:block}
+.svc-card.svc-feat .svc-n{color:rgba(255,255,255,.35)}
+.svc-icon{width:52px;height:52px;background:var(--orange-lt);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;transition:transform .3s}
+.svc-card:hover .svc-icon{transform:scale(1.1) rotate(-5deg)}
+.svc-card.svc-feat .svc-icon{background:rgba(232,88,10,.18)}
+.svc-name{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:var(--navy);margin-bottom:11px;line-height:1.15}
+.svc-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+.svc-chips{display:flex;flex-wrap:wrap;gap:7px}
+.svc-chip{padding:5px 12px;border-radius:100px;border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);transition:all .2s;background:#fff}
+.svc-chip:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-lt)}
+.svc-live{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:20px;height:100%;display:flex;flex-direction:column;gap:10px}
+.svl-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;color:rgba(255,255,255,.65)}
+.svl-row:last-child{border-bottom:none}
+.svl-st{padding:3px 10px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;font-weight:600}
+.svl-st.on{background:rgba(74,222,128,.12);color:#4ade80}
+.svl-st.wip{background:rgba(255,165,0,.12);color:#ffa730}
+
+/* PROCESS */
+.proc-head{text-align:center;max-width:580px;margin:0 auto 64px}
+.proc-steps{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
+.proc-line{position:absolute;top:39px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--orange),var(--orange2));opacity:.18}
+.proc-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 10px;position:relative;z-index:1}
+.proc-circle{width:78px;height:78px;border-radius:50%;background:#fff;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:22px;position:relative;box-shadow:var(--sh-sm);transition:all .4s}
+.proc-n{position:absolute;top:-5px;right:-5px;width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-family:'DM Mono',monospace;font-size:10px;display:flex;align-items:center;justify-content:center}
+.proc-step:hover .proc-circle{border-color:var(--orange);box-shadow:0 0 0 6px rgba(232,88,10,.1);transform:scale(1.05)}
+.proc-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.proc-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* TESTIMONIALS */
+.testi-head{text-align:center;margin-bottom:48px}
+.testi-head .sub{margin:14px auto 0}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tc{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;transition:all .3s;position:relative}
+.tc:hover{transform:translateY(-4px);box-shadow:var(--sh);border-color:rgba(232,88,10,.18)}
+.tc.tc-feat{background:var(--navy);border-color:var(--navy);grid-row:span 2}
+.tc-badge{position:absolute;top:20px;right:20px;padding:4px 11px;border-radius:100px;background:rgba(232,88,10,.12);color:var(--orange);font-family:'DM Mono',monospace;font-size:10px}
+.tc-quote{font-size:36px;color:var(--orange);font-family:'Syne',sans-serif;line-height:1;margin-bottom:14px;display:block}
+.tc.tc-feat .tc-quote{color:var(--orange2)}
+.tc-text{font-size:15px;line-height:1.8;color:var(--muted);font-style:italic;margin-bottom:22px}
+.tc.tc-feat .tc-text{color:rgba(255,255,255,.7)}
+.tc-stars{color:#f59e0b;font-size:13px;letter-spacing:3px;margin-bottom:18px;display:block}
+.tc-author{display:flex;align-items:center;gap:12px}
+.tc-av{width:44px;height:44px;border-radius:50%;background:var(--offwhite);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tc.tc-feat .tc-av{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
+.tc-name{font-size:15px;font-weight:700;color:var(--navy)}
+.tc.tc-feat .tc-name{color:#fff}
+.tc-role{font-size:12px;color:var(--muted)}
+.tc.tc-feat .tc-role{color:rgba(255,255,255,.5)}
+
+/* WHY US */
+.why-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.why-left p{font-size:16px;color:var(--muted);line-height:1.8;margin:16px 0 24px}
+.risk-alert{background:#fff7ed;border:1px solid rgba(232,88,10,.2);border-left:4px solid var(--orange);border-radius:var(--r);padding:18px 20px;margin-bottom:24px}
+.ra-title{font-size:14px;font-weight:700;color:var(--orange);margin-bottom:6px}
+.ra-text{font-size:13px;color:var(--muted);line-height:1.65}
+.ra-text strong{color:var(--text)}
+.why-pts{display:flex;flex-direction:column;gap:0}
+.wp{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--border);transition:padding-left .3s}
+.wp:last-child{border-bottom:none}
+.wp:hover{padding-left:8px}
+.wp-ic{width:40px;height:40px;border-radius:10px;background:var(--orange-lt);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.wp-t{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.wp-d{font-size:13px;color:var(--muted);line-height:1.6}
+.gcard{background:var(--navy);border-radius:var(--r-lg);padding:36px;position:relative;overflow:hidden}
+.gcard::before{content:'';position:absolute;bottom:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:rgba(232,88,10,.1)}
+.gc-shield{font-size:52px;display:block;margin-bottom:18px}
+.gc-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;margin-bottom:10px}
+.gc-title span{color:var(--orange2)}
+.gc-text{font-size:15px;color:rgba(255,255,255,.6);line-height:1.75;margin-bottom:24px}
+.gc-list{display:flex;flex-direction:column;gap:11px}
+.gc-item{display:flex;align-items:center;gap:11px;font-size:14px;color:rgba(255,255,255,.8);font-weight:500}
+.gc-chk{width:21px;height:21px;border-radius:50%;background:rgba(74,222,128,.18);border:1px solid rgba(74,222,128,.35);display:flex;align-items:center;justify-content:center;font-size:9px;color:#4ade80;flex-shrink:0}
+.certs-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
+.cert{padding:6px 13px;border-radius:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.5px;color:rgba(255,255,255,.6)}
+
+/* PROJECTS */
+.proj-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:44px;flex-wrap:wrap;gap:16px}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pc{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.pc:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:rgba(232,88,10,.18)}
+.pc-thumb{height:165px;position:relative;background:linear-gradient(135deg,var(--navy),var(--navy2));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pc-emoji{font-size:60px;opacity:.12;transition:all .4s}
+.pc:hover .pc-emoji{opacity:.22;transform:scale(1.1)}
+.pc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,31,63,.55),transparent)}
+.pc-tag{position:absolute;top:13px;left:13px;padding:4px 11px;border-radius:100px;font-family:'DM Mono',monospace;font-size:10px;backdrop-filter:blur(4px)}
+.tag-ht{background:rgba(220,50,50,.8);color:#fff}
+.tag-lt{background:rgba(14,165,233,.8);color:#fff}
+.tag-fab{background:rgba(232,88,10,.85);color:#fff}
+.tag-des{background:rgba(22,163,74,.85);color:#fff}
+.tag-doc{background:rgba(124,58,237,.85);color:#fff}
+.pc-kv{position:absolute;bottom:12px;right:12px;font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.35);padding:3px 9px;border-radius:6px}
+.pc-info{padding:20px 22px}
+.pc-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.pc-loc{font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);margin-bottom:9px;letter-spacing:.5px}
+.pc-desc{font-size:13px;color:var(--muted);line-height:1.65}
+
+/* FAQ */
+.faq-layout{display:grid;grid-template-columns:1fr 1.5fr;gap:72px;align-items:start}
+.faq-left p{font-size:15px;color:var(--muted);line-height:1.75;margin:14px 0 24px}
+.faq-cta{background:var(--orange-lt);border:1px solid rgba(232,88,10,.2);border-radius:var(--r);padding:22px}
+.faq-cta p{font-size:14px;color:var(--text);font-weight:500;margin-bottom:14px}
+.faq-list{display:flex;flex-direction:column}
+.fi{border-bottom:1px solid var(--border)}
+.fi-q{display:flex;align-items:center;justify-content:space-between;padding:18px 0;cursor:pointer;font-size:15px;font-weight:600;color:var(--navy);background:none;border:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;gap:14px;transition:color .2s}
+.fi-q:hover{color:var(--orange)}
+.fi-arr{width:28px;height:28px;border-radius:50%;background:var(--offwhite);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;font-size:14px}
+.fi.open .fi-arr{background:var(--orange);color:#fff;transform:rotate(45deg)}
+.fi-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.16,1,.3,1)}
+.fi-a-in{padding:0 0 18px;font-size:14px;color:var(--muted);line-height:1.75}
+.fi.open .fi-a{max-height:400px}
+
+/* CTA STRIP */
+.cta-strip{background:var(--orange);padding:60px 0;position:relative;overflow:hidden}
+.cta-strip::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.08)}
+.cta-strip::after{content:'';position:absolute;bottom:-80px;left:-40px;width:220px;height:220px;border-radius:50%;background:rgba(0,0,0,.07)}
+.cta-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3.5vw,40px);font-weight:800;color:#fff;margin-bottom:10px;line-height:1.1}
+.cta-sub{font-size:16px;color:rgba(255,255,255,.8);line-height:1.65}
+.scarcity{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);border-radius:100px;padding:5px 15px;margin-bottom:13px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;color:#fff}
+.scarcity::before{content:'';width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pblink 2s infinite}
+.cta-right{display:flex;flex-direction:column;align-items:center;gap:12px}
+.cta-phone{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px}
+.cta-note{font-size:12px;color:rgba(255,255,255,.7)}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:start}
+.contact-left p{font-size:16px;color:var(--muted);line-height:1.8;margin:16px 0 28px}
+.ci-list{display:flex;flex-direction:column}
+.ci-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.ci-icon{width:42px;height:42px;background:var(--orange-lt);border:1px solid rgba(232,88,10,.18);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ci-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:3px;display:block}
+.ci-val{font-size:15px;font-weight:700;color:var(--navy)}
+.ci-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.form-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:36px;box-shadow:var(--sh-sm)}
+.fw-title{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:var(--navy);margin-bottom:5px}
+.fw-sub{font-size:14px;color:var(--muted);margin-bottom:26px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.fg label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.fg input,.fg select,.fg textarea{background:var(--offwhite);border:1.5px solid var(--border);border-radius:10px;color:var(--text);padding:12px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:all .25s;width:100%;-webkit-appearance:none;appearance:none}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238898b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;cursor:pointer}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--orange);background:#fff;box-shadow:0 0 0 3px rgba(232,88,10,.08)}
+.fg textarea{min-height:110px;resize:vertical}
+.f-submit{width:100%;padding:16px;border-radius:10px;background:var(--orange);color:#fff;border:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all .3s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px}
+.f-submit:hover{background:var(--orange2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(232,88,10,.38)}
+.f-trust{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.ft{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);font-weight:500}
+.ft .ftc{color:var(--green)}
+
+/* FOOTER */
+footer{background:var(--navy);padding:60px 0 0}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,.07)}
+.fb-brand p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.75;margin:16px 0 22px;max-width:270px}
+.fb-socials{display:flex;gap:9px}
+.fb-soc{width:35px;height:35px;border-radius:8px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,.45);transition:all .25s}
+.fb-soc:hover{border-color:var(--orange);color:var(--orange);background:rgba(232,88,10,.1)}
+.fc h5{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:18px}
+.fc ul{display:flex;flex-direction:column;gap:9px}
+.fc ul li a{font-size:14px;color:rgba(255,255,255,.45);transition:color .2s;display:flex;align-items:center;gap:6px}
+.fc ul li a::before{content:'→';font-size:11px;color:transparent;transition:color .2s}
+.fc ul li a:hover{color:#fff}
+.fc ul li a:hover::before{color:var(--orange)}
+.footer-bot{padding:22px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.footer-bot p,.footer-bot span{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.5px;color:rgba(255,255,255,.3)}
+.footer-bot em{color:var(--orange2);font-style:normal}
+
+/* WHATSAPP */
+.wa-btn{position:fixed;bottom:26px;right:26px;z-index:997;width:56px;height:56px;border-radius:50%;background:#25d366;box-shadow:0 6px 22px rgba(37,211,102,.45);display:flex;align-items:center;justify-content:center;font-size:26px;animation:fy 3s ease-in-out infinite;text-decoration:none;transition:transform .3s}
+.wa-btn:hover{transform:scale(1.12)}
+.wa-tip{position:absolute;right:66px;top:50%;transform:translateY(-50%);background:var(--navy);color:#fff;padding:7px 13px;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .3s}
+.wa-tip::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);border:5px solid transparent;border-right:none;border-left-color:var(--navy)}
+.wa-btn:hover .wa-tip{opacity:1}
+
+/* ANIMATIONS */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.rv-l{opacity:0;transform:translateX(-26px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.rv-r{opacity:0;transform:translateX(26px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.rv.in,.rv-l.in,.rv-r.in{opacity:1;transform:none}
+
+/* ════ RESPONSIVE ════ */
+@media(max-width:1100px){
+  .hero-wrap{grid-template-columns:1fr}
+  .hero-card{display:none}
+  .about-grid,.why-layout,.contact-grid,.faq-layout{grid-template-columns:1fr;gap:48px}
+  .about-vis{max-width:440px;margin:0 auto}
+  .svc-top{grid-template-columns:1fr}
+  .svc-card.svc-feat{grid-column:span 1;display:block}
+  .svc-grid{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .tc.tc-feat{grid-row:span 1}
+  .nums-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .cta-inner{grid-template-columns:1fr;text-align:center}
+  .cta-right{align-items:center}
+  .hero-stats{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:768px){
+  .sp{padding:60px 0}
+  .tb-inner{justify-content:flex-start;gap:14px;overflow-x:auto}
+  .tb-div{display:none}
+  .nav-links,.nav-call{display:none}
+  .ham{display:flex}
+  .nav-actions .btn-orange{padding:10px 18px;font-size:13px}
+  .hero{padding:54px 0 0}
+  .hero-h1{font-size:clamp(30px,7vw,48px)}
+  .hero-ctas{flex-direction:column}
+  .hero-ctas .btn-orange-lg,.hero-ctas .btn-outline-white{width:100%;justify-content:center}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .hs-item:nth-child(3){border-right:none}
+  .proc-steps{grid-template-columns:1fr 1fr;gap:24px}
+  .proc-line{display:none}
+  .svc-grid{grid-template-columns:1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .proj-grid{grid-template-columns:1fr 1fr}
+  .nums-grid{grid-template-columns:1fr 1fr}
+  .about-minis{grid-template-columns:1fr 1fr}
+  .clients-row{gap:9px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-bot{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .container{padding:0 15px}
+  .sp{padding:48px 0}
+  .hero-h1{font-size:30px}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .proc-steps{grid-template-columns:1fr 1fr}
+  .proj-grid{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .about-minis{grid-template-columns:1fr}
+  .nums-grid{grid-template-columns:1fr 1fr}
+  .wa-btn{bottom:18px;right:18px;width:50px;height:50px;font-size:22px}
+  .form-wrap{padding:22px}
+  .cta-strip{padding:44px 0}
+  .hero-proof-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TRUST BAR — Psychology: Authority at very top -->
+<div class="trust-bar">
+  <div class="tb-inner">
+    <span class="tb-item">✅ <strong>ISO 9001:2015</strong> Certified</span>
+    <span class="tb-div"></span>
+    <span class="tb-item">⚡ <strong>MSEDCL</strong> Approved Contractor</span>
+    <span class="tb-div"></span>
+    <span class="tb-item">🏛️ <strong>CEIG</strong> Licensed</span>
+    <span class="tb-div"></span>
+    <span class="tb-item">📞 24×7 Emergency: <strong>+91 98765 43210</strong></span>
+    <span class="tb-div"></span>
+    <span class="tb-item">⏱️ Site Visit Within <strong>48 Hours</strong></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="rgba(255,255,255,0.07)" stroke="rgba(232,88,10,.85)" stroke-width="1.2"/>
+          <path d="M8.5 16.5L11 9L14 13L16.5 7.5" stroke="#ff7a35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="1.8" fill="#e8580a"/>
+        </svg>
+      </div>
+      <div>
+        <span class="logo-name">SKS Engineering</span>
+        <span class="logo-sub">Electrical Solutions · Pune, MH</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="tel:+919876543210" class="nav-call">📞 Call Now</a>
+      <a href="#contact" class="btn btn-orange">Free Consultation →</a>
+    </div>
+    <button class="ham" id="ham"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mob-nav" id="mobNav">
+    <a href="#about">About Us</a>
+    <a href="#services">Services</a>
+    <a href="#process">Our Process</a>
+    <a href="#projects">Projects</a>
+    <a href="#testimonials">Reviews</a>
+    <a href="#faq">FAQ</a>
+    <div class="mob-cta" style="margin-top:16px">
+      <a href="#contact" class="btn btn-orange-lg" style="width:100%;justify-content:center">Get Free Consultation →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-wrap">
+      <div class="hero-left">
+        <div class="hero-eyebrow">
+          <span class="pill pill-orange pill-dot">Pune's #1 Electrical Contractor</span>
+          <span class="pill pill-white">15+ Years Trusted</span>
+        </div>
+        <h1 class="hero-h1">Maharashtra's Most<br><span class="accent">Trusted Electrical</span><br>Engineering Partner</h1>
+        <p class="hero-p">From <strong>33kV HT substations</strong> to precision panel fabrication, electrical design, MSEDCL liaisoning, and complete documentation — <strong>one partner, zero compromises</strong>, guaranteed compliance.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-orange-lg">Get Free Site Consultation →</a>
+          <a href="#projects" class="btn btn-outline-white">See Our Work</a>
+        </div>
+        <div class="hero-free">
+          <span class="hero-free-item"><span class="hfi-chk">✓</span> Free site visit</span>
+          <span class="hero-free-item"><span class="hfi-chk">✓</span> Free technical quote</span>
+          <span class="hero-free-item"><span class="hfi-chk">✓</span> No obligation</span>
+        </div>
+      </div>
+      <div class="hero-right" style="position:relative">
+        <div class="hf-chip top"><span class="hfc-icon">🏆</span><div><span class="hfc-num">ISO 9001</span><span class="hfc-lbl">Quality Certified</span></div></div>
+        <div class="hero-card">
+          <div class="hc-head">
+            <div class="hc-ico">⚡</div>
+            <div><div class="hc-label">Active Projects Dashboard</div><div class="hc-sub">Real-time project status</div></div>
+          </div>
+          <div class="hc-prog">
+            <div class="hcp-top">HT Substation — Pharma, Pune <span>96%</span></div>
+            <div class="hcp-bar"><div class="hcp-fill" style="width:96%"></div></div>
+          </div>
+          <div class="hc-prog">
+            <div class="hcp-top">MCC Panel Supply — Nashik <span>100% ✓</span></div>
+            <div class="hcp-bar"><div class="hcp-fill green" style="width:100%"></div></div>
+          </div>
+          <div class="hc-prog">
+            <div class="hcp-top">MSEDCL Approval — Solar, Solapur <span>78%</span></div>
+            <div class="hcp-bar"><div class="hcp-fill" style="width:78%"></div></div>
+          </div>
+          <div class="hc-list">
+            <div class="hcl-item"><div class="hcl-chk">✓</div> IS/IEC 61439 Panel Compliance</div>
+            <div class="hcl-item"><div class="hcl-chk">✓</div> CEIG Inspection Cleared</div>
+            <div class="hcl-item"><div class="hcl-chk">✓</div> Documentation Submitted</div>
+          </div>
+        </div>
+        <div class="hf-chip bot"><span class="hfc-icon">⭐</span><div><span class="hfc-num">4.9 / 5.0</span><span class="hfc-lbl">Client Rating</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats-bar">
+    <div class="hero-stats">
+      <div class="hs-item"><span class="hs-num" data-c="500">0+</span><span class="hs-lbl">Projects Done</span></div>
+      <div class="hs-item"><span class="hs-num" data-c="15">0+</span><span class="hs-lbl">Years Trusted</span></div>
+      <div class="hs-item"><span class="hs-num" data-c="200">0+</span><span class="hs-lbl">Happy Clients</span></div>
+      <div class="hs-item"><span class="hs-num">33kV</span><span class="hs-lbl">Max HT Voltage</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<div class="clients">
+  <div class="container">
+    <p class="clients-lbl">Trusted by leading industries across Maharashtra</p>
+    <div class="clients-row">
+      <div class="client-badge">PHARMA CO.</div>
+      <div class="client-badge">AUTO OEM</div>
+      <div class="client-badge">CHEM CORP</div>
+      <div class="client-badge">INFRA LTD</div>
+      <div class="client-badge">TEXTILE IND</div>
+      <div class="client-badge">SOLAR TECH</div>
+      <div class="client-badge">FOOD PROC</div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="sp">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-vis rv-l">
+        <div class="about-box">
+          <div class="panel-mock">
+            <div class="pm-head">
+              <div class="pm-dots"><div class="pm-dot"></div><div class="pm-dot"></div><div class="pm-dot"></div></div>
+              <div class="pm-title">SKS Panel Monitor</div>
+              <div class="pm-status">LIVE</div>
+            </div>
+            <div class="pm-body">
+              <div class="pm-cell pm-orange pm-full"><div class="pmc-l">Main Panel Status</div><div class="pmc-v">MCC PANEL — ONLINE ✓</div></div>
+              <div class="pm-cell pm-green"><div class="pmc-l">Current Load</div><div class="pmc-v">2400A</div></div>
+              <div class="pm-cell"><div class="pmc-l">Voltage</div><div class="pmc-v">415V</div></div>
+              <div class="pm-cell"><div class="pmc-l">Power Factor</div><div class="pmc-v">0.98</div></div>
+              <div class="pm-cell pm-green"><div class="pmc-l">Protection</div><div class="pmc-v">ACTIVE</div></div>
+              <div class="pm-cell pm-orange pm-full"><div class="pmc-l">APFC Panel</div><div class="pmc-v">PF Correction — 0.98 ↑</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="about-float-1"><span class="af-num">15+</span><span class="af-lbl">Years Excellence</span></div>
+        <div class="about-float-2"><div class="af2-stars">★★★★★</div><div class="af2-t">4.9 Rating</div><div class="af2-s">From 200+ clients</div></div>
+      </div>
+      <div class="about-text rv-r">
+        <div class="stag">About SKS Engineering</div>
+        <h2 class="sh2">Pune's Most Reliable <span>Electrical Partner</span></h2>
+        <p style="margin-top:16px">SKS Engineering Solutions has been Maharashtra's go-to electrical engineering partner since 2009. We don't just complete projects — we <strong>guarantee compliance, safety, and on-time delivery</strong> with written penalty clauses so you carry zero financial risk.</p>
+        <p>Our licensed team handles everything from <strong>33kV HT substations to LT distribution</strong>, custom panel fabrication, full statutory approvals, and as-built documentation — all under one roof, one point of contact.</p>
+        <div class="about-pills">
+          <span class="ap">ISO 9001:2015</span>
+          <span class="ap">HT Licensed (33kV)</span>
+          <span class="ap">MSEDCL Approved</span>
+          <span class="ap">CEIG Licensed</span>
+          <span class="ap">IS 8623 Compliant</span>
+          <span class="ap">IEC 61439</span>
+        </div>
+        <div class="about-minis">
+          <div class="am-item"><div class="am-ico">🏆</div><div class="am-label">ISO 9001:2015</div><div class="am-desc">Certified quality management</div></div>
+          <div class="am-item"><div class="am-ico">⚡</div><div class="am-label">HT Licensed (33kV)</div><div class="am-desc">High-tension certified firm</div></div>
+          <div class="am-item"><div class="am-ico">🏛️</div><div class="am-label">MSEDCL Approved</div><div class="am-desc">Authorized contractor</div></div>
+          <div class="am-item"><div class="am-ico">📋</div><div class="am-label">CEIG Licensed</div><div class="am-desc">Govt. certified electrical firm</div></div>
+        </div>
+        <div style="margin-top:28px"><a href="#contact" class="btn btn-orange-lg">Start Your Project →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BIG NUMBERS -->
+<div class="nums-bar">
+  <div class="container">
+    <div class="nums-grid rv">
+      <div class="ng-item"><span class="ng-icon">🏗️</span><span class="ng-num" data-c="500">0<em>+</em></span><span class="ng-lbl">Projects Completed</span></div>
+      <div class="ng-item"><span class="ng-icon">⭐</span><span class="ng-num">4.9<em>/5</em></span><span class="ng-lbl">Client Satisfaction</span></div>
+      <div class="ng-item"><span class="ng-icon">🏭</span><span class="ng-num" data-c="200">0<em>+</em></span><span class="ng-lbl">Industries Served</span></div>
+      <div class="ng-item"><span class="ng-icon">👷</span><span class="ng-num" data-c="50">0<em>+</em></span><span class="ng-lbl">Expert Engineers</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="sp" style="background:var(--offwhite)">
+  <div class="container">
+    <div class="svc-top rv">
+      <div><div class="stag">Our Services</div><h2 class="sh2">Everything Electrical.<br><span>One Trusted Partner.</span></h2></div>
+      <p class="sub">From concept to commissioning — design, fabrication, installation, and approvals all under one roof, saving you time and costly coordination mistakes.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card svc-feat rv-l">
+        <div>
+          <span class="svc-n">01 / FABRICATION</span>
+          <div class="svc-icon">🏗️</div>
+          <div class="svc-name">Electrical Panel Fabrication</div>
+          <p class="svc-desc">Custom design and manufacturing of industrial-grade electrical panels to IS 8623 / IEC 61439 standards with full Factory Acceptance Testing on every panel we ship.</p>
+          <div class="svc-chips"><span class="svc-chip">MCC Panels</span><span class="svc-chip">PCC Panels</span><span class="svc-chip">APFC Panels</span><span class="svc-chip">VFD Panels</span><span class="svc-chip">MLDB / SLDB</span></div>
+        </div>
+        <div class="svc-live">
+          <div class="svl-row"><span>MCC Panel — Pharma, Pune</span><span class="svl-st on">✓ Dispatched</span></div>
+          <div class="svl-row"><span>APFC Panel — Textile Plant</span><span class="svl-st on">✓ Tested</span></div>
+          <div class="svl-row"><span>PCC 4000A — Auto OEM</span><span class="svl-st wip">⚙ In Progress</span></div>
+          <div class="svl-row"><span>VFD Panel — Pump Station</span><span class="svl-st on">✓ Installed</span></div>
+        </div>
+      </div>
+      <div class="svc-card rv">
+        <span class="svc-n">02 / DESIGN</span>
+        <div class="svc-icon">📐</div>
+        <div class="svc-name">Electrical Design & Engineering</div>
+        <p class="svc-desc">Comprehensive electrical engineering drawings and studies for industrial and commercial projects using ETAP, AutoCAD, and EPLAN software — SLDs, load calculations, protection coordination.</p>
+        <div class="svc-chips"><span class="svc-chip">SLD / GAD</span><span class="svc-chip">Load Calculation</span><span class="svc-chip">Cable Schedule</span><span class="svc-chip">ETAP / AutoCAD</span></div>
+      </div>
+      <div class="svc-card rv-r">
+        <span class="svc-n">03 / HT–LT WORKS</span>
+        <div class="svc-icon">⚡</div>
+        <div class="svc-name">HT / LT Electrical Contracts</div>
+        <p class="svc-desc">End-to-end electrical contracting from 11kV/33kV HT systems to full LT distribution — substation erection, transformer installation, cable laying, earthing and commissioning.</p>
+        <div class="svc-chips"><span class="svc-chip">Substation Erection</span><span class="svc-chip">Transformer Inst.</span><span class="svc-chip">Cable Laying</span><span class="svc-chip">DG Set Sync</span></div>
+      </div>
+      <div class="svc-card rv">
+        <span class="svc-n">04 / LIAISONING</span>
+        <div class="svc-icon">🏛️</div>
+        <div class="svc-name">Installation & Liaisoning</div>
+        <p class="svc-desc">We handle all statutory approvals with MSEDCL, CEIG, and electricity boards — new connections, load enhancements, safety certificates. Zero bureaucratic headaches for you.</p>
+        <div class="svc-chips"><span class="svc-chip">MSEDCL Approvals</span><span class="svc-chip">CEIG Certificate</span><span class="svc-chip">New Connection</span><span class="svc-chip">Load Enhancement</span></div>
+      </div>
+      <div class="svc-card rv-r">
+        <span class="svc-n">05 / DOCUMENTATION</span>
+        <div class="svc-icon">📄</div>
+        <div class="svc-name">Panel Documentation</div>
+        <p class="svc-desc">Complete as-built packages — GA drawings, internal wiring diagrams, BOM, FAT reports, type test certificates and O&M manuals for regulatory submissions and audits.</p>
+        <div class="svc-chips"><span class="svc-chip">GA Drawings</span><span class="svc-chip">Wiring Diagrams</span><span class="svc-chip">BOM List</span><span class="svc-chip">O&M Manuals</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="sp">
+  <div class="container">
+    <div class="proc-head rv">
+      <div class="stag center">How We Work</div>
+      <h2 class="sh2" style="text-align:center">Your Project, <span>Step by Step</span></h2>
+      <p class="sub" style="text-align:center;margin:14px auto 0">We believe transparency builds trust. Here's exactly what happens after you contact us — no surprises, no hidden steps.</p>
+    </div>
+    <div class="proc-steps">
+      <div class="proc-line"></div>
+      <div class="proc-step rv"><div class="proc-circle">🔍<span class="proc-n">1</span></div><div class="proc-title">Free Site Survey</div><p class="proc-desc">We visit, understand your needs, and do a thorough technical assessment — completely free.</p></div>
+      <div class="proc-step rv"><div class="proc-circle">📐<span class="proc-n">2</span></div><div class="proc-title">Design & Quote</div><p class="proc-desc">SLDs, load calc, cable schedules, and a fixed-price proposal with committed timeline.</p></div>
+      <div class="proc-step rv"><div class="proc-circle">🏗️<span class="proc-n">3</span></div><div class="proc-title">Fabrication</div><p class="proc-desc">Panel manufacturing in our IS-certified workshop with in-process QC and FAT documentation.</p></div>
+      <div class="proc-step rv"><div class="proc-circle">⚡<span class="proc-n">4</span></div><div class="proc-title">Installation</div><p class="proc-desc">Site erection, cable termination, relay setting, earthing, and pre-commissioning testing.</p></div>
+      <div class="proc-step rv"><div class="proc-circle">✅<span class="proc-n">5</span></div><div class="proc-title">Handover</div><p class="proc-desc">CEIG/MSEDCL approvals, final energisation, as-built drawings, O&M manuals, training.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="sp" style="background:var(--offwhite)">
+  <div class="container">
+    <div class="testi-head rv">
+      <div class="stag center">Client Reviews</div>
+      <h2 class="sh2" style="text-align:center">What Our <span>Clients Say</span></h2>
+      <p class="sub" style="text-align:center;margin:14px auto 0;max-width:500px">Don't just take our word for it. Here's what Maharashtra's top industries say after working with SKS.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="tc tc-feat rv-l">
+        <span class="tc-badge">⭐ Featured</span>
+        <span class="tc-quote">"</span>
+        <p class="tc-text">SKS Engineering completed our 11kV substation 30 days ahead of schedule. Their team handled MSEDCL approvals, CEIG certification — everything. We had zero downtime during changeover. I wouldn't use any other electrical contractor for our Maharashtra plants.</p>
+        <span class="tc-stars">★★★★★</span>
+        <div class="tc-author"><div class="tc-av">👨‍💼</div><div><div class="tc-name">Rajesh Mehta</div><div class="tc-role">Plant Director, Pharma Manufacturing, Pune</div></div></div>
+      </div>
+      <div class="tc rv">
+        <span class="tc-quote">"</span>
+        <p class="tc-text">We needed 12 MCC panels in 45 days — most vendors said impossible. SKS delivered all 12, tested and installed on day 43. Quality was impeccable with full FAT certificates.</p>
+        <span class="tc-stars">★★★★★</span>
+        <div class="tc-author"><div class="tc-av">👨‍🔧</div><div><div class="tc-name">Suresh Patil</div><div class="tc-role">Engineering Head, Auto OEM, Nashik</div></div></div>
+      </div>
+      <div class="tc rv-r">
+        <span class="tc-quote">"</span>
+        <p class="tc-text">Our MSEDCL approval was stuck for months. SKS took over and got everything cleared in 3 weeks. Their knowledge of regulatory requirements is exceptional.</p>
+        <span class="tc-stars">★★★★★</span>
+        <div class="tc-author"><div class="tc-av">👩‍💼</div><div><div class="tc-name">Priya Joshi</div><div class="tc-role">GM Projects, IT Park Developer, Mumbai</div></div></div>
+      </div>
+      <div class="tc rv">
+        <span class="tc-quote">"</span>
+        <p class="tc-text">SKS designed our entire 5MW solar plant electrical system. ETAP studies were professional grade, CEIG cleared first attempt. Technically very strong team.</p>
+        <span class="tc-stars">★★★★★</span>
+        <div class="tc-author"><div class="tc-av">☀️</div><div><div class="tc-name">Vikram Desai</div><div class="tc-role">CEO, Renewable Energy Co., Solapur</div></div></div>
+      </div>
+      <div class="tc rv-r">
+        <span class="tc-quote">"</span>
+        <p class="tc-text">SKS 24×7 AMC support saved us twice this year — response within 90 minutes both times. Best investment for plant maintenance we've ever made.</p>
+        <span class="tc-stars">★★★★★</span>
+        <div class="tc-author"><div class="tc-av">🏭</div><div><div class="tc-name">Anil Kulkarni</div><div class="tc-role">Maintenance Manager, Chemical Plant, Aurangabad</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why" class="sp">
+  <div class="container">
+    <div class="why-layout">
+      <div class="why-left rv-l">
+        <div class="stag">Why SKS</div>
+        <h2 class="sh2">Why 200+ Companies <span>Choose SKS</span></h2>
+        <p>Choosing the wrong electrical contractor can mean failed CEIG inspections, MSEDCL penalties, production shutdowns, and serious safety risks.</p>
+        <div class="risk-alert">
+          <div class="ra-title">⚠️ Don't Risk Your Project</div>
+          <p class="ra-text">Uncertified electrical work can result in <strong>MSEDCL disconnection, CEIG rejection, factory inspection failures</strong>, and liability in case of accidents. Always insist on ISO-certified, MSEDCL-approved contractors.</p>
+        </div>
+        <div class="why-pts">
+          <div class="wp"><div class="wp-ic">🛡️</div><div><div class="wp-t">Guaranteed Compliance — Every Time</div><p class="wp-d">All work executed to IS codes, IE Rules 1956, and factory safety norms. CEIG clearance on first attempt — guaranteed or we fix it free.</p></div></div>
+          <div class="wp"><div class="wp-ic">⏱️</div><div><div class="wp-t">On-Time or Penalty Clause</div><p class="wp-d">We put it in writing. Our contracts include milestone-linked delivery with penalty clauses — your timeline is our legal commitment.</p></div></div>
+          <div class="wp"><div class="wp-ic">📞</div><div><div class="wp-t">One Point of Contact</div><p class="wp-d">One senior engineer manages your entire project — design, fabrication, installation, and approvals. Full accountability, zero confusion.</p></div></div>
+          <div class="wp"><div class="wp-ic">🔬</div><div><div class="wp-t">Premium Brand Components</div><p class="wp-d">Type-tested components from Schneider, Siemens, ABB, and L&T — backed by manufacturer warranty and FAT certificates.</p></div></div>
+        </div>
+      </div>
+      <div class="rv-r">
+        <div class="gcard">
+          <span class="gc-shield">🛡️</span>
+          <h3 class="gc-title">The SKS <span>Guarantee</span></h3>
+          <p class="gc-text">We're so confident in our quality that we back every project with written commitments. All risk is ours — none is yours.</p>
+          <div class="gc-list">
+            <div class="gc-item"><div class="gc-chk">✓</div> CEIG clearance on first attempt</div>
+            <div class="gc-item"><div class="gc-chk">✓</div> Delivery on agreed date or penalty paid</div>
+            <div class="gc-item"><div class="gc-chk">✓</div> 1-year workmanship warranty</div>
+            <div class="gc-item"><div class="gc-chk">✓</div> 24×7 emergency support during DLP</div>
+            <div class="gc-item"><div class="gc-chk">✓</div> Complete as-built documentation included</div>
+            <div class="gc-item"><div class="gc-chk">✓</div> Free site visit and no-obligation quote</div>
+          </div>
+          <div class="certs-row">
+            <span class="cert">ISO 9001:2015</span>
+            <span class="cert">IS 8623</span>
+            <span class="cert">IEC 61439</span>
+            <span class="cert">MSEDCL Approved</span>
+            <span class="cert">CEIG Licensed</span>
+            <span class="cert">IE Rules 1956</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="sp" style="background:var(--offwhite)">
+  <div class="container">
+    <div class="proj-top rv">
+      <div><div class="stag">Our Work</div><h2 class="sh2">Proven Track <span>Record</span></h2></div>
+      <a href="#contact" class="btn btn-outline">Discuss Your Project →</a>
+    </div>
+    <div class="proj-grid">
+      <div class="pc rv"><div class="pc-thumb"><div class="pc-emoji">🏭</div><div class="pc-ov"></div><span class="pc-tag tag-ht">HT WORK</span><span class="pc-kv">11kV / 2500 KVA</span></div><div class="pc-info"><div class="pc-title">Pharma Plant HT Substation</div><div class="pc-loc">📍 Pune, Maharashtra</div><p class="pc-desc">Complete 11kV HT substation with RMU, dual transformers, LT panels, MSEDCL metering, and CEIG approval for a leading pharmaceutical manufacturer.</p></div></div>
+      <div class="pc rv"><div class="pc-thumb"><div class="pc-emoji">⚙️</div><div class="pc-ov"></div><span class="pc-tag tag-fab">FABRICATION</span><span class="pc-kv">4000A Busbar</span></div><div class="pc-info"><div class="pc-title">MCC & PCC Panel Supply</div><div class="pc-loc">📍 Nashik, Maharashtra</div><p class="pc-desc">12-panel MCC lineup and main PCC with Siemens ACB for an auto components OEM. Fabricated, tested, installed and commissioned in 43 days.</p></div></div>
+      <div class="pc rv"><div class="pc-thumb"><div class="pc-emoji">🏢</div><div class="pc-ov"></div><span class="pc-tag tag-lt">LT WORK</span><span class="pc-kv">1.5 MVA Load</span></div><div class="pc-info"><div class="pc-title">Commercial Complex Electrical</div><div class="pc-loc">📍 Mumbai, Maharashtra</div><p class="pc-desc">Full LT electrical for a 12-storey commercial building — lighting, power, fire alarm integration, DG synchronisation, earthing, and CEIG approval.</p></div></div>
+      <div class="pc rv"><div class="pc-thumb"><div class="pc-emoji">☀️</div><div class="pc-ov"></div><span class="pc-tag tag-des">DESIGN</span><span class="pc-kv">5 MW Solar PV</span></div><div class="pc-info"><div class="pc-title">Solar Plant Grid Connectivity</div><div class="pc-loc">📍 Solapur, Maharashtra</div><p class="pc-desc">Electrical design, inverter panels, 33kV bay erection, and MSEDCL grid synchronisation for a utility-scale solar project.</p></div></div>
+      <div class="pc rv"><div class="pc-thumb"><div class="pc-emoji">💧</div><div class="pc-ov"></div><span class="pc-tag tag-lt">LT WORK</span><span class="pc-kv">630 KVA</span></div><div class="pc-info"><div class="pc-title">Municipal Water Treatment Plant</div><div class="pc-loc">📍 Chhatrapati Sambhajinagar</div><p class="pc-desc">Complete electrical for WTP — MCC, SCADA integration, cable laying, earthing, lightning protection, and all statutory clearances.</p></div></div>
+      <div class="pc rv"><div class="pc-thumb"><div class="pc-emoji">📋</div><div class="pc-ov"></div><span class="pc-tag tag-doc">DOCUMENTATION</span><span class="pc-kv">38 Panels</span></div><div class="pc-info"><div class="pc-title">Retrofit Panel Documentation</div><div class="pc-loc">📍 Pune, Maharashtra</div><p class="pc-desc">Full as-built documentation for 38 existing panels in a chemical plant for regulatory audit — SLD, internal wiring diagrams, and updated BOM.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="sp">
+  <div class="container">
+    <div class="faq-layout">
+      <div class="rv-l">
+        <div class="stag">FAQ</div>
+        <h2 class="sh2">Your Questions, <span>Answered</span></h2>
+        <p>We know choosing an electrical contractor is a big decision. Here are the questions our clients ask most — answered honestly.</p>
+        <div class="faq-cta">
+          <p>Have a specific question? Our engineers are available to discuss your requirements directly.</p>
+          <a href="tel:+919876543210" class="btn btn-orange">📞 Call an Engineer Now</a>
+        </div>
+      </div>
+      <div class="faq-list rv-r">
+        <div class="fi open"><button class="fi-q">What types of projects does SKS handle? <span class="fi-arr">+</span></button><div class="fi-a"><div class="fi-a-in">SKS handles all types of electrical projects — HT substations (11kV, 33kV), LT electrical installations, electrical panel fabrication (MCC, PCC, APFC, VFD), electrical design (SLD, cable schedules, ETAP studies), MSEDCL/CEIG liaisoning, and complete panel documentation. We serve industrial plants, commercial buildings, infrastructure projects, and solar/renewable energy installations across Maharashtra.</div></div></div>
+        <div class="fi"><button class="fi-q">How quickly can SKS start on our project? <span class="fi-arr">+</span></button><div class="fi-a"><div class="fi-a-in">We can schedule a free site survey within 2–3 business days and provide a detailed proposal within 5–7 days. Site mobilisation begins within 2 weeks of contract signing, depending on material procurement lead times.</div></div></div>
+        <div class="fi"><button class="fi-q">Is CEIG approval guaranteed on first attempt? <span class="fi-arr">+</span></button><div class="fi-a"><div class="fi-a-in">Yes. Our design and installation process is built around CEIG requirements from day one. Our CEIG-licensed supervisors are thoroughly familiar with inspection protocols. If any rework is required after inspection, we rectify at our cost — this is in our contractual commitment.</div></div></div>
+        <div class="fi"><button class="fi-q">What makes SKS panels better than competitors? <span class="fi-arr">+</span></button><div class="fi-a"><div class="fi-a-in">All SKS panels are manufactured in our IS 8623 / IEC 61439 certified workshop. We use type-tested components exclusively from Schneider Electric, Siemens, ABB, and L&T. Every panel undergoes Factory Acceptance Testing (FAT) with full photographic records. GA drawings, wiring diagrams, BOM, and test certificates are standard with every panel.</div></div></div>
+        <div class="fi"><button class="fi-q">How long does MSEDCL new connection approval take? <span class="fi-arr">+</span></button><div class="fi-a"><div class="fi-a-in">LT connections: typically 2–4 weeks. HT connections: 4–8 weeks depending on voltage level and MSEDCL subdivision. With our established regulatory relationships, we consistently achieve faster-than-average clearances and handle all documentation, submission, and follow-up on your behalf.</div></div></div>
+        <div class="fi"><button class="fi-q">Do you provide Annual Maintenance Contracts? <span class="fi-arr">+</span></button><div class="fi-a"><div class="fi-a-in">Yes — comprehensive AMC packages covering scheduled preventive maintenance, 24×7 emergency breakdown response (2-hour SLA), relay testing, earthing testing, and annual thermographic scanning. We offer both new installation AMC and takeover AMC for existing installations.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <div class="container">
+    <div class="cta-inner">
+      <div>
+        <div class="scarcity">Currently accepting 4 new projects this month</div>
+        <h2 class="cta-title">Ready to Power Your Next Project?</h2>
+        <p class="cta-sub">Get a free site visit and detailed quote from licensed electrical engineers. No pressure, no obligation — just expert advice you can act on.</p>
+      </div>
+      <div class="cta-right">
+        <a href="#contact" class="btn btn-white">Get Free Consultation →</a>
+        <div class="cta-phone">📞 +91 98765 43210</div>
+        <p class="cta-note">Mon–Sat 9 AM–7 PM · Emergency 24×7</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact" class="sp" style="background:var(--offwhite)">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="rv-l">
+        <div class="stag">Contact Us</div>
+        <h2 class="sh2">Let's Discuss <span>Your Project</span></h2>
+        <p>Fill the form and our senior engineer will call you within 2 working hours to understand your needs and schedule a free site visit.</p>
+        <div class="ci-list">
+          <div class="ci-item"><div class="ci-icon">📍</div><div><span class="ci-lbl">Head Office</span><div class="ci-val">SKS Engineering Solutions</div><div class="ci-sub">Pune, Maharashtra — 411001, India</div></div></div>
+          <div class="ci-item"><div class="ci-icon">📞</div><div><span class="ci-lbl">Phone / WhatsApp</span><div class="ci-val">+91 98765 43210</div><div class="ci-sub">Mon–Sat 9 AM–7 PM · Emergency 24×7</div></div></div>
+          <div class="ci-item"><div class="ci-icon">✉️</div><div><span class="ci-lbl">Email</span><div class="ci-val">info@sksengineering.in</div><div class="ci-sub">Response within 4 business hours</div></div></div>
+          <div class="ci-item"><div class="ci-icon">⏱️</div><div><span class="ci-lbl">Response Time</span><div class="ci-val">Within 2 Hours (Business Days)</div><div class="ci-sub">A senior engineer personally calls you back</div></div></div>
+        </div>
+      </div>
+      <div class="rv-r">
+        <div class="form-wrap">
+          <h3 class="fw-title">Get Your Free Consultation</h3>
+          <p class="fw-sub">Takes 2 minutes · No spam · No sales pressure · Just expert advice</p>
+          <div class="frow"><div class="fg"><label>Full Name *</label><input type="text" placeholder="Your full name"/></div><div class="fg"><label>Company</label><input type="text" placeholder="Company name"/></div></div>
+          <div class="frow"><div class="fg"><label>Phone *</label><input type="tel" placeholder="+91 XXXXX XXXXX"/></div><div class="fg"><label>Email</label><input type="email" placeholder="you@company.com"/></div></div>
+          <div class="fg"><label>Service Required *</label>
+            <select>
+              <option value="">— What do you need? —</option>
+              <option>Electrical Panel Fabrication (MCC / PCC / APFC)</option>
+              <option>Electrical Design (SLD / GA / ETAP Study)</option>
+              <option>HT Electrical Work (11kV / 33kV Substation)</option>
+              <option>LT Electrical Installation Contract</option>
+              <option>MSEDCL / CEIG Liaisoning & Approvals</option>
+              <option>Panel Documentation (GA / Wiring / BOM)</option>
+              <option>Annual Maintenance Contract (AMC)</option>
+              <option>Energy Audit & Power Quality</option>
+              <option>Turnkey Electrical Project</option>
+            </select>
+          </div>
+          <div class="fg"><label>Project Details</label><textarea placeholder="Tell us about your project — location, voltage level, number of panels, timeline, any specific challenges..."></textarea></div>
+          <button class="f-submit" id="submitBtn">Send — We'll Call Within 2 Hours ⚡</button>
+          <div class="f-trust">
+            <div class="ft"><span class="ftc">✓</span> 100% Free consultation</div>
+            <div class="ft"><span class="ftc">✓</span> No spam ever</div>
+            <div class="ft"><span class="ftc">✓</span> No obligation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="fb-brand">
+        <a href="#" class="logo">
+          <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" fill="rgba(255,255,255,0.07)" stroke="rgba(232,88,10,.85)" stroke-width="1.2"/><path d="M8.5 16.5L11 9L14 13L16.5 7.5" stroke="#ff7a35" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="1.8" fill="#e8580a"/></svg></div>
+          <div><span class="logo-name" style="color:#fff">SKS Engineering</span><span class="logo-sub">Electrical Solutions · Pune</span></div>
+        </a>
+        <p>Maharashtra's trusted electrical engineering partner for 15+ years. ISO certified, MSEDCL approved, CEIG licensed.</p>
+        <div class="fb-socials">
+          <a href="#" class="fb-soc">in</a>
+          <a href="#" class="fb-soc">fb</a>
+          <a href="#" class="fb-soc">yt</a>
+          <a href="#" class="fb-soc">wa</a>
+        </div>
+      </div>
+      <div class="fc"><h5>Services</h5><ul><li><a href="#services">Panel Fabrication</a></li><li><a href="#services">Electrical Design</a></li><li><a href="#services">HT/LT Installation</a></li><li><a href="#services">Liaisoning Works</a></li><li><a href="#services">Documentation</a></li><li><a href="#services">AMC Services</a></li></ul></div>
+      <div class="fc"><h5>Industries</h5><ul><li><a href="#">Pharmaceutical</a></li><li><a href="#">Automobile / OEM</a></li><li><a href="#">Chemical Plants</a></li><li><a href="#">Commercial Buildings</a></li><li><a href="#">Solar & Renewable</a></li><li><a href="#">Water & Utilities</a></li></ul></div>
+      <div class="fc"><h5>Company</h5><ul><li><a href="#about">About SKS</a></li><li><a href="#projects">Our Projects</a></li><li><a href="#testimonials">Reviews</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact Us</a></li><li><a href="#">Careers</a></li></ul></div>
+    </div>
+    <div class="footer-bot">
+      <p>© 2025 <em>SKS Engineering Solutions</em>. All Rights Reserved. Lic. No. MH/EC/2010/XXXX</p>
+      <span>ISO 9001:2015 · MSEDCL Approved · CEIG Licensed · <em>Pune, Maharashtra</em></span>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/919876543210?text=Hi%20SKS%20Engineering%2C%20I'd%20like%20a%20free%20consultation." class="wa-btn" target="_blank" aria-label="Chat on WhatsApp">
+  <span class="wa-tip">Chat on WhatsApp</span>💬
+</a>
+
+<script>
+/* Mobile menu */
+const ham=document.getElementById('ham'),mob=document.getElementById('mobNav');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');mob.classList.toggle('show')});
+document.querySelectorAll('.mob-nav a').forEach(a=>a.addEventListener('click',()=>{ham.classList.remove('open');mob.classList.remove('show')}));
+
+/* Nav scroll */
+window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('scrolled',scrollY>10));
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}}));
+
+/* Reveal on scroll */
+const ro=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv,.rv-l,.rv-r').forEach((el,i)=>{
+  const siblings=[...el.parentElement.querySelectorAll('.rv,.rv-l,.rv-r')];
+  el.style.transitionDelay=siblings.indexOf(el)*.07+'s';
+  ro.observe(el);
+});
+
+/* Counter */
+function doCount(el){
+  const target=+el.dataset.c;if(!target)return;
+  const suf=el.innerHTML.includes('<em>')?el.innerHTML.match(/<em>.*<\/em>/)[0]:'';
+  const d=1600,s=performance.now();
+  (function tick(n){const p=Math.min((n-s)/d,1),v=Math.floor((1-Math.pow(1-p,3))*target);
+  el.innerHTML=v+suf;if(p<1)requestAnimationFrame(tick);else el.innerHTML=target+suf})(s);
+}
+const co=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.querySelectorAll('[data-c]').forEach(doCount);co.unobserve(el.target)}})},{threshold:.4});
+document.querySelectorAll('.hero-stats-bar,.nums-grid').forEach(el=>co.observe(el));
+
+/* FAQ */
+document.querySelectorAll('.fi-q').forEach(b=>b.addEventListener('click',()=>{const i=b.parentElement,o=i.classList.contains('open');document.querySelectorAll('.fi').forEach(f=>f.classList.remove('open'));if(!o)i.classList.add('open')}));
+
+/* Form */
+document.getElementById('submitBtn').addEventListener('click',function(){if(this.disabled)return;this.textContent='✓ Sent! Our engineer will call you within 2 hours.';this.style.background='#16a34a';this.disabled=true});
+</script>
+</body>
+</html>
