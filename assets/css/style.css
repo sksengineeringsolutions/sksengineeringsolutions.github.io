@@ -251,8 +251,8 @@ nav {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
 }
 
 .product-card {
@@ -592,7 +592,7 @@ nav {
     gap: 1rem;
 }
 
-.social-icons span {
+.social-icons a, .social-icons span {
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.08);
@@ -603,9 +603,10 @@ nav {
     justify-content: center;
     cursor: pointer;
     transition: var(--transition);
+    text-decoration: none;
 }
 
-.social-icons span:hover {
+.social-icons a:hover, .social-icons span:hover {
     background: var(--primary);
     color: #ffffff;
     transform: translateY(-3px);
@@ -694,7 +695,12 @@ nav {
         transform: translateY(-9px) rotate(-45deg);
     }
     
-    .hero { padding-top: 8rem; text-align: center; }
+    .hero { 
+        padding-top: 7rem;
+        text-align: center;
+        min-height: 100svh;
+        height: auto;
+    }
     .hero p { margin: 0 auto 2.5rem; }
     .cta-btns { display: flex; flex-direction: column; gap: 1rem; }
     .btn-secondary { margin-left: 0; }

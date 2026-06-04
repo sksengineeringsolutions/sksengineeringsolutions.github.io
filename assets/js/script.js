@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 3. Scroll Reveal Animation
-    const reveals = document.querySelectorAll('.reveal, .reveal-delay, .reveal-delay-2');
+    const reveals = document.querySelectorAll('.reveal, .reveal-delay, .reveal-delay-2, .reveal-delay-3');
     
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -49,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
     reveals.forEach(el => revealObserver.observe(el));
 
     // 4. Contact Form Handling
-    const contactForm = document.querySelector('.contact-form');
+    const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const btn = contactForm.querySelector('button');
+            const btn = document.getElementById('contactSubmit');
             const originalText = btn.innerText;
             
             btn.innerText = 'Sending...';
@@ -130,4 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+    // 7. Active Nav Link on Scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-links li a');
+
+    const activeLinkObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navItems.forEach(a => a.classList.remove('active'));
+                const activeLink = document.querySelector(`.nav-links li a[href="#${entry.target.id}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
+        });
+    }, {
+        threshold: 0.4
+    });
+
+    sections.forEach(section => activeLinkObserver.observe(section));
 });
