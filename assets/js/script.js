@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.querySelector('.nav-menu');
 
     window.addEventListener('scroll', () => {
+        if (!header) return;
         if (window.scrollY > 40) {
             header.classList.add('scrolled');
         } else {
@@ -377,7 +378,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const brochureModalClose = document.getElementById('brochureModalClose');
     if (brochureClose) brochureClose.addEventListener('click', closeBrochureModal);
+    if (brochureModalClose) brochureModalClose.addEventListener('click', closeBrochureModal);
     if (brochureModal) {
         brochureModal.addEventListener('click', (e) => {
             if (e.target === brochureModal) closeBrochureModal();
