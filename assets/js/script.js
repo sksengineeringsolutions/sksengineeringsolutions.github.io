@@ -64,41 +64,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Full Hero Background CNC Laser Video Engine
-    const heroLaserVideo = document.getElementById('heroLaserVideo');
-    const heroVideoSoundBtn = document.getElementById('heroVideoSoundBtn');
-    const heroSoundLabel = document.getElementById('heroSoundLabel');
+    // Full-Screen Industrial Background Slideshow Engine
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    const industryDots = document.querySelectorAll('.industry-dot');
+    const currentIndustryLabel = document.getElementById('currentIndustryLabel');
+    let currentSlideIndex = 0;
+    let slideshowInterval = null;
 
-    if (heroLaserVideo) {
-        heroLaserVideo.muted = true;
-        const playPromise = heroLaserVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                // Auto-play was prevented; ensure muted and retry
-                heroLaserVideo.muted = true;
-                heroLaserVideo.play().catch(() => {});
-            });
+    function showHeroSlide(index) {
+        if (!heroSlides.length) return;
+        currentSlideIndex = (index + heroSlides.length) % heroSlides.length;
+
+        heroSlides.forEach((slide, idx) => {
+            if (idx === currentSlideIndex) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+
+        industryDots.forEach((dot, idx) => {
+            if (idx === currentSlideIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        if (currentIndustryLabel && heroSlides[currentSlideIndex]) {
+            const industry = heroSlides[currentSlideIndex].getAttribute('data-industry') || '';
+            currentIndustryLabel.textContent = 'Industry: ' + industry;
         }
     }
 
-    // Audio Sound toggle on background video
-    if (heroVideoSoundBtn && heroLaserVideo) {
-        const iconMuted = heroVideoSoundBtn.querySelector('.icon-muted');
-        const iconUnmuted = heroVideoSoundBtn.querySelector('.icon-unmuted');
+    function startHeroSlideshow() {
+        if (slideshowInterval) clearInterval(slideshowInterval);
+        slideshowInterval = setInterval(() => {
+            showHeroSlide(currentSlideIndex + 1);
+        }, 5000);
+    }
 
-        heroVideoSoundBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (heroLaserVideo.muted) {
-                heroLaserVideo.muted = false;
-                if (iconMuted) iconMuted.style.display = 'none';
-                if (iconUnmuted) iconUnmuted.style.display = 'inline-block';
-                if (heroSoundLabel) heroSoundLabel.textContent = 'Mute';
-            } else {
-                heroLaserVideo.muted = true;
-                if (iconMuted) iconMuted.style.display = 'inline-block';
-                if (iconUnmuted) iconUnmuted.style.display = 'none';
-                if (heroSoundLabel) heroSoundLabel.textContent = 'Sound';
-            }
+    if (heroSlides.length > 0) {
+        showHeroSlide(0);
+        startHeroSlideshow();
+
+        industryDots.forEach((dot) => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetIndex = parseInt(dot.getAttribute('data-index'), 10);
+                showHeroSlide(targetIndex);
+                startHeroSlideshow(); // Reset timer on user interaction
+            });
         });
     }
 
