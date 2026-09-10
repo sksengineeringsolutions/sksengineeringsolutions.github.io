@@ -16,20 +16,64 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --------------------------------------------------------------------------
-    // 1. Header Scroll Dynamics & Mobile Drawer
+    // 1. Header Scroll Dynamics, Progress Bar & Back to Top
     // --------------------------------------------------------------------------
     const header = document.querySelector('header');
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.querySelector('.nav-menu');
+    const scrollProgressBar = document.getElementById('scrollProgressBar');
+    const backToTopBtn = document.getElementById('backToTopBtn');
 
     window.addEventListener('scroll', () => {
-        if (!header) return;
-        if (window.scrollY > 40) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+        // Header scrolled class
+        if (header) {
+            if (scrollTop > 40) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }
+
+        // Reading Scroll Progress Bar
+        if (scrollProgressBar) {
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            if (scrollHeight > 0) {
+                const progress = (scrollTop / scrollHeight) * 100;
+                scrollProgressBar.style.width = `${progress}%`;
+            }
+        }
+
+        // Back to Top Button visibility
+        if (backToTopBtn) {
+            if (scrollTop > 450) {
+                backToTopBtn.classList.add('active');
+            } else {
+                backToTopBtn.classList.remove('active');
+            }
         }
     }, { passive: true });
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // Hero Laser Background Video Autoplay Reassurance
+    const heroLaserVideo = document.getElementById('heroLaserVideo');
+    if (heroLaserVideo) {
+        heroLaserVideo.muted = true;
+        heroLaserVideo.play().catch(() => {
+            // Autoplay with audio was restricted; ensure muted and retry
+            heroLaserVideo.muted = true;
+            heroLaserVideo.play().catch(() => {});
+        });
+    }
 
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', (e) => {
@@ -77,9 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
     sections.forEach(sec => navObserver.observe(sec));
 
     // --------------------------------------------------------------------------
-    // 3. Scroll Reveal Animations
+    // 3. Scroll Reveal Animations (Multi-Directional & Cascading Stagger)
     // --------------------------------------------------------------------------
-    const reveals = document.querySelectorAll('.reveal, .reveal-delay, .reveal-delay-2, .reveal-delay-3');
+    const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-stagger');
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -88,8 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, {
-        threshold: 0.08,
-        rootMargin: '0px 0px -40px 0px'
+        threshold: 0.1,
+        rootMargin: '0px 0px -30px 0px'
     });
 
     reveals.forEach(el => revealObserver.observe(el));
@@ -439,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------
-    // 10. WhatsApp Floating Representative Widget
+    // 10. WhatsApp Floating Representative Widget (Mobile Native + Desktop Modal)
     // --------------------------------------------------------------------------
     const whatsappBtn = document.getElementById('whatsappBtn');
     const whatsappChat = document.getElementById('whatsappChat');
@@ -447,13 +491,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatsappForm = document.getElementById('whatsappForm');
     const whatsappMsg = document.getElementById('whatsappMsg');
 
-    if (whatsappBtn && whatsappChat) {
+    if (whatsappBtn) {
         whatsappBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            whatsappChat.classList.toggle('active');
+            // Check if mobile screen (<= 768px) or mobile device
+            const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // On mobile, allow direct <a> link navigation straight into native WhatsApp application
+                return;
+            }
+
+            // On desktop, toggle interactive chat dialog box
+            if (whatsappChat) {
+                e.preventDefault();
+                e.stopPropagation();
+                whatsappChat.classList.toggle('active');
+            }
         });
 
-        if (chatClose) {
+        if (chatClose && whatsappChat) {
             chatClose.addEventListener('click', (e) => {
                 e.stopPropagation();
                 whatsappChat.classList.remove('active');
@@ -461,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         document.addEventListener('click', (e) => {
-            if (!whatsappChat.contains(e.target) && !whatsappBtn.contains(e.target)) {
+            if (whatsappChat && !whatsappChat.contains(e.target) && !whatsappBtn.contains(e.target)) {
                 whatsappChat.classList.remove('active');
             }
         });
@@ -470,13 +526,17 @@ document.addEventListener('DOMContentLoaded', () => {
             whatsappForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const rawMsg = whatsappMsg.value.trim();
-                if (rawMsg) {
-                    const phoneNumber = "919975644816";
-                    const encodedMsg = encodeURIComponent(`Hello SKS Engineering, I would like to inquire about sheet metal enclosures: ${rawMsg}`);
-                    window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, '_blank');
-                    whatsappMsg.value = '';
-                    whatsappChat.classList.remove('active');
-                }
+                const phoneNumber = "919975644816";
+                const messageText = rawMsg 
+                    ? `Hello SKS Engineering, I would like to inquire about sheet metal enclosures: ${rawMsg}`
+                    : `Hello SKS Engineering, I would like to inquire about custom sheet metal enclosures.`;
+                const encodedMsg = encodeURIComponent(messageText);
+                const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`;
+                
+                // Direct navigation to prevent popup blocker interception
+                window.location.href = waUrl;
+                whatsappMsg.value = '';
+                if (whatsappChat) whatsappChat.classList.remove('active');
             });
         }
     }
