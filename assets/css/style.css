@@ -521,22 +521,24 @@ header.scrolled {
     min-height: 100%;
     width: auto;
     height: auto;
-    transform: translate(-50%, -50%);
+    transform: translate3d(-50%, -50%, 0);
     object-fit: cover;
-    filter: brightness(0.95) contrast(1.08);
+    filter: brightness(0.96) contrast(1.08);
     pointer-events: none;
+    will-change: transform;
 }
 
 .hero-video-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, 
-        rgba(11, 17, 32, 0.72) 0%, 
-        rgba(15, 23, 42, 0.42) 45%, 
-        rgba(15, 23, 42, 0.14) 75%, 
-        rgba(15, 23, 42, 0.05) 100%
+        rgba(11, 17, 32, 0.88) 0%, 
+        rgba(11, 17, 32, 0.62) 46%, 
+        rgba(11, 17, 32, 0.18) 72%, 
+        rgba(11, 17, 32, 0.04) 100%
     );
     z-index: 2;
+    pointer-events: none;
 }
 
 .hero-video-pattern {
@@ -544,12 +546,16 @@ header.scrolled {
 }
 
 .hero-grid {
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    display: flex;
     align-items: center;
-    gap: 3.5rem;
     position: relative;
     z-index: 4;
+    width: 100%;
+}
+
+.hero-text-content {
+    max-width: 780px;
+    width: 100%;
 }
 
 .hero-badge-row {
@@ -687,218 +693,69 @@ header.scrolled {
 }
 
 /* ==========================================================================
-   Live CNC Laser Showcase Player Card
+   Hero Live Background Video Status & Sound Pill
    ========================================================================== */
-.laser-showcase-card {
-    position: relative;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: #0B1120;
-    border: 1px solid rgba(59, 130, 246, 0.45);
-    box-shadow: 0 24px 60px rgba(11, 17, 32, 0.5), 0 0 35px rgba(37, 99, 235, 0.18);
-    display: flex;
-    flex-direction: column;
-}
-
-.laser-showcase-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.15rem;
-    background: rgba(15, 23, 42, 0.96);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    z-index: 5;
-}
-
-.laser-live-badge {
+.hero-video-badge-ctrl {
+    position: absolute;
+    bottom: 2rem;
+    right: 2.5rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.65rem;
+    z-index: 10;
 }
 
-.laser-live-dot {
-    width: 9px;
-    height: 9px;
-    background: #EF4444;
+.hero-live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #FFFFFF;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.live-pulse-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
+    background: #EF4444;
     box-shadow: 0 0 10px #EF4444;
     animation: livePulse 1.4s infinite ease-in-out;
 }
 
 @keyframes livePulse {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.3); }
+    50% { opacity: 0.35; transform: scale(1.3); }
 }
 
-.laser-live-title {
-    font-size: 0.76rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #F8FAFC;
-    text-transform: uppercase;
-}
-
-.laser-showcase-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.laser-ctrl-btn {
+.hero-sound-pill-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: #F8FAFC;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    padding: 0.35rem 0.8rem;
     border-radius: 20px;
-    padding: 0.3rem 0.7rem;
     font-size: 0.72rem;
     font-weight: 600;
+    color: #FFFFFF;
     cursor: pointer;
     transition: all var(--transition-normal);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
-.laser-ctrl-btn:hover {
+.hero-sound-pill-btn:hover {
     background: var(--c-primary);
     border-color: var(--c-primary);
-    color: #FFFFFF;
     transform: translateY(-1px);
-}
-
-.laser-ctrl-btn:active {
-    transform: translateY(0);
-}
-
-.laser-video-viewport {
-    position: relative;
-    width: 100%;
-    height: 380px;
-    background: #000000;
-    overflow: hidden;
-}
-
-.laser-showcase-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: none !important;
-}
-
-/* Optical HUD Crosshair & Targets */
-.laser-hud-overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 3;
-}
-
-.hud-target-corner {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(249, 115, 22, 0.85);
-}
-
-.hud-target-corner.top-left {
-    top: 14px;
-    left: 14px;
-    border-right: none;
-    border-bottom: none;
-}
-
-.hud-target-corner.top-right {
-    top: 14px;
-    right: 14px;
-    border-left: none;
-    border-bottom: none;
-}
-
-.hud-target-corner.bottom-left {
-    bottom: 14px;
-    left: 14px;
-    border-right: none;
-    border-top: none;
-}
-
-.hud-target-corner.bottom-right {
-    bottom: 14px;
-    right: 14px;
-    border-left: none;
-    border-top: none;
-}
-
-.hud-tag {
-    position: absolute;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.55rem;
-    border-radius: 4px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    backdrop-filter: blur(8px);
-}
-
-.hud-feedrate {
-    top: 14px;
-    left: 36px;
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px solid rgba(249, 115, 22, 0.5);
-    color: #FDBA74;
-}
-
-.hud-feedrate .hud-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #F97316;
-}
-
-.hud-tolerance {
-    bottom: 14px;
-    right: 36px;
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px solid rgba(59, 130, 246, 0.5);
-    color: #93C5FD;
-}
-
-.laser-showcase-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 1rem;
-    background: rgba(15, 23, 42, 0.96);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.laser-spec-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-}
-
-.laser-spec-item .spec-label {
-    font-size: 0.62rem;
-    font-weight: 600;
-    color: #94A3B8;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.laser-spec-item .spec-val {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #F1F5F9;
-}
-
-.laser-spec-divider {
-    width: 1px;
-    height: 22px;
-    background: rgba(255, 255, 255, 0.12);
 }
 
 .hero-floating-card {
@@ -2876,16 +2733,9 @@ footer.master-footer {
         height: 280px;
     }
 
-    .laser-video-viewport {
-        height: 260px;
-    }
-
-    .laser-showcase-footer {
-        padding: 0.5rem 0.75rem;
-    }
-
-    .laser-spec-item .spec-val {
-        font-size: 0.65rem;
+    .hero-video-badge-ctrl {
+        bottom: 1.25rem;
+        right: 1.25rem;
     }
 
     /* Section 2: Overview & 4 Pillars */
@@ -3186,38 +3036,20 @@ footer.master-footer {
         height: 220px;
     }
 
-    .laser-video-viewport {
-        height: 200px;
+    .hero-video-badge-ctrl {
+        bottom: 0.85rem;
+        right: 0.85rem;
+        gap: 0.4rem;
     }
 
-    .laser-showcase-header {
-        padding: 0.55rem 0.75rem;
+    .hero-live-pill {
+        font-size: 0.64rem;
+        padding: 0.25rem 0.55rem;
     }
 
-    .laser-live-title {
-        font-size: 0.68rem;
-    }
-
-    .laser-ctrl-btn {
-        padding: 0.2rem 0.45rem;
-        font-size: 0.65rem;
-    }
-
-    .hud-tag {
-        font-size: 0.56rem;
-        padding: 0.16rem 0.35rem;
-    }
-
-    .hud-tolerance {
-        display: none;
-    }
-
-    .laser-spec-item .spec-label {
-        font-size: 0.54rem;
-    }
-
-    .laser-spec-item .spec-val {
-        font-size: 0.60rem;
+    .hero-sound-pill-btn {
+        font-size: 0.64rem;
+        padding: 0.25rem 0.55rem;
     }
 
     .overview-media-frame img {
