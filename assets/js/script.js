@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 2,
             title: "CNC Hydraulic Bending",
             description: "High-tonnage multi-axis CNC Press Brakes shape sheet profiles with digital angle compensation. Complex return flanges, double-fold stiffeners, and interlocking gasket grooves are bent with mathematical consistency across entire production batches.",
-            image: "assets/images/product-ht.png",
+            image: "assets/images/facility-bending.jpg",
             checklist: [
                 "150-Ton Multi-Axis CNC Press Brake",
                 "Digital Angle & Crowning Compensation",
@@ -158,25 +158,25 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             step: 3,
-            title: "Precision Welding & Frame Jointing",
-            description: "Enclosure structural corners, pillars, and cross-members are joined using advanced MIG, TIG, and automated spot welding. Argon shielding prevents oxidization, resulting in superior structural rigidity and seismic withstand capabilities.",
-            image: "assets/images/facility-laser.jpg",
+            title: "Precision Welding & Structural Assembly",
+            description: "Enclosure structural corners, pillars, and cross-members are joined using advanced MIG, TIG, and automated spot welding. Argon shielding prevents oxidation, resulting in superior structural rigidity and seismic withstand capabilities.",
+            image: "assets/images/hero-enclosure-fabrication.jpg",
             checklist: [
-                "TIG & MIG Inert Gas Welding",
-                "Seam & Projection Spot Welding",
-                "Rigid Structural Internal Frame",
+                "TIG & MIG Inert Gas Shielded Welding",
+                "Capacitor Discharge Stud Welding for Earthing",
+                "Rigid Modular Structural Internal Frame",
                 "Non-Destructive Weld Joint Inspection"
             ]
         },
         {
             step: 4,
             title: "Surface Finishing & Deburring",
-            description: "Welded assemblies undergo comprehensive mechanical finishing. Weld seams are ground flush, sharp corners deburred, and surfaces conditioned to provide an ultra-smooth substrate for paint adhesion and IP gasket seating.",
-            image: "assets/images/product-ht.png",
+            description: "Welded enclosure assemblies undergo comprehensive mechanical finishing. Weld seams are ground flush, sharp corners deburred, and surfaces conditioned to provide an ultra-smooth substrate for powder paint adhesion and IP gasket seating.",
+            image: "assets/images/product-junction-boxes.jpg",
             checklist: [
-                "Flush Weld Seam Grinding",
+                "Flush Weld Seam Grinding & Linishing",
                 "Radius Corner Edge Deburring",
-                "Surface Contaminant Removal",
+                "Surface Contaminant & Slag Removal",
                 "Mechanical Flatness Verification"
             ]
         },
@@ -189,31 +189,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 "7-Tank Chemical Dip Pretreatment",
                 "Electrostatic Powder Coating (RAL 7035)",
                 "200°C Thermal Curing Oven",
-                "DFT Thickness: 70–90 Microns Guaranteed"
+                "DFT Thickness: 80–90 Microns Guaranteed"
             ]
         },
         {
             step: 6,
-            title: "Electrical & Mechanical Assembly",
-            description: "Seamless PU foam gaskets are poured to guarantee IP54/IP55/IP65 ingress protection. Precision copper busbars are sleeved and torque-tightened, while switchgear, PLCs, VFDs, and modular terminals are wired strictly per IEC schematics with indelible ferrules.",
-            image: "assets/images/product-vfd.jpg",
+            title: "PU Foamed Gasketing & Hardware Fitting",
+            description: "Continuous formed-in-place polyurethane (PU) foam gaskets are CNC dispensed along enclosure door profiles to guarantee IP55 / IP65 dust and water ingress protection. Precision door hinges, quarter-turn locks, and zinc-plated mounting plates are fitted.",
+            image: "assets/images/product-modular-enclosure.jpg",
             checklist: [
-                "PU Formed-in-Place Foam Gasket",
-                "High-Conductivity Electrolytic Copper Busbars",
-                "Laser-Marked Cable Ferrule Indexing",
-                "Modular Compartment Partitioning"
+                "Continuous CNC Poured PU Foam Gasket",
+                "Heavy-Duty Zinc Die-Cast Concealed Hinges",
+                "Quarter-Turn Cam Locks & Espagnolette Rods",
+                "Passivated Galvanized Internal Mounting Plates"
             ]
         },
         {
             step: 7,
-            title: "100% FAT Testing & Safe Dispatch",
-            description: "Every panel is subjected to comprehensive Factory Acceptance Testing (FAT), including high-voltage insulation dielectric testing, secondary injection tests, functional logic verification, and torque checks before client sign-off, export wrapping, and on-time dispatch.",
-            image: "assets/images/project-testing-fat.jpg",
+            title: "100% Dimensional QA & Safe Dispatch",
+            description: "Every enclosure undergoes rigid dimensional verification, diagonal squareness checks, door seal compression audits, and coating thickness (DFT) testing before protective bubble wrapping, palletization, and on-time dispatch.",
+            image: "assets/images/hero-enclosure-fabrication.jpg",
             checklist: [
-                "2.5kV HV Insulation Dielectric Test",
-                "Functional Logic & Interlock Testing",
-                "Client FAT Report & Calibration Signoff",
-                "Heavy-Duty Moisture-Proof Dispatch Wrapping"
+                "Diagonal Squareness & Alignment Audit",
+                "DFT Coating Thickness & Adhesion Test",
+                "Door Gasket Compression Verification",
+                "Export-Grade Palletized Protective Packaging"
             ]
         }
     ];
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rawMsg = whatsappMsg.value.trim();
                 if (rawMsg) {
                     const phoneNumber = "919975644816";
-                    const encodedMsg = encodeURIComponent(`Hello SKS Engineering, I would like to inquire about: ${rawMsg}`);
+                    const encodedMsg = encodeURIComponent(`Hello SKS Engineering, I would like to inquire about sheet metal enclosures: ${rawMsg}`);
                     window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, '_blank');
                     whatsappMsg.value = '';
                     whatsappChat.classList.remove('active');
