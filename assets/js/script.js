@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 3,
             title: "Precision Welding & Structural Assembly",
             description: "Enclosure structural corners, pillars, and cross-members are joined using advanced MIG, TIG, and automated spot welding. Argon shielding prevents oxidation, resulting in superior structural rigidity and seismic withstand capabilities.",
-            image: "assets/images/hero-enclosure-fabrication.jpg",
+            image: "assets/images/panels/panel-modular-frame.jpg",
             checklist: [
                 "TIG & MIG Inert Gas Shielded Welding",
                 "Capacitor Discharge Stud Welding for Earthing",
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 7,
             title: "100% Dimensional QA & Safe Dispatch",
             description: "Every enclosure undergoes rigid dimensional verification, diagonal squareness checks, door seal compression audits, and coating thickness (DFT) testing before protective bubble wrapping, palletization, and on-time dispatch.",
-            image: "assets/images/hero-enclosure-fabrication.jpg",
+            image: "assets/images/panels/panel-dispatch-ready.jpg",
             checklist: [
                 "Diagonal Squareness & Alignment Audit",
                 "DFT Coating Thickness & Adhesion Test",
