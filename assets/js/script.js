@@ -586,4 +586,96 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.2 });
         statsObserver.observe(statsTrigger);
     }
+
+    // ==========================================================================
+    // 11. Careers Page Interactive Features
+    // ==========================================================================
+    const applyButtons = document.querySelectorAll('.apply-for-role-btn');
+    const careerPositionSelect = document.getElementById('careerPosition');
+    const careerForm = document.getElementById('careerApplicationForm');
+    const careerFormNotice = document.getElementById('careerFormNotice');
+    const careerNameInput = document.getElementById('careerName');
+
+    if (applyButtons.length && careerPositionSelect) {
+        applyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetRole = btn.getAttribute('data-role');
+                if (targetRole) {
+                    let matched = false;
+                    for (let i = 0; i < careerPositionSelect.options.length; i++) {
+                        const opt = careerPositionSelect.options[i];
+                        if (opt.value.toLowerCase().includes(targetRole.toLowerCase()) || 
+                            targetRole.toLowerCase().includes(opt.value.toLowerCase())) {
+                            careerPositionSelect.selectedIndex = i;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        careerPositionSelect.value = targetRole;
+                    }
+                }
+
+                const applySection = document.getElementById('applySection') || document.getElementById('applyFormCard');
+                if (applySection) {
+                    applySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+
+                if (careerNameInput) {
+                    setTimeout(() => {
+                        careerNameInput.focus();
+                    }, 400);
+                }
+            });
+        });
+    }
+
+    if (careerForm) {
+        careerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const submitBtn = careerForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.innerText : 'Submit Job Application \u2192';
+
+            if (submitBtn) {
+                submitBtn.innerText = 'Submitting Application...';
+                submitBtn.disabled = true;
+            }
+
+            const candidateName = careerNameInput && careerNameInput.value ? careerNameInput.value.trim() : 'Candidate';
+            const selectedPosition = careerPositionSelect && careerPositionSelect.value ? careerPositionSelect.value : 'Applied Role';
+
+            setTimeout(() => {
+                if (careerFormNotice) {
+                    careerFormNotice.classList.add('success');
+                    careerFormNotice.style.display = 'block';
+                    careerFormNotice.style.padding = '1.25rem';
+                    careerFormNotice.style.background = 'rgba(0, 168, 150, 0.12)';
+                    careerFormNotice.style.border = '1px solid var(--accent-teal)';
+                    careerFormNotice.style.borderRadius = '8px';
+                    careerFormNotice.style.color = '#0B132B';
+                    careerFormNotice.style.marginTop = '1.25rem';
+                    careerFormNotice.innerHTML = `
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <div style="width: 26px; height: 26px; border-radius: 50%; background: #25D366; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; margin-top: 2px;">✓</div>
+                            <div>
+                                <strong style="color: #007365; font-size: 1.05rem; display: block; margin-bottom: 0.35rem;">Application Submitted Successfully!</strong>
+                                <p style="margin: 0; font-size: 0.92rem; color: #334155; line-height: 1.5;">
+                                    Thank you <strong>${candidateName}</strong> for applying for the <strong>${selectedPosition}</strong> role at SKS Engineering Solutions. Our recruitment desk at <strong>careers@sksengineeringsolutions.com</strong> will review your qualifications and contact you within 24–48 business hours.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                    careerFormNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
+                careerForm.reset();
+
+                if (submitBtn) {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 800);
+        });
+    }
 });
