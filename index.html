@@ -105,6 +105,12 @@
 
             <!-- Actions & Mobile Trigger -->
             <div class="nav-actions">
+                <button type="button" class="btn btn-outline-nav btn-sm trigger-contact-popup" id="navContactTrigger" title="Direct Contact Details">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                    <span>Contact Info</span>
+                </button>
                 <a href="#contact" class="btn btn-teal btn-sm" id="navQuoteBtn">Get a Quote</a>
                 <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation Menu">
                     <span></span>
@@ -1237,6 +1243,224 @@
             </div>
         </div>
     </footer>
+
+    <!-- ======================================================================
+         Visitor Welcome Contact Details Pop-up Modal
+         ====================================================================== -->
+    <div class="contact-popup-modal" id="contactPopupModal" role="dialog" aria-modal="true" aria-labelledby="contactPopupTitle" aria-describedby="contactPopupSubtitle">
+        <div class="contact-popup-overlay" id="contactPopupOverlay"></div>
+        <div class="contact-popup-container">
+            <!-- Close Button -->
+            <button class="contact-popup-close" id="contactPopupClose" aria-label="Close Contact Details Window">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="contact-popup-header">
+                <div class="contact-popup-badge">
+                    <span class="popup-pulse-dot"></span>
+                    <span>Engineering Sales Desk &bull; Pune Plant</span>
+                </div>
+                <div class="popup-brand-row">
+                    <img src="assets/images/logo.png" alt="SKS Engineering Solutions Logo" class="popup-logo-img">
+                </div>
+                <h2 id="contactPopupTitle" class="contact-popup-title">Welcome to SKS Engineering Solutions</h2>
+                <p id="contactPopupSubtitle" class="contact-popup-subtitle">
+                    Premier B2B manufacturer of custom sheet metal enclosures, modular electrical cabinets &amp; CNC fabrication in Pune. Connect directly with our engineering team:
+                </p>
+            </div>
+
+            <!-- Modal Body: Contact Details & Quick Callback Form -->
+            <div class="contact-popup-body">
+                <!-- Top Direct Contact Channel Cards -->
+                <div class="contact-popup-grid">
+                    <!-- Phone Card -->
+                    <div class="popup-card popup-card-phone">
+                        <div class="popup-card-top">
+                            <div class="popup-card-icon icon-phone">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                </svg>
+                            </div>
+                            <div class="popup-card-meta">
+                                <span class="popup-card-tag">Direct Call</span>
+                                <h4>Phone Hotline</h4>
+                            </div>
+                        </div>
+                        <a href="tel:+919975644816" class="popup-card-primary-val">+91-9975644816</a>
+                        <p class="popup-card-timing">Mon – Sat: 08:30 AM – 07:30 PM IST</p>
+                        <a href="tel:+919975644816" class="popup-action-btn btn-action-phone">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            </svg>
+                            <span>Call Directly</span>
+                        </a>
+                    </div>
+
+                    <!-- WhatsApp Card -->
+                    <div class="popup-card popup-card-wa">
+                        <div class="popup-card-top">
+                            <div class="popup-card-icon icon-wa">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.55 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.19 8.19 0 0 1-5.83 2.41c-1.55 0-3.07-.43-4.39-1.25l-.31-.19-3.26.85.87-3.18-.21-.34a8.217 8.217 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.55 3.41c-.19 0-.41.07-.63.29-.22.22-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.29s-1.44-.71-1.66-.79c-.22-.08-.39-.12-.55.12-.16.25-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.47-.4-.41-.55-.42z"/>
+                                </svg>
+                            </div>
+                            <div class="popup-card-meta">
+                                <span class="popup-card-tag green">Fast Chat</span>
+                                <h4>WhatsApp Support</h4>
+                            </div>
+                        </div>
+                        <a href="https://wa.me/919975644816?text=Hello%20SKS%20Engineering%2C%20I%20visited%20your%20website%20and%20would%20like%20to%20inquire%20about%20custom%20enclosures" target="_blank" rel="noopener noreferrer" class="popup-card-primary-val">+91 99756 44816</a>
+                        <p class="popup-card-timing">Instant replies &bull; Drawings review</p>
+                        <a href="https://wa.me/919975644816?text=Hello%20SKS%20Engineering%2C%20I%20visited%20your%20website%20and%20would%20like%20to%20inquire%20about%20custom%20enclosures" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-action-wa">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.55 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.19 8.19 0 0 1-5.83 2.41c-1.55 0-3.07-.43-4.39-1.25l-.31-.19-3.26.85.87-3.18-.21-.34a8.217 8.217 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24"/>
+                            </svg>
+                            <span>WhatsApp Chat</span>
+                        </a>
+                    </div>
+
+                    <!-- Email Card -->
+                    <div class="popup-card popup-card-email">
+                        <div class="popup-card-top">
+                            <div class="popup-card-icon icon-email">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </div>
+                            <div class="popup-card-meta">
+                                <span class="popup-card-tag cyan">Official RFQ</span>
+                                <h4>Email Sales</h4>
+                            </div>
+                        </div>
+                        <a href="mailto:sales@sksengineeringsolutions.com" class="popup-card-primary-val email-text">sales@sksengineeringsolutions.com</a>
+                        <p class="popup-card-timing">Quotation within 4 business hours</p>
+                        <a href="mailto:sales@sksengineeringsolutions.com" class="popup-action-btn btn-action-email">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            <span>Send Email</span>
+                        </a>
+                    </div>
+
+                    <!-- Plant Location Card -->
+                    <div class="popup-card popup-card-map">
+                        <div class="popup-card-top">
+                            <div class="popup-card-icon icon-map">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                    <circle cx="12" cy="10" r="3"/>
+                                </svg>
+                            </div>
+                            <div class="popup-card-meta">
+                                <span class="popup-card-tag orange">Pune Facility</span>
+                                <h4>Manufacturing Plant</h4>
+                            </div>
+                        </div>
+                        <p class="popup-card-address">
+                            Khed-Shivapur Kondanpur Rd, Opp Muktangan Hotel, Ramnagar, Pune 412205
+                        </p>
+                        <p class="popup-card-timing">Plant visits &amp; client audits welcome</p>
+                        <a href="https://maps.app.goo.gl/mNCYdPJJQLvxL5st7" target="_blank" rel="noopener noreferrer" class="popup-action-btn btn-action-map">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+                            </svg>
+                            <span>Open in Maps</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Embedded Quick Callback / Instant Inquiry Form -->
+                <div class="popup-callback-card">
+                    <div class="popup-callback-header">
+                        <div class="popup-callback-badge">⚡ Instant Callback &amp; RFQ</div>
+                        <h3>Request a Fast Engineering Callback</h3>
+                        <p>Have an enclosure requirement? Share your phone number and our engineering desk will connect with you:</p>
+                    </div>
+
+                    <form id="popupCallbackForm" class="popup-callback-form" novalidate>
+                        <div class="popup-form-row">
+                            <div class="popup-form-field">
+                                <label for="popupLeadName">Your Name &amp; Company *</label>
+                                <input type="text" id="popupLeadName" placeholder="e.g. Rahul Sharma (Precision Auto)" required>
+                            </div>
+                            <div class="popup-form-field">
+                                <label for="popupLeadPhone">Phone / WhatsApp Number *</label>
+                                <input type="tel" id="popupLeadPhone" placeholder="e.g. +91 98765 43210" required>
+                            </div>
+                        </div>
+
+                        <div class="popup-form-row">
+                            <div class="popup-form-field">
+                                <label for="popupLeadProduct">Enclosure Type Needed</label>
+                                <select id="popupLeadProduct">
+                                    <option value="Modular Floor-Standing Enclosures">Modular Floor-Standing Enclosure</option>
+                                    <option value="Wall-Mounted Sheet Metal Cabinets">Wall-Mounted Sheet Metal Cabinet</option>
+                                    <option value="Stainless Steel SS304/SS316 Enclosures">Stainless Steel (SS304/SS316) Box</option>
+                                    <option value="Outdoor Weatherproof Feeder Pillars">Outdoor Weatherproof Feeder Pillar</option>
+                                    <option value="Operator Console Desks">Operator Console Desk / Workstation</option>
+                                    <option value="Custom Junction Boxes & LCS Stations">Custom Junction Box / LCS Station</option>
+                                    <option value="Contract CNC Laser Cutting & Bending">Contract CNC Laser &amp; Bending</option>
+                                    <option value="Custom CAD Enclosure Specification">Other Custom Specification</option>
+                                </select>
+                            </div>
+                            <div class="popup-form-field">
+                                <label for="popupLeadNotes">Dimensions / Quantity / Notes (Optional)</label>
+                                <input type="text" id="popupLeadNotes" placeholder="e.g. 2000x800x600mm, IP55, 3 sets">
+                            </div>
+                        </div>
+
+                        <div class="popup-form-submit-row">
+                            <button type="submit" class="btn btn-lime popup-submit-btn" id="popupSubmitCallbackBtn">
+                                <span>Request Fast Callback</span>
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="popup-wa-send-btn" id="popupWaDirectBtn" title="Send details instantly via WhatsApp">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.55 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.19 8.19 0 0 1-5.83 2.41c-1.55 0-3.07-.43-4.39-1.25l-.31-.19-3.26.85.87-3.18-.21-.34a8.217 8.217 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24"/>
+                                </svg>
+                                <span>Inquire via WhatsApp</span>
+                            </button>
+                        </div>
+
+                        <!-- Feedback Message Box -->
+                        <div class="popup-callback-feedback" id="popupCallbackFeedback"></div>
+                    </form>
+                </div>
+
+                <!-- Fast Copy Toolbar & Toast -->
+                <div class="popup-quick-toolbar">
+                    <div class="copy-btns-group">
+                        <button type="button" class="copy-pill-btn" id="popupCopyPhone" data-val="+919975644816">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span>Copy Phone</span>
+                        </button>
+                        <button type="button" class="copy-pill-btn" id="popupCopyEmail" data-val="sales@sksengineeringsolutions.com">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span>Copy Email</span>
+                        </button>
+                    </div>
+                    <div class="popup-toast-msg" id="popupToastMsg" aria-live="polite"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="contact-popup-footer">
+                <button type="button" class="popup-footer-rfq-link" id="popupFooterRfq">
+                    <span>Have SLD / CAD drawing? Fill Detailed RFQ Form &darr;</span>
+                </button>
+                <button type="button" class="popup-continue-link" id="popupContinueBtn">
+                    Continue to Website &rarr;
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ======================================================================
          Lightbox Modal Component

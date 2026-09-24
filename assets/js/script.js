@@ -583,4 +583,201 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // --------------------------------------------------------------------------
+    // 11. Welcome Visitor Contact Details Pop-up Modal
+    // --------------------------------------------------------------------------
+    const contactPopupModal = document.getElementById('contactPopupModal');
+    const contactPopupClose = document.getElementById('contactPopupClose');
+    const contactPopupOverlay = document.getElementById('contactPopupOverlay');
+    const popupContinueBtn = document.getElementById('popupContinueBtn');
+    const popupFooterRfq = document.getElementById('popupFooterRfq');
+    const contactTriggers = document.querySelectorAll('.trigger-contact-popup');
+    const popupCopyPhone = document.getElementById('popupCopyPhone');
+    const popupCopyEmail = document.getElementById('popupCopyEmail');
+    const popupToastMsg = document.getElementById('popupToastMsg');
+
+    const openContactPopup = () => {
+        if (!contactPopupModal) return;
+        contactPopupModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeContactPopup = () => {
+        if (!contactPopupModal) return;
+        contactPopupModal.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    // Auto-open pop-up window whenever visitor arrives at website (with smooth natural delay)
+    if (contactPopupModal) {
+        setTimeout(() => {
+            openContactPopup();
+        }, 850);
+    }
+
+    // Manual triggers (e.g. from nav button)
+    contactTriggers.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openContactPopup();
+        });
+    });
+
+    // Close buttons & overlay click
+    if (contactPopupClose) contactPopupClose.addEventListener('click', closeContactPopup);
+    if (contactPopupOverlay) contactPopupOverlay.addEventListener('click', closeContactPopup);
+    if (popupContinueBtn) popupContinueBtn.addEventListener('click', closeContactPopup);
+
+    // Escape key closes modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && contactPopupModal && contactPopupModal.classList.contains('active')) {
+            closeContactPopup();
+        }
+    });
+
+    // RFQ Button in Popup: closes popup and scrolls smoothly to RFQ form
+    if (popupFooterRfq) {
+        popupFooterRfq.addEventListener('click', () => {
+            closeContactPopup();
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                setTimeout(() => {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                    const firstInput = document.getElementById('rfqName');
+                    if (firstInput) firstInput.focus();
+                }, 200);
+            }
+        });
+    }
+
+    // Embedded Quick Callback Form inside Popup
+    const callbackForm = document.getElementById('popupCallbackForm');
+    const callbackFeedback = document.getElementById('popupCallbackFeedback');
+    const submitCallbackBtn = document.getElementById('popupSubmitCallbackBtn');
+    const waDirectBtn = document.getElementById('popupWaDirectBtn');
+
+    if (callbackForm) {
+        callbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('popupLeadName');
+            const phoneInput = document.getElementById('popupLeadPhone');
+            const productSelect = document.getElementById('popupLeadProduct');
+            const notesInput = document.getElementById('popupLeadNotes');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            const product = productSelect ? productSelect.value : 'Enclosures';
+            const notes = notesInput ? notesInput.value.trim() : '';
+
+            if (!name || !phone) {
+                if (callbackFeedback) {
+                    callbackFeedback.className = 'popup-callback-feedback error';
+                    callbackFeedback.textContent = 'Please enter both your name and phone number.';
+                }
+                return;
+            }
+
+            // Show loading state
+            if (submitCallbackBtn) {
+                submitCallbackBtn.disabled = true;
+                submitCallbackBtn.innerHTML = `<span>Logging Request...</span>`;
+            }
+
+            setTimeout(() => {
+                if (callbackFeedback) {
+                    callbackFeedback.className = 'popup-callback-feedback success';
+                    callbackFeedback.innerHTML = `
+                        <strong>✓ Callback Request Received!</strong><br>
+                        Thank you <strong>${name}</strong>. An SKS Senior Electrical Engineer will call you at <strong>${phone}</strong> regarding <em>${product}</em> shortly.
+                    `;
+                }
+                callbackForm.reset();
+                if (submitCallbackBtn) {
+                    submitCallbackBtn.disabled = false;
+                    submitCallbackBtn.innerHTML = `
+                        <span>Request Fast Callback</span>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    `;
+                }
+            }, 700);
+        });
+    }
+
+    if (waDirectBtn) {
+        waDirectBtn.addEventListener('click', () => {
+            const nameInput = document.getElementById('popupLeadName');
+            const phoneInput = document.getElementById('popupLeadPhone');
+            const productSelect = document.getElementById('popupLeadProduct');
+            const notesInput = document.getElementById('popupLeadNotes');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            const product = productSelect ? productSelect.value : 'Custom Enclosure';
+            const notes = notesInput ? notesInput.value.trim() : '';
+
+            let waMsg = `Hello SKS Engineering, I visited your website and would like to inquire about ${product}.`;
+            if (name) waMsg += ` Name: ${name}.`;
+            if (phone) waMsg += ` Phone: ${phone}.`;
+            if (notes) waMsg += ` Specs/Qty: ${notes}.`;
+
+            const encoded = encodeURIComponent(waMsg);
+            window.open(`https://api.whatsapp.com/send?phone=919975644816&text=${encoded}`, '_blank');
+        });
+    }
+
+    // Quick Clipboard Copy Helpers
+    const showCopyToast = (text) => {
+        if (!popupToastMsg) return;
+        popupToastMsg.textContent = text;
+        popupToastMsg.classList.add('show');
+        setTimeout(() => {
+            popupToastMsg.classList.remove('show');
+        }, 2400);
+    };
+
+    const copyToClipboard = (text, successMsg) => {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyToast(successMsg);
+            }).catch(() => {
+                fallbackCopy(text, successMsg);
+            });
+        } else {
+            fallbackCopy(text, successMsg);
+        }
+    };
+
+    const fallbackCopy = (text, successMsg) => {
+        try {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showCopyToast(successMsg);
+        } catch (err) {
+            showCopyToast('Copy failed. Please dial directly.');
+        }
+    };
+
+    if (popupCopyPhone) {
+        popupCopyPhone.addEventListener('click', () => {
+            const val = popupCopyPhone.getAttribute('data-val') || '+919975644816';
+            copyToClipboard(val, '✓ Phone number copied!');
+        });
+    }
+
+    if (popupCopyEmail) {
+        popupCopyEmail.addEventListener('click', () => {
+            const val = popupCopyEmail.getAttribute('data-val') || 'sales@sksengineeringsolutions.com';
+            copyToClipboard(val, '✓ Email address copied!');
+        });
+    }
+
+    // Global helper so it can be opened from anywhere if needed
+    window.openContactDetailsPopup = openContactPopup;
 });
