@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    SKS Engineering Solutions - Interactive JavaScript Engine
    Features:
    - Header scroll dynamics & active section tracker
@@ -141,27 +141,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------
-    // 2. Active Navigation Section Highlighting
+    // 2. Multi-Page Active Navigation & In-Page Section Tracking
     // --------------------------------------------------------------------------
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    const allNavLinks = document.querySelectorAll('.nav-menu a');
+    
+    // Highlight based on current page URL
+    allNavLinks.forEach(link => {
+        const href = link.getAttribute('href') || '';
+        const linkFile = href.split('#')[0].split('/').pop();
+        if ((currentPath === '' || currentPath === 'index.html') && (linkFile === '' || linkFile === 'index.html')) {
+            link.classList.add('active');
+        } else if (linkFile && linkFile === currentPath) {
+            link.classList.add('active');
+        }
+    });
 
-    const navObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const activeId = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    if (link.getAttribute('href') === `#${activeId}`) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-            }
-        });
-    }, { threshold: 0.25 });
+    const inPageSections = document.querySelectorAll('section[id]');
+    const inPageNavLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
 
-    sections.forEach(sec => navObserver.observe(sec));
+    if (inPageSections.length && inPageNavLinks.length) {
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const activeId = entry.target.getAttribute('id');
+                    inPageNavLinks.forEach(link => {
+                        if (link.getAttribute('href') === `#${activeId}`) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.25 });
+
+        inPageSections.forEach(sec => navObserver.observe(sec));
+    }
 
     // --------------------------------------------------------------------------
     // 3. Scroll Reveal Animations (Multi-Directional & Cascading Stagger)
@@ -230,90 +246,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const processStepsData = [
         {
             step: 1,
-            title: "Precision Laser Cutting",
-            description: "Sheet metal panels are programmed using CAD/CAM nesting software and cut on ultra-precise 3kW CNC Fiber Laser machines. Clean edge profiles with zero burrs and tight tolerances of ±0.1 mm ensure flawless fitment for all enclosure doors, gland plates, and internal mounting plates.",
-            image: "assets/images/facility-laser.jpg",
+            title: "Requirement Understanding & Consultation",
+            description: "Detailed analysis of client GA drawings, single-line diagrams (SLD), mechanical enclosure dimensions, busbar routes, thermal requirements, and IP environmental rating targets (IP55/IP65).",
+            image: "assets/images/hero-enclosure-fabrication.jpg",
             checklist: [
-                "CAD/CAM Nesting Optimization",
-                "Cold-Rolled Sheet (CRCA & SS 304/316)",
-                "Tolerance Accuracy within ±0.1mm",
-                "Clean Piercing & Slag-Free Edges"
+                "BOM & Dimensional Drawing Review",
+                "Ingress Protection (IP55/IP65) Definition",
+                "Thermal Load & Cable Entry Planning",
+                "Custom Mounting & Plinth Sizing"
             ]
         },
         {
             step: 2,
-            title: "CNC Hydraulic Bending",
-            description: "High-tonnage multi-axis CNC Press Brakes shape sheet profiles with digital angle compensation. Complex return flanges, double-fold stiffeners, and interlocking gasket grooves are bent with mathematical consistency across entire production batches.",
-            image: "assets/images/facility-bending.jpg",
+            title: "Design & CAD Engineering",
+            description: "Conversion of architectural schematics into detailed 3D CAD sheet metal models with precise bend deduction calculations, CNC punching toolpaths, and automated nesting for optimal material utilization.",
+            image: "assets/images/panels/panel-modular-3bay.jpg",
             checklist: [
-                "150-Ton Multi-Axis CNC Press Brake",
-                "Digital Angle & Crowning Compensation",
-                "Continuous Return Flange Stiffness",
-                "Standardized Gasket Channel Forming"
+                "SolidWorks 3D Sheet Metal Modeling",
+                "Bend Deduction & K-Factor Optimization",
+                "Component Mounting Plate Nesting",
+                "Engineering GA Drawing Sign-off"
             ]
         },
         {
             step: 3,
-            title: "Precision Welding & Structural Assembly",
-            description: "Enclosure structural corners, pillars, and cross-members are joined using advanced MIG, TIG, and automated spot welding. Argon shielding prevents oxidation, resulting in superior structural rigidity and seismic withstand capabilities.",
-            image: "assets/images/panels/panel-modular-frame.jpg",
+            title: "Material Planning & Verification",
+            description: "Selection and inspection of prime-grade certified Cold Rolled Close Annealed (CRCA), Galvanized Iron (GI), or Stainless Steel (SS304/SS316) sheet coils with thickness verification and surface flatness inspection.",
+            image: "assets/images/product-stainless-steel.jpg",
             checklist: [
-                "TIG & MIG Inert Gas Shielded Welding",
-                "Capacitor Discharge Stud Welding for Earthing",
-                "Rigid Modular Structural Internal Frame",
-                "Non-Destructive Weld Joint Inspection"
+                "Prime CRCA & SS304 Stock Selection",
+                "Sheet Gauge Thickness Calibration (1.6 - 3.0mm)",
+                "Surface Flaw & Flatness Inspection",
+                "Lot Traceability & Raw Material Audit"
             ]
         },
         {
             step: 4,
-            title: "Surface Finishing & Deburring",
-            description: "Welded enclosure assemblies undergo comprehensive mechanical finishing. Weld seams are ground flush, sharp corners deburred, and surfaces conditioned to provide an ultra-smooth substrate for powder paint adhesion and IP gasket seating.",
-            image: "assets/images/product-junction-boxes.jpg",
+            title: "Fabrication: CNC Laser Cutting & Bending",
+            description: "High-precision CNC fiber laser profiling cutting intricate cutouts, gland openings, and louvers with tight tolerance accuracy, followed by multi-axis CNC hydraulic press brake bending for seamless corner joints.",
+            image: "assets/images/facility-laser.jpg",
             checklist: [
-                "Flush Weld Seam Grinding & Linishing",
-                "Radius Corner Edge Deburring",
-                "Surface Contaminant & Slag Removal",
-                "Mechanical Flatness Verification"
+                "Fiber Laser Cutting with Nitrogen Assist",
+                "Burr-Free Edge Contouring (Â±0.05mm)",
+                "Multi-Axis Hydraulic Press Brake Folding",
+                "Flange & Corner Squareness Verification"
             ]
         },
         {
             step: 5,
-            title: "7-Tank Pretreatment & Powder Coating",
-            description: "Every steel enclosure undergoes a rigorous chemical 7-tank pretreatment process (degreasing, derusting, phosphating, passivation) followed by electrostatic pure polyester powder coating (RAL 7035 standard) cured at 200°C for exceptional corrosion resistance (tested up to 1000 hours salt spray).",
-            image: "assets/images/facility-powder.jpg",
+            title: "Assembly & Mechanical Finishing",
+            description: "Precision TIG, MIG, and projection stud welding to construct heavy-duty structural corner pillars and modular frames. Seams are ground flush, sharp edges deburred, and mounting hardware integrated with precision.",
+            image: "assets/images/panels/panel-modular-frame.jpg",
             checklist: [
-                "7-Tank Chemical Dip Pretreatment",
-                "Electrostatic Powder Coating (RAL 7035)",
-                "200°C Thermal Curing Oven",
-                "DFT Thickness: 80–90 Microns Guaranteed"
+                "Inert Gas Shielded TIG/MIG Welding",
+                "Capacitor Discharge Earthing Stud Welds",
+                "Flush Seam Grinding & Edge Linishing",
+                "Concealed Hinge & Cam Lock Fitment"
             ]
         },
         {
             step: 6,
-            title: "PU Foamed Gasketing & Hardware Fitting",
-            description: "Continuous formed-in-place polyurethane (PU) foam gaskets are CNC dispensed along enclosure door profiles to guarantee IP55 / IP65 dust and water ingress protection. Precision door hinges, quarter-turn locks, and zinc-plated mounting plates are fitted.",
-            image: "assets/images/product-modular-enclosure.jpg",
+            title: "Quality Inspection & Tolerance QA",
+            description: "Rigorous quality inspection ensuring strict adherence to CAD drawings. Includes dimensional tolerance checks, diagonal squareness verification, door deflection testing, and seal compression validation.",
+            image: "assets/images/panels/panel-sgm-2500a-front.jpg",
             checklist: [
-                "Continuous CNC Poured PU Foam Gasket",
-                "Heavy-Duty Zinc Die-Cast Concealed Hinges",
-                "Quarter-Turn Cam Locks & Espagnolette Rods",
-                "Passivated Galvanized Internal Mounting Plates"
+                "Full Dimensional & Diagonal Audit",
+                "Door Alignment & Latch Engagement",
+                "Ingress Protection Gasket Inspection",
+                "Earthing Continuity Verification"
             ]
         },
         {
             step: 7,
-            title: "100% Dimensional QA & Safe Dispatch",
-            description: "Every enclosure undergoes rigid dimensional verification, diagonal squareness checks, door seal compression audits, and coating thickness (DFT) testing before protective bubble wrapping, palletization, and on-time dispatch.",
+            title: "Protective Packaging & Final Delivery",
+            description: "Carefully wrapped with edge-corner protectors, industrial bubble wrap, and heavy-gauge stretch film on reinforced wooden pallets to ensure zero-transit damage and prompt dispatch across project sites.",
             image: "assets/images/panels/panel-dispatch-ready.jpg",
             checklist: [
-                "Diagonal Squareness & Alignment Audit",
-                "DFT Coating Thickness & Adhesion Test",
-                "Door Gasket Compression Verification",
-                "Export-Grade Palletized Protective Packaging"
+                "Protective Corner & Edge Shielding",
+                "Heavy-Duty Stretch Film Wrapping",
+                "Palletized Dispatch & Shipping Docs",
+                "On-Time Delivery Tracking"
             ]
         }
     ];
-
     const stepButtons = document.querySelectorAll('.process-step-btn');
     const stageIndicator = document.getElementById('stageIndicator');
     const stageTitle = document.getElementById('stageTitle');
@@ -493,125 +508,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------
-    // 9. Contact / RFQ Form Validation & Feedback
+    // 9. Contact / RFQ Form Handling & Validation
     // --------------------------------------------------------------------------
-    const contactForm = document.getElementById('rfqForm');
+    const activeForm = document.getElementById('contactForm') || document.getElementById('rfqForm');
     const formNotice = document.getElementById('formNotice');
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+    if (activeForm) {
+        activeForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('rfqSubmitBtn');
-            const originalText = submitBtn.innerText;
+            const submitBtn = activeForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn ? submitBtn.innerText : 'Submit';
 
-            submitBtn.innerText = 'Sending Inquiry...';
-            submitBtn.disabled = true;
+            if (submitBtn) {
+                submitBtn.innerText = 'Submitting Request...';
+                submitBtn.disabled = true;
+            }
 
             setTimeout(() => {
                 if (formNotice) {
                     formNotice.classList.add('success');
-                    formNotice.innerHTML = `
-                        <strong>Inquiry Transmitted Successfully!</strong><br>
-                        Thank you for reaching out. An SKS Senior Electrical Engineer will review your specs and contact you within 4 business hours.
-                    `;
+                    formNotice.style.display = 'block';
+                    formNotice.style.padding = '1rem';
+                    formNotice.style.background = 'rgba(0, 168, 150, 0.15)';
+                    formNotice.style.border = '1px solid var(--accent-teal)';
+                    formNotice.style.borderRadius = '8px';
+                    formNotice.style.color = '#FFFFFF';
+                    formNotice.innerHTML = 
+                        <strong style="color: var(--accent-lime); font-size: 1.05rem;">Quotation Request Received!</strong><br>
+                        Thank you for reaching out to SKS Engineering Solutions. Our engineering estimation desk will review your specifications and contact you via email at sales@sksengineeringsolutions.com.
+                    ;
+                    formNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
-                contactForm.reset();
-                submitBtn.innerText = originalText;
-                submitBtn.disabled = false;
-
-                // Scroll notice into view
-                formNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 1400);
+                activeForm.reset();
+                if (submitBtn) {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 1000);
         });
     }
 
     // --------------------------------------------------------------------------
-    // 10. Right-Side Floating Quick Action Tabs & Enhanced WhatsApp Interaction
+    // 10. Products Catalog Filtering
     // --------------------------------------------------------------------------
-    const whatsappBtn = document.getElementById('whatsappBtn');
-    const whatsappChat = document.getElementById('whatsappChat');
-    const chatClose = document.getElementById('chatClose');
-    const whatsappForm = document.getElementById('whatsappForm');
-    const whatsappMsg = document.getElementById('whatsappMsg');
-    const presetChips = document.querySelectorAll('.preset-chip');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('#productsCatalog .product-card');
 
-    // Handle Quick Preset Chips inside WhatsApp drawer
-    presetChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            const inquiryText = chip.getAttribute('data-inquiry') || chip.textContent.trim();
-            if (whatsappMsg) {
-                whatsappMsg.value = `I am inquiring about: ${inquiryText}. Please provide specifications and quote.`;
-                whatsappMsg.focus();
-            }
-            // Highlight clicked chip
-            presetChips.forEach(c => {
-                c.style.background = '';
-                c.style.color = '';
-                c.style.borderColor = '';
+    if (filterButtons.length && productCards.length) {
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetFilter = btn.getAttribute('data-filter') || 'all';
+
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                productCards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category') || '';
+                    if (targetFilter === 'all' || cardCategory === targetFilter) {
+                        card.style.display = 'flex';
+                        card.style.opacity = '1';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
             });
-            chip.style.background = '#2563EB';
-            chip.style.color = '#FFFFFF';
-            chip.style.borderColor = '#2563EB';
         });
-    });
-
-    if (whatsappBtn) {
-        whatsappBtn.addEventListener('click', (e) => {
-            // Check if mobile screen (<= 768px) or touch device
-            const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                // On mobile, direct launch straight into native WhatsApp application
-                return;
-            }
-
-            // On desktop, toggle interactive chat drawer
-            if (whatsappChat) {
-                e.preventDefault();
-                e.stopPropagation();
-                whatsappChat.classList.toggle('active');
-                if (whatsappChat.classList.contains('active') && whatsappMsg) {
-                    setTimeout(() => whatsappMsg.focus(), 150);
-                }
-            }
-        });
-
-        if (chatClose && whatsappChat) {
-            chatClose.addEventListener('click', (e) => {
-                e.stopPropagation();
-                whatsappChat.classList.remove('active');
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (whatsappChat && !whatsappChat.contains(e.target) && !whatsappBtn.contains(e.target)) {
-                whatsappChat.classList.remove('active');
-            }
-        });
-
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && whatsappChat && whatsappChat.classList.contains('active')) {
-                whatsappChat.classList.remove('active');
-            }
-        });
-
-        if (whatsappForm && whatsappMsg) {
-            whatsappForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const rawMsg = whatsappMsg.value.trim();
-                const phoneNumber = "918668742659";
-                const messageText = rawMsg 
-                    ? `Hello SKS Engineering, I would like to inquire about sheet metal enclosures: ${rawMsg}`
-                    : `Hello SKS Engineering, I would like to inquire about custom sheet metal enclosures.`;
-                const encodedMsg = encodeURIComponent(messageText);
-                const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`;
-                
-                // Launch WhatsApp in new tab
-                window.open(waUrl, '_blank', 'noopener,noreferrer');
-                whatsappMsg.value = '';
-                if (whatsappChat) whatsappChat.classList.remove('active');
-            });
-        }
     }
 });

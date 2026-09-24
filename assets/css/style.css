@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    SKS Engineering Solutions - Industrial B2B Master Stylesheet
    Brand Palette:
    - Primary: Engineering Cobalt Blue (#2563EB / #1D4ED8 / #3B82F6)
@@ -2245,8 +2245,8 @@ footer.master-footer {
 }
 
 /* ==========================================================================
-   Right-Side Floating Quick Action Tabs Dock
-   Channels: Call, WhatsApp, YouTube, Instagram
+   Right-Side Floating Social Channels Dock
+   Required Icons: Instagram, YouTube, LinkedIn, Email (Show ONLY icons)
    ========================================================================== */
 .floating-right-dock {
     position: fixed;
@@ -2269,18 +2269,18 @@ footer.master-footer {
 }
 
 .dock-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 14px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #FFFFFF;
     text-decoration: none;
     position: relative;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 8px 22px -3px rgba(15, 23, 42, 0.28);
-    border: 1.5px solid rgba(255, 255, 255, 0.65);
-    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, filter 0.25s ease;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 8px 20px -3px rgba(15, 23, 42, 0.28);
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
 }
 
@@ -2290,7 +2290,7 @@ footer.master-footer {
 }
 
 .dock-btn:hover {
-    transform: scale(1.1) translateX(-4px);
+    transform: translateY(-4px) scale(1.08);
     filter: brightness(1.08);
 }
 
@@ -2299,83 +2299,56 @@ footer.master-footer {
 }
 
 .dock-btn:active {
-    transform: scale(0.95);
+    transform: translateY(0) scale(0.96);
 }
 
-/* 1. Call Button: SKS Cobalt Blue with Inner Precision Glow */
-.dock-btn-call {
-    background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(37, 99, 235, 0.4);
-}
-.dock-btn-call:hover {
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(37, 99, 235, 0.58), 0 0 14px rgba(59, 130, 246, 0.4);
-}
-
-/* 2. WhatsApp Button: High-Tech Emerald Gradient */
-.dock-btn-whatsapp {
-    background: linear-gradient(135deg, #059669 0%, #10B981 40%, #25D366 100%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(37, 211, 102, 0.45);
-}
-.dock-btn-whatsapp:hover {
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(37, 211, 102, 0.65), 0 0 14px rgba(37, 211, 102, 0.45);
-}
-
-/* 3. YouTube Button: High-Gloss Metallic Red */
-.dock-btn-youtube {
-    background: linear-gradient(135deg, #991B1B 0%, #DC2626 50%, #FF0000 100%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(239, 68, 68, 0.4);
-}
-.dock-btn-youtube:hover {
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(239, 68, 68, 0.6), 0 0 14px rgba(255, 0, 0, 0.4);
-}
-
-/* 4. Instagram Button: Luxury Sunset Gradient */
+/* 1. Instagram: Luxury Sunset Radial Gradient */
 .dock-btn-instagram {
     background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(214, 36, 159, 0.42);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 22px rgba(214, 36, 159, 0.38);
 }
 .dock-btn-instagram:hover {
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(214, 36, 159, 0.6), 0 0 14px rgba(225, 48, 108, 0.4);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(214, 36, 159, 0.55), 0 0 14px rgba(225, 48, 108, 0.35);
 }
 
-/* Hover Tooltip Pill Sliding from Right to Left */
-.dock-tooltip {
+/* 2. YouTube: Metallic Crimson Gradient */
+.dock-btn-youtube {
+    background: linear-gradient(135deg, #991B1B 0%, #DC2626 50%, #FF0000 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 22px rgba(239, 68, 68, 0.38);
+}
+.dock-btn-youtube:hover {
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(239, 68, 68, 0.55), 0 0 14px rgba(255, 0, 0, 0.35);
+}
+
+/* 3. LinkedIn: Professional Cobalt Blue */
+.dock-btn-linkedin {
+    background: linear-gradient(135deg, #0A4A87 0%, #0A66C2 50%, #0077B5 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 22px rgba(10, 102, 194, 0.38);
+}
+.dock-btn-linkedin:hover {
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(10, 102, 194, 0.55), 0 0 14px rgba(10, 102, 194, 0.35);
+}
+
+/* 4. Email: SKS Industrial Orange Gradient */
+.dock-btn-email {
+    background: linear-gradient(135deg, #C2410C 0%, #EA580C 50%, #F97316 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 22px rgba(249, 115, 22, 0.38);
+}
+.dock-btn-email:hover {
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(249, 115, 22, 0.55), 0 0 14px rgba(249, 115, 22, 0.35);
+}
+
+/* Accessible Tooltip Hidden Text: Screen Reader Only */
+.dock-btn .sr-only {
     position: absolute;
-    right: calc(100% + 12px);
-    top: 50%;
-    transform: translateY(-50%) translateX(10px);
-    background: rgba(15, 23, 42, 0.94);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: #FFFFFF;
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    padding: 0.48rem 0.95rem;
-    border-radius: 999px;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.16);
-    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease;
-    z-index: 10;
-}
-
-.dock-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    transform: translateY(-50%);
-    border: 5px solid transparent;
-    border-left-color: #0F172A;
-}
-
-.dock-item:hover .dock-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) translateX(0);
+    border: 0;
 }
 
 /* Active Radar Ping for WhatsApp / Online Status */
@@ -2617,6 +2590,161 @@ footer.master-footer {
     background: #1EBE5D;
     transform: scale(1.05);
 }
+
+/* ==========================================================================
+   Dedicated Multi-Page Architecture Components
+   ========================================================================== */
+.page-hero-header {
+    background: linear-gradient(135deg, #0B1120 0%, #0F172A 60%, #1E293B 100%);
+    color: #FFFFFF;
+    padding-top: calc(var(--header-height) + 3rem);
+    padding-bottom: 3.5rem;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.page-hero-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none;
+}
+
+.page-hero-header .container {
+    position: relative;
+    z-index: 2;
+}
+
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #94A3B8;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-nav a {
+    color: #94A3B8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumb-nav a:hover {
+    color: #38BDF8;
+}
+
+.breadcrumb-separator {
+    color: #64748B;
+    font-size: 0.75rem;
+}
+
+.breadcrumb-current {
+    color: #F8FAFC;
+    font-weight: 600;
+}
+
+.page-hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(37, 99, 235, 0.18);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    color: #60A5FA;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 1rem;
+}
+
+.page-hero-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #FFFFFF;
+    margin-bottom: 0.85rem;
+    max-width: 860px;
+}
+
+.page-hero-subtitle {
+    font-size: 1.12rem;
+    line-height: 1.7;
+    color: #CBD5E1;
+    max-width: 740px;
+}
+
+/* Coming Soon Powder Coating Vertical Banner */
+.coming-soon-banner {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2.25rem;
+    color: #FFFFFF;
+    margin: 3rem 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.22);
+}
+
+.coming-soon-banner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(249, 115, 22, 0.16), transparent 70%);
+    pointer-events: none;
+}
+
+.coming-soon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(249, 115, 22, 0.18);
+    color: #FB923C;
+    border: 1px solid rgba(249, 115, 22, 0.35);
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 1rem;
+}
+
+.coming-soon-title {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.75rem;
+}
+
+.coming-soon-desc {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #E2E8F0;
+    max-width: 800px;
+}
+
+/* Page Section Wrappers */
+.page-section {
+    padding: 5.5rem 0;
+}
+
+.page-section-alt {
+    background-color: var(--bg-subtle);
+}
+
 
 /* --------------------------------------------------------------------------
    Scroll Animations & Reveal Classes
