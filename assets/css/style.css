@@ -2177,11 +2177,11 @@ footer.master-footer {
     box-shadow: 0 6px 18px rgba(214, 36, 159, 0.45);
 }
 
-.social-btn-mail:hover {
-    background: var(--c-primary);
+.social-btn-li:hover {
+    background: #0A66C2;
     color: #FFFFFF;
-    border-color: var(--c-primary);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+    border-color: #0A66C2;
+    box-shadow: 0 6px 18px rgba(10, 102, 194, 0.45);
 }
 
 .footer-col h4 {
@@ -2329,13 +2329,13 @@ footer.master-footer {
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(10, 102, 194, 0.55), 0 0 14px rgba(10, 102, 194, 0.35);
 }
 
-/* 4. Email: SKS Industrial Orange Gradient */
-.dock-btn-email {
-    background: linear-gradient(135deg, #C2410C 0%, #EA580C 50%, #F97316 100%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 22px rgba(249, 115, 22, 0.38);
+/* 4. WhatsApp: Official Emerald Green */
+.dock-btn-whatsapp {
+    background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 22px rgba(37, 211, 102, 0.38);
 }
-.dock-btn-email:hover {
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(249, 115, 22, 0.55), 0 0 14px rgba(249, 115, 22, 0.35);
+.dock-btn-whatsapp:hover {
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(37, 211, 102, 0.55), 0 0 14px rgba(37, 211, 102, 0.35);
 }
 
 /* Accessible Tooltip Hidden Text: Screen Reader Only */
@@ -2754,25 +2754,9 @@ footer.master-footer {
 .reveal-right,
 .reveal-scale,
 .reveal-stagger > * {
-    opacity: 0;
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: opacity, transform;
-}
-
-.reveal {
-    transform: translateY(32px);
-}
-
-.reveal-left {
-    transform: translateX(-40px);
-}
-
-.reveal-right {
-    transform: translateX(40px);
-}
-
-.reveal-scale {
-    transform: scale(0.92);
+    opacity: 1 !important;
+    transform: none !important;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.active,
