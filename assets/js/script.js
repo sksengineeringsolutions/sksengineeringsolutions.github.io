@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
             whatsappForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const rawMsg = whatsappMsg.value.trim();
-                const phoneNumber = "919975644816";
+                const phoneNumber = "918668742659";
                 const messageText = rawMsg 
                     ? `Hello SKS Engineering, I would like to inquire about sheet metal enclosures: ${rawMsg}`
                     : `Hello SKS Engineering, I would like to inquire about custom sheet metal enclosures.`;

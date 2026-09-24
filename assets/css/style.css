@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    SKS Engineering Solutions - Industrial B2B Master Stylesheet
    Brand Palette:
    - Primary: Engineering Cobalt Blue (#2563EB / #1D4ED8 / #3B82F6)
@@ -2138,24 +2138,50 @@ footer.master-footer {
 }
 
 .social-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-sm);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: #FFFFFF;
     color: var(--c-primary);
     border: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
-    box-shadow: var(--shadow-sm);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    position: relative;
 }
 
 .social-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+.social-btn-wa:hover {
+    background: #25D366;
+    color: #FFFFFF;
+    border-color: #25D366;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+}
+
+.social-btn-yt:hover {
+    background: #FF0000;
+    color: #FFFFFF;
+    border-color: #FF0000;
+    box-shadow: 0 6px 18px rgba(255, 0, 0, 0.45);
+}
+
+.social-btn-ig:hover {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+    color: #FFFFFF;
+    border-color: transparent;
+    box-shadow: 0 6px 18px rgba(214, 36, 159, 0.45);
+}
+
+.social-btn-mail:hover {
     background: var(--c-primary);
     color: #FFFFFF;
     border-color: var(--c-primary);
-    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
 }
 
 .footer-col h4 {
@@ -2220,17 +2246,17 @@ footer.master-footer {
 
 /* ==========================================================================
    Right-Side Floating Quick Action Tabs Dock
-   Channels: Call, WhatsApp, YouTube, Instagram, LinkedIn, Facebook
+   Channels: Call, WhatsApp, YouTube, Instagram
    ========================================================================== */
 .floating-right-dock {
     position: fixed;
-    right: 20px;
-    bottom: 25px;
+    right: 22px;
+    bottom: 28px;
     z-index: 1500;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 10px;
+    gap: 12px;
     pointer-events: none;
 }
 
@@ -2243,82 +2269,73 @@ footer.master-footer {
 }
 
 .dock-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #FFFFFF;
     text-decoration: none;
     position: relative;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.24);
-    border: 2px solid #FFFFFF;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 8px 22px -3px rgba(15, 23, 42, 0.28);
+    border: 1.5px solid rgba(255, 255, 255, 0.65);
     transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, filter 0.25s ease;
     cursor: pointer;
 }
 
+.dock-btn svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.22));
+    transition: transform 0.25s ease;
+}
+
 .dock-btn:hover {
-    transform: scale(1.12) translateX(-3px);
+    transform: scale(1.1) translateX(-4px);
     filter: brightness(1.08);
 }
 
-.dock-btn:active {
-    transform: scale(0.96);
+.dock-btn:hover svg {
+    transform: scale(1.08);
 }
 
-/* 1. Call Button: Industrial Royal Blue */
+.dock-btn:active {
+    transform: scale(0.95);
+}
+
+/* 1. Call Button: SKS Cobalt Blue with Inner Precision Glow */
 .dock-btn-call {
-    background: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(37, 99, 235, 0.4);
 }
 .dock-btn-call:hover {
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.6);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(37, 99, 235, 0.58), 0 0 14px rgba(59, 130, 246, 0.4);
 }
 
-/* 2. WhatsApp Button: WhatsApp Vibrant Green */
+/* 2. WhatsApp Button: High-Tech Emerald Gradient */
 .dock-btn-whatsapp {
-    background: #25D366;
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+    background: linear-gradient(135deg, #059669 0%, #10B981 40%, #25D366 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(37, 211, 102, 0.45);
 }
 .dock-btn-whatsapp:hover {
-    box-shadow: 0 10px 26px rgba(37, 211, 102, 0.68);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(37, 211, 102, 0.65), 0 0 14px rgba(37, 211, 102, 0.45);
 }
 
-/* 3. YouTube Button: YouTube Red */
+/* 3. YouTube Button: High-Gloss Metallic Red */
 .dock-btn-youtube {
-    background: #FF0000;
-    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    background: linear-gradient(135deg, #991B1B 0%, #DC2626 50%, #FF0000 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(239, 68, 68, 0.4);
 }
 .dock-btn-youtube:hover {
-    box-shadow: 0 10px 25px rgba(255, 0, 0, 0.6);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(239, 68, 68, 0.6), 0 0 14px rgba(255, 0, 0, 0.4);
 }
 
-/* 4. Instagram Button: Instagram Sunset Gradient */
+/* 4. Instagram Button: Luxury Sunset Gradient */
 .dock-btn-instagram {
     background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-    box-shadow: 0 6px 20px rgba(214, 36, 159, 0.4);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(214, 36, 159, 0.42);
 }
 .dock-btn-instagram:hover {
-    box-shadow: 0 10px 25px rgba(214, 36, 159, 0.6);
-}
-
-/* 5. LinkedIn Button: LinkedIn Professional Blue */
-.dock-btn-linkedin {
-    background: #0A66C2;
-    box-shadow: 0 6px 20px rgba(10, 102, 194, 0.4);
-}
-.dock-btn-linkedin:hover {
-    box-shadow: 0 10px 25px rgba(10, 102, 194, 0.6);
-}
-
-/* 6. Facebook Button: Facebook Classic Blue */
-.dock-btn-facebook {
-    background: #1877F2;
-    box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4);
-}
-.dock-btn-facebook:hover {
-    box-shadow: 0 10px 25px rgba(24, 119, 242, 0.6);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 12px 28px rgba(214, 36, 159, 0.6), 0 0 14px rgba(225, 48, 108, 0.4);
 }
 
 /* Hover Tooltip Pill Sliding from Right to Left */
@@ -2327,18 +2344,20 @@ footer.master-footer {
     right: calc(100% + 12px);
     top: 50%;
     transform: translateY(-50%) translateX(10px);
-    background: #0F172A;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     color: #FFFFFF;
     font-size: 0.82rem;
     font-weight: 600;
     letter-spacing: 0.2px;
-    padding: 0.45rem 0.85rem;
+    padding: 0.48rem 0.95rem;
     border-radius: 999px;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.16);
     transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s ease;
     z-index: 10;
 }
