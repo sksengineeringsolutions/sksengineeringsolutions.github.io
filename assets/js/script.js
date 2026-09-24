@@ -1,42 +1,48 @@
-﻿/* ==========================================================================
-   SKS Engineering Solutions - Interactive JavaScript Engine
-   Features:
-   - Header scroll dynamics & active section tracker
-   - Mobile navigation drawer
-   - Scroll-triggered reveal animations
-   - Animated numeric statistics counter
-   - Interactive 7-Step Fabrication Workflow
-   - Product Catalog Category Filtering
-   - Project Showcase Lightbox Modal
-   - Brochure Download Modal
-   - RFQ Form Validation & Feedback
-   - WhatsApp Floating Representative Widget
-   ========================================================================== */
+/**
+ * SKS Engineering Solutions - Production Interactive JavaScript Engine
+ * A Shinde Groups Enterprise
+ * 
+ * Features:
+ * - High-performance throttled header scroll dynamics & progress indicator
+ * - Accessible mobile navigation drawer with touch gesture support
+ * - Hero background slideshow with industry switcher and tab-visibility pause
+ * - Multi-page active route detection & in-page section intersection tracking
+ * - Smooth scroll-triggered reveal animations
+ * - Interactive 7-stage manufacturing process navigator with crossfade previews
+ * - Instant product catalog filtering (Modular, Wall-mount, Stainless, Outdoor, Desks, Junctions)
+ * - Plant showcase lightbox modal with keyboard navigation
+ * - RFQ quotation form validation and instant feedback
+ * - Animated statistics counter with cubic ease-out
+ */
+
+'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Flag to enable smooth CSS reveal transitions once JS is active
+    document.documentElement.classList.add('js-loaded');
 
-    // --------------------------------------------------------------------------
-    // 1. Header Scroll Dynamics, Progress Bar & Back to Top
-    // --------------------------------------------------------------------------
-    const header = document.querySelector('header');
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.querySelector('.nav-menu');
+    // ==========================================================================
+    // 1. Header Scroll Dynamics, Progress Bar & Back-to-Top Button
+    // ==========================================================================
+    const header = document.getElementById('siteHeader') || document.querySelector('header');
     const scrollProgressBar = document.getElementById('scrollProgressBar');
     const backToTopBtn = document.getElementById('backToTopBtn');
 
-    window.addEventListener('scroll', () => {
+    let isScrolling = false;
+
+    function handleScroll() {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-        // Header scrolled class
+        // Sticky Header Elevation
         if (header) {
-            if (scrollTop > 40) {
+            if (scrollTop > 30) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
         }
 
-        // Reading Scroll Progress Bar
+        // Reading Progress Bar
         if (scrollProgressBar) {
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             if (scrollHeight > 0) {
@@ -45,13 +51,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Back to Top Button visibility
+        // Back to Top Visibility
         if (backToTopBtn) {
-            if (scrollTop > 450) {
+            if (scrollTop > 380) {
                 backToTopBtn.classList.add('active');
             } else {
                 backToTopBtn.classList.remove('active');
             }
+        }
+
+        isScrolling = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!isScrolling) {
+            window.requestAnimationFrame(handleScroll);
+            isScrolling = true;
         }
     }, { passive: true });
 
@@ -64,7 +79,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Full-Screen Industrial Background Slideshow Engine
+    // ==========================================================================
+    // 2. Mobile Navigation Drawer
+    // ==========================================================================
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu') || document.querySelector('.nav-menu');
+
+    if (navToggle && navMenu) {
+        const toggleMenu = (open) => {
+            const shouldOpen = typeof open === 'boolean' ? open : !navToggle.classList.contains('active');
+            navToggle.classList.toggle('active', shouldOpen);
+            navMenu.classList.toggle('active', shouldOpen);
+            navToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+            document.body.style.overflow = shouldOpen ? 'hidden' : '';
+        };
+
+        navToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        // Close when clicking any nav link
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                toggleMenu(false);
+            });
+        });
+
+        // Close on clicking outside the drawer
+        document.addEventListener('click', (e) => {
+            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+                toggleMenu(false);
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                toggleMenu(false);
+            }
+        });
+    }
+
+    // ==========================================================================
+    // 3. Hero Background Slideshow with Industry Switcher
+    // ==========================================================================
     const heroSlides = document.querySelectorAll('.hero-slide');
     const industryDots = document.querySelectorAll('.industry-dot');
     const currentIndustryLabel = document.getElementById('currentIndustryLabel');
@@ -86,8 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
         industryDots.forEach((dot, idx) => {
             if (idx === currentSlideIndex) {
                 dot.classList.add('active');
+                dot.setAttribute('aria-current', 'true');
             } else {
                 dot.classList.remove('active');
+                dot.removeAttribute('aria-current');
             }
         });
 
@@ -99,9 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startHeroSlideshow() {
         if (slideshowInterval) clearInterval(slideshowInterval);
+        if (heroSlides.length <= 1) return;
         slideshowInterval = setInterval(() => {
             showHeroSlide(currentSlideIndex + 1);
         }, 5000);
+    }
+
+    function stopHeroSlideshow() {
+        if (slideshowInterval) {
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+        }
     }
 
     if (heroSlides.length > 0) {
@@ -112,55 +181,47 @@ document.addEventListener('DOMContentLoaded', () => {
             dot.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const targetIndex = parseInt(dot.getAttribute('data-index'), 10);
-                showHeroSlide(targetIndex);
-                startHeroSlideshow(); // Reset timer on user interaction
-            });
-        });
-    }
-
-    if (navToggle && navMenu) {
-        navToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
+                if (!isNaN(targetIndex)) {
+                    showHeroSlide(targetIndex);
+                    startHeroSlideshow();
+                }
             });
         });
 
-        document.addEventListener('click', (e) => {
-            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !navToggle.contains(e.target)) {
-                navToggle.classList.remove('active');
-                navMenu.classList.remove('active');
+        // Pause slideshow when page is in background to save battery / CPU
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopHeroSlideshow();
+            } else {
+                startHeroSlideshow();
             }
         });
     }
 
-    // --------------------------------------------------------------------------
-    // 2. Multi-Page Active Navigation & In-Page Section Tracking
-    // --------------------------------------------------------------------------
+    // ==========================================================================
+    // 4. Multi-Page Active Route & In-Page Section Tracking
+    // ==========================================================================
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
     const allNavLinks = document.querySelectorAll('.nav-menu a');
-    
-    // Highlight based on current page URL
+
+    // Route active matching
     allNavLinks.forEach(link => {
         const href = link.getAttribute('href') || '';
         const linkFile = href.split('#')[0].split('/').pop();
         if ((currentPath === '' || currentPath === 'index.html') && (linkFile === '' || linkFile === 'index.html')) {
-            link.classList.add('active');
+            if (!href.includes('#') || href === '#hero' || href === 'index.html') {
+                link.classList.add('active');
+            }
         } else if (linkFile && linkFile === currentPath) {
             link.classList.add('active');
         }
     });
 
+    // In-page section scroll tracking for single-page jumps
     const inPageSections = document.querySelectorAll('section[id]');
     const inPageNavLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
 
-    if (inPageSections.length && inPageNavLinks.length) {
+    if (inPageSections.length && inPageNavLinks.length && 'IntersectionObserver' in window) {
         const navObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -174,80 +235,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             });
-        }, { threshold: 0.25 });
+        }, { threshold: 0.25, rootMargin: '-60px 0px -40% 0px' });
 
         inPageSections.forEach(sec => navObserver.observe(sec));
     }
 
-    // --------------------------------------------------------------------------
-    // 3. Scroll Reveal Animations (Multi-Directional & Cascading Stagger)
-    // --------------------------------------------------------------------------
+    // ==========================================================================
+    // 5. Scroll Reveal Animations (Hardware Accelerated)
+    // ==========================================================================
     const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-stagger');
-    const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -30px 0px'
-    });
 
-    reveals.forEach(el => revealObserver.observe(el));
-
-    // --------------------------------------------------------------------------
-    // 4. Animated Number Counters
-    // --------------------------------------------------------------------------
-    const counters = document.querySelectorAll('.count-number');
-    let counted = false;
-
-    const animateCounters = () => {
-        counters.forEach(counter => {
-            const target = parseInt(counter.getAttribute('data-target'), 10);
-            const duration = 1800;
-            const start = 0;
-            const startTime = performance.now();
-
-            const updateCounter = (currentTime) => {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // Ease-out cubic
-                const currentVal = Math.floor(progress * (target - start) + start);
-                counter.innerText = currentVal;
-
-                if (progress < 1) {
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    counter.innerText = target;
-                }
-            };
-            requestAnimationFrame(updateCounter);
-        });
-    };
-
-    const statsSection = document.querySelector('.strengths-section');
-    if (statsSection) {
-        const statsObserver = new IntersectionObserver((entries) => {
+    if (reveals.length && 'IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && !counted) {
-                    counted = true;
-                    animateCounters();
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    revealObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.2 });
-        statsObserver.observe(statsSection);
+        }, {
+            threshold: 0.08,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        reveals.forEach(el => revealObserver.observe(el));
+    } else {
+        // Fallback: make all immediately visible
+        reveals.forEach(el => el.classList.add('active'));
     }
 
-    // --------------------------------------------------------------------------
-    // 5. Interactive 7-Step Fabrication Workflow
-    // --------------------------------------------------------------------------
+    // ==========================================================================
+    // 6. Interactive 7-Stage Manufacturing Process
+    // ==========================================================================
     const processStepsData = [
         {
             step: 1,
             title: "Requirement Understanding & Consultation",
-            description: "Detailed analysis of client GA drawings, single-line diagrams (SLD), mechanical enclosure dimensions, busbar routes, thermal requirements, and IP environmental rating targets (IP55/IP65).",
+            description: "Detailed engineering review of client architectural schematics, electrical single-line diagrams (SLD), mechanical enclosure dimensions, busbar routes, thermal requirements, and ingress protection targets (IP55/IP65).",
             image: "assets/images/hero-enclosure-fabrication.jpg",
             checklist: [
                 "BOM & Dimensional Drawing Review",
@@ -259,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             step: 2,
             title: "Design & CAD Engineering",
-            description: "Conversion of architectural schematics into detailed 3D CAD sheet metal models with precise bend deduction calculations, CNC punching toolpaths, and automated nesting for optimal material utilization.",
+            description: "Conversion of architectural schematics into detailed 3D CAD SolidWorks sheet metal models with precise bend deduction calculations, CNC punching toolpaths, and automated nesting for optimal material utilization.",
             image: "assets/images/panels/panel-modular-3bay.jpg",
             checklist: [
                 "SolidWorks 3D Sheet Metal Modeling",
@@ -271,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             step: 3,
             title: "Material Planning & Verification",
-            description: "Selection and inspection of prime-grade certified Cold Rolled Close Annealed (CRCA), Galvanized Iron (GI), or Stainless Steel (SS304/SS316) sheet coils with thickness verification and surface flatness inspection.",
+            description: "Selection and inspection of prime-grade certified Cold Rolled Close Annealed (CRCA), Galvanized Iron (GI), or Stainless Steel (SS304/SS316) sheet coils with thickness calibration and surface flatness inspection.",
             image: "assets/images/product-stainless-steel.jpg",
             checklist: [
                 "Prime CRCA & SS304 Stock Selection",
@@ -287,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             image: "assets/images/facility-laser.jpg",
             checklist: [
                 "Fiber Laser Cutting with Nitrogen Assist",
-                "Burr-Free Edge Contouring (Â±0.05mm)",
+                "Burr-Free Edge Contouring (\u00B10.1mm)",
                 "Multi-Axis Hydraulic Press Brake Folding",
                 "Flange & Corner Squareness Verification"
             ]
@@ -329,35 +353,46 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         }
     ];
+
     const stepButtons = document.querySelectorAll('.process-step-btn');
     const stageIndicator = document.getElementById('stageIndicator');
     const stageTitle = document.getElementById('stageTitle');
     const stageDesc = document.getElementById('stageDesc');
-    const stageImg = document.getElementById('stageImg');
+    const stageImage = document.getElementById('stageImage') || document.getElementById('stageImg');
     const stageChecklist = document.getElementById('stageChecklist');
 
-    const updateProcessStage = (index) => {
+    function updateProcessStage(index) {
         const data = processStepsData[index];
         if (!data) return;
 
         stepButtons.forEach((btn, idx) => {
             if (idx === index) {
                 btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
             } else {
                 btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
             }
         });
 
-        if (stageIndicator) stageIndicator.innerText = `Step 0${data.step} of 07`;
-        if (stageTitle) stageTitle.innerText = data.title;
-        if (stageDesc) stageDesc.innerText = data.description;
-        if (stageImg) {
-            stageImg.style.opacity = '0';
+        if (stageIndicator) {
+            stageIndicator.textContent = `Stage 0${data.step} of 07`;
+        }
+        if (stageTitle) {
+            stageTitle.textContent = data.title;
+        }
+        if (stageDesc) {
+            stageDesc.textContent = data.description;
+        }
+
+        if (stageImage) {
+            stageImage.style.transition = 'opacity 0.2s ease';
+            stageImage.style.opacity = '0.3';
             setTimeout(() => {
-                stageImg.src = data.image;
-                stageImg.alt = data.title;
-                stageImg.style.opacity = '1';
-            }, 150);
+                stageImage.src = data.image;
+                stageImage.alt = `${data.title} - SKS Fabrication Plant`;
+                stageImage.style.opacity = '1';
+            }, 180);
         }
 
         if (stageChecklist) {
@@ -370,72 +405,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 </li>
             `).join('');
         }
-    };
+    }
 
-    stepButtons.forEach((btn, idx) => {
-        btn.addEventListener('click', () => {
-            updateProcessStage(idx);
-        });
-    });
-
-    // --------------------------------------------------------------------------
-    // 6. Product Catalog Category Filtering
-    // --------------------------------------------------------------------------
-    const productFilters = document.querySelectorAll('.catalog-filter-bar .filter-btn');
-    const productCards = document.querySelectorAll('.product-item-card');
-
-    productFilters.forEach(btn => {
-        btn.addEventListener('click', () => {
-            productFilters.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const filterValue = btn.getAttribute('data-filter');
-
-            productCards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                if (filterValue === 'all' || category === filterValue) {
-                    card.style.display = 'flex';
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'scale(1)';
-                    }, 50);
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.96)';
-                    setTimeout(() => {
-                        card.style.display = 'none';
-                    }, 200);
-                }
+    if (stepButtons.length > 0) {
+        stepButtons.forEach((btn, idx) => {
+            btn.addEventListener('click', () => {
+                updateProcessStage(idx);
             });
         });
-    });
+    }
 
-    // --------------------------------------------------------------------------
-    // 7. Gallery Category Filtering & Lightbox Modal
-    // --------------------------------------------------------------------------
+    // ==========================================================================
+    // 7. Products Catalog Category Filtering
+    // ==========================================================================
+    const productFilterButtons = document.querySelectorAll('.filter-btn');
+    const catalogCards = document.querySelectorAll('.products-grid .product-card, #productsCatalog .product-card, .products-catalog-grid .product-item-card');
+
+    if (productFilterButtons.length && catalogCards.length) {
+        productFilterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetFilter = btn.getAttribute('data-filter') || 'all';
+
+                productFilterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                catalogCards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category') || '';
+                    if (targetFilter === 'all' || cardCategory === targetFilter) {
+                        card.style.display = '';
+                        card.style.opacity = '1';
+                        card.style.transform = 'scale(1)';
+                    } else {
+                        card.style.display = 'none';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.96)';
+                    }
+                });
+            });
+        });
+    }
+
+    // ==========================================================================
+    // 8. Plant Showcase Gallery & Lightbox Modal
+    // ==========================================================================
     const galleryItems = document.querySelectorAll('.gallery-item');
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCaption = document.getElementById('lightboxCaption');
     const lightboxClose = document.getElementById('lightboxClose');
 
-    galleryItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const img = item.querySelector('img');
-            const title = item.querySelector('h4') ? item.querySelector('h4').innerText : 'SKS Engineering Showcase';
-            const subtitle = item.querySelector('p') ? item.querySelector('p').innerText : '';
-
-            if (lightboxModal && lightboxImg && img) {
-                lightboxImg.src = img.src;
-                lightboxImg.alt = title;
-                if (lightboxCaption) {
-                    lightboxCaption.innerHTML = `<strong>${title}</strong> &mdash; ${subtitle}`;
-                }
-                lightboxModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    });
+    const openLightbox = (imgSrc, imgTitle, imgSubtitle) => {
+        if (!lightboxModal || !lightboxImg) return;
+        lightboxImg.src = imgSrc;
+        lightboxImg.alt = imgTitle;
+        if (lightboxCaption) {
+            lightboxCaption.innerHTML = `<strong>${imgTitle}</strong> ${imgSubtitle ? `&mdash; ${imgSubtitle}` : ''}`;
+        }
+        lightboxModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
 
     const closeLightbox = () => {
         if (lightboxModal) {
@@ -444,7 +472,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    galleryItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const img = item.querySelector('img');
+            const title = item.querySelector('h4') ? item.querySelector('h4').textContent : 'SKS Plant Showcase';
+            const subtitle = item.querySelector('p') ? item.querySelector('p').textContent : '';
+
+            if (img) {
+                openLightbox(img.src, title, subtitle);
+            }
+        });
+    });
+
+    if (lightboxClose) {
+        lightboxClose.addEventListener('click', closeLightbox);
+    }
     if (lightboxModal) {
         lightboxModal.addEventListener('click', (e) => {
             if (e.target === lightboxModal) closeLightbox();
@@ -455,69 +497,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') closeLightbox();
     });
 
-    // --------------------------------------------------------------------------
-    // 8. Brochure Download Modal
-    // --------------------------------------------------------------------------
-    const brochureModal = document.getElementById('brochureModal');
-    const brochureTriggers = document.querySelectorAll('.trigger-brochure');
-    const brochureClose = document.getElementById('brochureClose');
-    const brochureForm = document.getElementById('brochureForm');
-
-    brochureTriggers.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (brochureModal) {
-                brochureModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        });
-    });
-
-    const closeBrochureModal = () => {
-        if (brochureModal) {
-            brochureModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    };
-
-    const brochureModalClose = document.getElementById('brochureModalClose');
-    if (brochureClose) brochureClose.addEventListener('click', closeBrochureModal);
-    if (brochureModalClose) brochureModalClose.addEventListener('click', closeBrochureModal);
-    if (brochureModal) {
-        brochureModal.addEventListener('click', (e) => {
-            if (e.target === brochureModal) closeBrochureModal();
-        });
-    }
-
-    if (brochureForm) {
-        brochureForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const submitBtn = brochureForm.querySelector('button[type="submit"]');
-            const orig = submitBtn.innerText;
-            submitBtn.innerText = 'Preparing Download...';
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                alert('Thank you! SKS Engineering Solutions Technical Catalog download will begin shortly.');
-                closeBrochureModal();
-                brochureForm.reset();
-                submitBtn.innerText = orig;
-                submitBtn.disabled = false;
-            }, 1200);
-        });
-    }
-
-    // --------------------------------------------------------------------------
-    // 9. Contact / RFQ Form Handling & Validation
-    // --------------------------------------------------------------------------
+    // ==========================================================================
+    // 9. Contact / RFQ Form Validation & Feedback Desk
+    // ==========================================================================
     const activeForm = document.getElementById('contactForm') || document.getElementById('rfqForm');
     const formNotice = document.getElementById('formNotice');
 
     if (activeForm) {
         activeForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
             const submitBtn = activeForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn ? submitBtn.innerText : 'Submit';
+            const originalText = submitBtn ? submitBtn.innerText : 'Submit RFQ Inquiry \u2192';
 
             if (submitBtn) {
                 submitBtn.innerText = 'Submitting Request...';
@@ -528,50 +519,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formNotice) {
                     formNotice.classList.add('success');
                     formNotice.style.display = 'block';
-                    formNotice.style.padding = '1rem';
+                    formNotice.style.padding = '1rem 1.25rem';
                     formNotice.style.background = 'rgba(0, 168, 150, 0.15)';
                     formNotice.style.border = '1px solid var(--accent-teal)';
                     formNotice.style.borderRadius = '8px';
                     formNotice.style.color = '#FFFFFF';
-                    formNotice.innerHTML = 
+                    formNotice.style.marginTop = '1.25rem';
+                    formNotice.innerHTML = `
                         <strong style="color: var(--accent-lime); font-size: 1.05rem;">Quotation Request Received!</strong><br>
-                        Thank you for reaching out to SKS Engineering Solutions. Our engineering estimation desk will review your specifications and contact you via email at sales@sksengineeringsolutions.com.
-                    ;
+                        Thank you for reaching out to SKS Engineering Solutions. Our engineering estimation desk will review your technical specifications and contact you shortly via email at sales@sksengineeringsolutions.com.
+                    `;
                     formNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
+
                 activeForm.reset();
+
                 if (submitBtn) {
                     submitBtn.innerText = originalText;
                     submitBtn.disabled = false;
                 }
-            }, 1000);
+            }, 800);
         });
     }
 
-    // --------------------------------------------------------------------------
-    // 10. Products Catalog Filtering
-    // --------------------------------------------------------------------------
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const productCards = document.querySelectorAll('#productsCatalog .product-card');
+    // ==========================================================================
+    // 10. Animated Statistics Counter (when in viewport)
+    // ==========================================================================
+    const counters = document.querySelectorAll('.count-number, .stat-number[data-target]');
+    let hasCounted = false;
 
-    if (filterButtons.length && productCards.length) {
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const targetFilter = btn.getAttribute('data-filter') || 'all';
+    const animateCounters = () => {
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'), 10);
+            if (isNaN(target)) return;
 
-                filterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+            const duration = 1600;
+            const startTime = performance.now();
 
-                productCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category') || '';
-                    if (targetFilter === 'all' || cardCategory === targetFilter) {
-                        card.style.display = 'flex';
-                        card.style.opacity = '1';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
+            const update = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Cubic ease-out
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const currentVal = Math.floor(ease * target);
+                counter.textContent = currentVal;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+            requestAnimationFrame(update);
         });
+    };
+
+    const statsTrigger = document.querySelector('.strengths-section') || document.querySelector('.hero-kpis');
+    if (statsTrigger && counters.length && 'IntersectionObserver' in window) {
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasCounted) {
+                    hasCounted = true;
+                    animateCounters();
+                }
+            });
+        }, { threshold: 0.2 });
+        statsObserver.observe(statsTrigger);
     }
 });
