@@ -2,7 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /*?*
 Disallow: /404.html
-Disallow: /admin.html
 
 # XML Sitemap
 Sitemap: https://sksengineeringsolutions.github.io/sitemap.xml

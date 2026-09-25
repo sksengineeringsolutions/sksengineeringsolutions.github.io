@@ -80,6 +80,7 @@
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + 16px);
     font-size: 16px;
     overflow-x: hidden;
     max-width: 100%;
@@ -3216,6 +3217,7 @@ footer.master-footer {
 .js-loaded .reveal-stagger.active > * {
     opacity: 1;
     transform: translate(0) scale(1);
+    will-change: auto;
 }
 
 /* Stagger cascading delays for child elements in grids */
@@ -4046,163 +4048,5 @@ footer.master-footer {
         bottom: 8px !important;
         width: 36px !important;
         height: 36px !important;
-    }
-}
-
-/* ==========================================================================
-   Vacancy Announcement Flyer Modal & Floating Notification Pill
-   ========================================================================== */
-.vacancy-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    padding: 1rem;
-}
-
-.vacancy-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.vacancy-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.78);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-
-.vacancy-modal-content {
-    position: relative;
-    z-index: 2;
-    background: #FFFFFF;
-    border-radius: 16px;
-    max-width: 540px;
-    width: 100%;
-    max-height: 92vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
-    border: 2px solid #2563EB;
-    transform: translateY(20px) scale(0.96);
-    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.vacancy-modal.active .vacancy-modal-content {
-    transform: translateY(0) scale(1);
-}
-
-.vacancy-close-btn {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.6);
-    color: #FFFFFF;
-    font-size: 22px;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 15;
-    transition: background 0.2s ease;
-}
-
-.vacancy-close-btn:hover {
-    background: #EF4444;
-}
-
-.vacancy-badge-bar {
-    background: #0F172A;
-    color: #FFFFFF;
-    padding: 0.85rem 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.vacancy-media-frame {
-    background: #0B1120;
-    max-height: 54vh;
-    overflow-y: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.vacancy-media-frame a {
-    display: block;
-    width: 100%;
-    text-align: center;
-}
-
-.vacancy-media-frame img {
-    max-width: 100%;
-    max-height: 52vh;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-}
-
-.vacancy-info-bar {
-    padding: 1.15rem 1.25rem;
-    background: #FFFFFF;
-    border-top: 1px solid #E2E8F0;
-}
-
-.vacancy-info-bar p {
-    font-size: 0.92rem;
-    color: #334155;
-    margin-bottom: 0.85rem;
-    line-height: 1.45;
-}
-
-.floating-hiring-pill {
-    position: fixed;
-    bottom: 90px;
-    left: 20px;
-    z-index: 995;
-    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-    color: #FFFFFF;
-    padding: 0.55rem 1.1rem;
-    border-radius: 50px;
-    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
-    border: 2px solid #FFFFFF;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-weight: 700;
-    font-size: 0.88rem;
-    font-family: var(--font-heading);
-    animation: pulseHiringPill 2.8s infinite ease-in-out;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.floating-hiring-pill:hover {
-    transform: scale(1.06);
-    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.5);
-}
-
-@keyframes pulseHiringPill {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
     }
 }

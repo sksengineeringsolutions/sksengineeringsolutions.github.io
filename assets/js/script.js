@@ -70,6 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, { passive: true });
 
+    // Initial check on page load
+    handleScroll();
+
     if (backToTopBtn) {
         backToTopBtn.addEventListener('click', () => {
             window.scrollTo({
@@ -687,82 +690,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 800);
         });
     }
-
-    // ==========================================================================
-    // 12. Dynamic Vacancy Flyer & Announcement Popup on Homepage
-    // ==========================================================================
-    const vacancyModal = document.getElementById('vacancyModal');
-    const vacancyModalBackdrop = document.getElementById('vacancyModalBackdrop');
-    const vacancyModalClose = document.getElementById('vacancyModalClose');
-    const vacancyModalImage = document.getElementById('vacancyModalImage');
-    const vacancyImageLink = document.getElementById('vacancyImageLink');
-    const vacancyModalHeading = document.getElementById('vacancyModalHeading');
-    const vacancyModalSubtitle = document.getElementById('vacancyModalSubtitle');
-    const vacancyModalBtn = document.getElementById('vacancyModalBtn');
-    const floatingHiringPill = document.getElementById('floatingHiringPill');
-
-    const openVacancyModal = () => {
-        if (!vacancyModal) return;
-        vacancyModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeVacancyModal = () => {
-        if (!vacancyModal) return;
-        vacancyModal.classList.remove('active');
-        document.body.style.overflow = '';
-        sessionStorage.setItem('sks_vacancy_dismissed', 'true');
-    };
-
-    if (vacancyModalClose) vacancyModalClose.addEventListener('click', closeVacancyModal);
-    if (vacancyModalBackdrop) vacancyModalBackdrop.addEventListener('click', closeVacancyModal);
-    if (floatingHiringPill) floatingHiringPill.addEventListener('click', openVacancyModal);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && vacancyModal && vacancyModal.classList.contains('active')) {
-            closeVacancyModal();
-        }
-    });
-
-    // Check data/vacancy.json to display flyer when active
-    async function checkVacancyAnnouncement() {
-        if (!vacancyModal) return;
-
-        // Browsers block fetch() on local file:// protocol; fetch runs on http/https
-        if (window.location.protocol === 'file:') {
-            return;
-        }
-
-        try {
-            const res = await fetch(`data/vacancy.json?_t=${Date.now()}`);
-            if (!res.ok) return;
-            const data = await res.json();
-
-            if (data && data.active && data.imageUrl) {
-                if (vacancyModalHeading && data.title) vacancyModalHeading.textContent = data.title;
-                if (vacancyModalSubtitle && data.subtitle) vacancyModalSubtitle.textContent = data.subtitle;
-                if (vacancyModalImage) vacancyModalImage.src = data.imageUrl;
-                if (vacancyImageLink && data.buttonLink) vacancyImageLink.href = data.buttonLink;
-                if (vacancyModalBtn) {
-                    if (data.buttonText) vacancyModalBtn.textContent = data.buttonText;
-                    if (data.buttonLink) vacancyModalBtn.href = data.buttonLink;
-                }
-
-                if (floatingHiringPill) {
-                    floatingHiringPill.style.display = 'flex';
-                }
-
-                // Show modal after 1.2s delay if not dismissed during current session
-                if (!sessionStorage.getItem('sks_vacancy_dismissed')) {
-                    setTimeout(() => {
-                        openVacancyModal();
-                    }, 1200);
-                }
-            }
-        } catch (e) {
-            // Silently ignore network/fetch error
-        }
-    }
-
-    checkVacancyAnnouncement();
 });
