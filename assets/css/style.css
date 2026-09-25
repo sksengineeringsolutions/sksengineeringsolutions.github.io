@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    SKS Engineering Solutions - Industrial B2B Master Stylesheet
    Brand Palette:
    - Primary: Engineering Cobalt Blue (#2563EB / #1D4ED8 / #3B82F6)
@@ -59,6 +59,12 @@
     --shadow-glow: 0 4px 25px rgba(37, 99, 235, 0.25);
     --shadow-teal-glow: 0 4px 25px rgba(37, 99, 235, 0.25);
     --shadow-orange-glow: 0 4px 25px rgba(249, 115, 22, 0.3);
+
+    /* Typography & Accents */
+    --accent-teal: #0284C7;          /* Precision Cyan / Tech Teal Accent */
+    --accent-lime: #10B981;          /* Accent Emerald / Success Lime */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
     --transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }

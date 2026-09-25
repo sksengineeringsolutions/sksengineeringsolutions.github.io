@@ -413,6 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateProcessStage(idx);
             });
         });
+        // Initialize stage 1 on DOM ready to ensure consistent checklist icons & content
+        updateProcessStage(0);
     }
 
     // ==========================================================================
@@ -519,15 +521,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (formNotice) {
                     formNotice.classList.add('success');
                     formNotice.style.display = 'block';
-                    formNotice.style.padding = '1rem 1.25rem';
-                    formNotice.style.background = 'rgba(0, 168, 150, 0.15)';
-                    formNotice.style.border = '1px solid var(--accent-teal)';
+                    formNotice.style.padding = '1.25rem';
+                    formNotice.style.background = 'rgba(2, 132, 199, 0.08)';
+                    formNotice.style.border = '1px solid var(--c-primary)';
                     formNotice.style.borderRadius = '8px';
-                    formNotice.style.color = '#FFFFFF';
+                    formNotice.style.color = '#0F172A';
                     formNotice.style.marginTop = '1.25rem';
                     formNotice.innerHTML = `
-                        <strong style="color: var(--accent-lime); font-size: 1.05rem;">Quotation Request Received!</strong><br>
-                        Thank you for reaching out to SKS Engineering Solutions. Our engineering estimation desk will review your technical specifications and contact you shortly via email at sales@sksengineeringsolutions.com.
+                        <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <div style="width: 26px; height: 26px; border-radius: 50%; background: #25D366; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; margin-top: 2px;">✓</div>
+                            <div>
+                                <strong style="color: #0369A1; font-size: 1.05rem; display: block; margin-bottom: 0.35rem;">Quotation Request Received!</strong>
+                                <p style="margin: 0; font-size: 0.92rem; color: #334155; line-height: 1.5;">
+                                    Thank you for reaching out to SKS Engineering Solutions. Our engineering estimation desk will review your technical specifications and contact you shortly via email at sales@sksengineeringsolutions.com.
+                                </p>
+                            </div>
+                        </div>
                     `;
                     formNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
