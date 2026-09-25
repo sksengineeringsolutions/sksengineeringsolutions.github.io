@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacancy Admin Portal | SKS Engineering Solutions</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Production Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .admin-page-wrap {
+            min-height: 100vh;
+            background: #F8FAFC;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-header {
+            background: #0F172A;
+            color: #FFFFFF;
+            padding: 1.25rem 0;
+            border-bottom: 2px solid #2563EB;
+        }
+
+        .admin-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-brand img {
+            height: 44px;
+            width: auto;
+            background: #FFFFFF;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .admin-card {
+            background: #FFFFFF;
+            border-radius: 14px;
+            border: 1px solid #E2E8F0;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #F1F5F9;
+            border-radius: 10px;
+            border: 1px solid #CBD5E1;
+        }
+
+        .switch-input {
+            width: 44px;
+            height: 24px;
+            accent-color: #2563EB;
+            cursor: pointer;
+        }
+
+        .dropzone {
+            border: 2px dashed #94A3B8;
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            background: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: #2563EB;
+            background: #EFF6FF;
+        }
+
+        .dropzone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .preview-box {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0F172A;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            position: relative;
+        }
+
+        .preview-box img {
+            max-width: 100%;
+            max-height: 380px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .preview-placeholder {
+            color: #94A3B8;
+            font-size: 0.95rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pill.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #047857;
+            border: 1px solid #10B981;
+        }
+
+        .status-pill.inactive {
+            background: rgba(148, 163, 184, 0.15);
+            color: #475569;
+            border: 1px solid #CBD5E1;
+        }
+
+        .token-card {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .log-box {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            background: #0B132B;
+            color: #38BDF8;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.88rem;
+            display: none;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="admin-page-wrap">
+
+    <!-- Top Admin Header -->
+    <header class="admin-header">
+        <div class="container admin-header-flex">
+            <div class="admin-brand">
+                <a href="index.html">
+                    <img src="assets/images/logo.png" alt="SKS Logo">
+                </a>
+                <div>
+                    <h2 style="font-size: 1.15rem; color: #FFFFFF; margin: 0; font-family: var(--font-heading);">
+                        Vacancy Announcement Management
+                    </h2>
+                    <span style="font-size: 0.8rem; color: #94A3B8;">SKS Engineering Solutions &bull; Portal</span>
+                </div>
+            </div>
+            <div>
+                <a href="index.html" class="btn btn-outline-white btn-sm" target="_blank">View Live Website &rarr;</a>
+            </div>
+        </div>
+    </header>
+
+    <main style="flex: 1; padding: 2.5rem 0;">
+        <div class="container" style="max-width: 1100px;">
+
+            <!-- Security / GitHub Token Card -->
+            <div class="token-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                        <h4 style="margin: 0 0 0.35rem; color: #1D4ED8; font-size: 1.05rem;">
+                            &#128273; GitHub Repository Authentication
+                        </h4>
+                        <p style="margin: 0; font-size: 0.88rem; color: #334155; max-width: 720px;">
+                            Enter your GitHub Personal Access Token (PAT) with <code>repo</code> or <code>contents: write</code> permission. It is stored securely in your browser's private local storage.
+                        </p>
+                    </div>
+                    <button type="button" id="toggleTokenBtn" class="btn btn-outline-navy btn-sm" style="font-size: 0.82rem; padding: 0.4rem 0.8rem;">
+                        Edit Token
+                    </button>
+                </div>
+
+                <div id="tokenInputSection" style="margin-top: 1rem; display: none;">
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx or github_pat_xxxx" style="width: 100%; font-family: monospace;">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button type="button" id="saveTokenBtn" class="btn btn-teal btn-sm">Save Token</button>
+                        <button type="button" id="clearTokenBtn" class="btn btn-outline-navy btn-sm" style="border-color: #CBD5E1;">Clear Saved Token</button>
+                        <span id="tokenStatusText" style="font-size: 0.85rem; color: #047857; margin-left: 0.5rem;"></span>
+                    </div>
+                    <p style="margin: 0.75rem 0 0; font-size: 0.8rem; color: #64748B;">
+                        Need a token? <a href="https://github.com/settings/tokens/new?scopes=repo&description=SKS+Website+Vacancy+Uploader" target="_blank" rel="noopener noreferrer" style="color: #2563EB; font-weight: 600;">Click here to generate one on GitHub</a> (select expiration and check <strong>repo</strong>).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Current Live Status Bar -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-weight: 600; color: #0F172A;">Homepage Vacancy Status:</span>
+                    <span class="status-pill inactive" id="currentLiveStatusBadge">Checking...</span>
+                </div>
+                <button type="button" id="refreshConfigBtn" class="btn btn-outline-navy btn-sm" style="padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                    &#8635; Refresh Status
+                </button>
+            </div>
+
+            <!-- Main Editor Form -->
+            <div class="admin-grid">
+                <!-- Left Column: Controls -->
+                <div class="admin-card">
+                    <h3 style="font-size: 1.3rem; margin-bottom: 1.25rem; color: #0F172A; font-family: var(--font-heading);">
+                        Vacancy Flyer &amp; Popup Settings
+                    </h3>
+
+                    <form id="vacancyForm">
+                        <!-- Active Switch -->
+                        <div class="form-switch">
+                            <input type="checkbox" id="vacancyActiveToggle" class="switch-input">
+                            <label for="vacancyActiveToggle" style="margin: 0; cursor: pointer; font-weight: 600; color: #0F172A;">
+                                Display Vacancy Flyer on Homepage
+                            </label>
+                        </div>
+
+                        <!-- Image File Upload -->
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="font-weight: 600; margin-bottom: 0.4rem; display: block;">
+                                Upload Vacancy Image / Hiring Poster *
+                            </label>
+                            <div class="dropzone" id="dropzone">
+                                <input type="file" id="imageFileInput" accept="image/jpeg,image/png,image/webp">
+                                <div style="font-size: 2.2rem; margin-bottom: 0.5rem; color: #2563EB;">&#128247;</div>
+                                <strong style="color: #0F172A; display: block; font-size: 1rem;">Click to select or drag &amp; drop poster image</strong>
+                                <span style="font-size: 0.85rem; color: #64748B;">Supported: JPG, PNG, WEBP (Max 5MB recommended)</span>
+                            </div>
+                            <div id="fileInfoText" style="margin-top: 0.5rem; font-size: 0.85rem; color: #047857; font-weight: 600; display: none;"></div>
+                        </div>
+
+                        <!-- Announcement Headline -->
+                        <div class="form-group" style="margin-bottom: 1.25rem;">
+                            <label for="vacancyTitle" style="font-weight: 600; margin-bottom: 0.4rem; display: block;">
+                                Announcement Title
+                            </label>
+                            <input type="text" id="vacancyTitle" value="We Are Hiring!" placeholder="e.g. We Are Hiring! Multiple Engineering Roles" required>
+                        </div>
+
+                        <!-- Announcement Subtitle -->
+                        <div class="form-group" style="margin-bottom: 1.25rem;">
+                            <label for="vacancySubtitle" style="font-weight: 600; margin-bottom: 0.4rem; display: block;">
+                                Subtitle / Open Roles Summary
+                            </label>
+                            <textarea id="vacancySubtitle" rows="2" placeholder="e.g. Urgent requirements for SolidWorks CAD Engineers, Laser Operators & MIG Welders at Pune Plant."></textarea>
+                        </div>
+
+                        <!-- CTA Button Text -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="vacancyBtnText" style="font-weight: 600; margin-bottom: 0.4rem; display: block;">
+                                    Button Text
+                                </label>
+                                <input type="text" id="vacancyBtnText" value="View Openings &amp; Apply Now &rarr;">
+                            </div>
+                            <div class="form-group">
+                                <label for="vacancyBtnLink" style="font-weight: 600; margin-bottom: 0.4rem; display: block;">
+                                    Button Destination
+                                </label>
+                                <input type="text" id="vacancyBtnLink" value="careers.html">
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div style="margin-top: 1.75rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <button type="submit" id="saveAndPublishBtn" class="btn btn-lime btn-lg" style="flex: 1; justify-content: center;">
+                                Publish to Homepage &rarr;
+                            </button>
+                            <button type="button" id="deactivateBtn" class="btn btn-outline-navy" style="border-color: #EF4444; color: #DC2626;">
+                                Turn Off Banner
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Realtime Log Box -->
+                    <div id="logBox" class="log-box"></div>
+                </div>
+
+                <!-- Right Column: Live Poster Preview -->
+                <div>
+                    <div class="admin-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="font-size: 1.15rem; margin: 0; color: #0F172A; font-family: var(--font-heading);">
+                                Live Visitor Preview
+                            </h3>
+                            <span class="tech-tag" style="margin: 0; font-size: 0.75rem;">Modal Popup</span>
+                        </div>
+                        <p style="font-size: 0.88rem; color: #64748B; margin-bottom: 1.25rem;">
+                            This preview represents how the vacancy flyer will appear to visitors on the homepage:
+                        </p>
+
+                        <!-- Simulated Modal Preview -->
+                        <div style="background: #FFFFFF; border-radius: 14px; border: 2px solid #2563EB; overflow: hidden; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);">
+                            <div style="background: #0F172A; color: #FFFFFF; padding: 0.85rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #25D366;"></span>
+                                    <strong id="previewTitle" style="font-size: 0.95rem; font-family: var(--font-heading);">We Are Hiring!</strong>
+                                </div>
+                                <span style="font-size: 1.2rem; cursor: pointer; color: #94A3B8;">&times;</span>
+                            </div>
+
+                            <div class="preview-box" id="previewBox">
+                                <div class="preview-placeholder" id="previewPlaceholder">
+                                    &#128444;<br>No poster uploaded yet.<br>Select an image to preview.
+                                </div>
+                                <img id="previewImage" alt="Vacancy Preview">
+                            </div>
+
+                            <div style="padding: 1rem 1.25rem; background: #FFFFFF; border-top: 1px solid #E2E8F0;">
+                                <p id="previewSubtitle" style="font-size: 0.88rem; color: #334155; margin-bottom: 0.85rem; line-height: 1.4;">
+                                    Exciting career opportunities at SKS Engineering Solutions Pune plant.
+                                </p>
+                                <a id="previewBtn" href="careers.html" class="btn btn-lime btn-sm" style="width: 100%; justify-content: center; pointer-events: none;">
+                                    View Openings &amp; Apply Now &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: #0B132B; color: #94A3B8; padding: 1.25rem 0; text-align: center; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div class="container">
+            SKS Engineering Solutions &bull; A Shinde Groups Enterprise &bull; Vacancy Administration Desk
+        </div>
+    </footer>
+
+    <script>
+    'use strict';
+
+    const REPO_OWNER = 'sksengineeringsolutions';
+    const REPO_NAME = 'sksengineeringsolutions.github.io';
+    const VACANCY_CONFIG_PATH = 'data/vacancy.json';
+    const BANNER_IMAGE_PATH = 'assets/images/hiring-banner.jpg';
+
+    // DOM Elements
+    const ghTokenInput = document.getElementById('ghToken');
+    const tokenInputSection = document.getElementById('tokenInputSection');
+    const toggleTokenBtn = document.getElementById('toggleTokenBtn');
+    const saveTokenBtn = document.getElementById('saveTokenBtn');
+    const clearTokenBtn = document.getElementById('clearTokenBtn');
+    const tokenStatusText = document.getElementById('tokenStatusText');
+
+    const currentLiveStatusBadge = document.getElementById('currentLiveStatusBadge');
+    const refreshConfigBtn = document.getElementById('refreshConfigBtn');
+
+    const vacancyForm = document.getElementById('vacancyForm');
+    const vacancyActiveToggle = document.getElementById('vacancyActiveToggle');
+    const imageFileInput = document.getElementById('imageFileInput');
+    const dropzone = document.getElementById('dropzone');
+    const fileInfoText = document.getElementById('fileInfoText');
+
+    const vacancyTitleInput = document.getElementById('vacancyTitle');
+    const vacancySubtitleInput = document.getElementById('vacancySubtitle');
+    const vacancyBtnTextInput = document.getElementById('vacancyBtnText');
+    const vacancyBtnLinkInput = document.getElementById('vacancyBtnLink');
+
+    const previewTitle = document.getElementById('previewTitle');
+    const previewSubtitle = document.getElementById('previewSubtitle');
+    const previewBtn = document.getElementById('previewBtn');
+    const previewImage = document.getElementById('previewImage');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+
+    const saveAndPublishBtn = document.getElementById('saveAndPublishBtn');
+    const deactivateBtn = document.getElementById('deactivateBtn');
+    const logBox = document.getElementById('logBox');
+
+    let selectedBase64Image = null;
+    let selectedFileExtension = 'jpg';
+    let currentConfig = null;
+
+    // 1. Token Management
+    function loadSavedToken() {
+        const savedToken = localStorage.getItem('sks_gh_pat');
+        if (savedToken) {
+            ghTokenInput.value = savedToken;
+            tokenStatusText.textContent = 'Token saved on this device';
+            toggleTokenBtn.textContent = 'Change Token';
+            tokenInputSection.style.display = 'none';
+        } else {
+            tokenInputSection.style.display = 'block';
+            toggleTokenBtn.textContent = 'Hide';
+        }
+    }
+
+    toggleTokenBtn.addEventListener('click', () => {
+        const isHidden = tokenInputSection.style.display === 'none';
+        tokenInputSection.style.display = isHidden ? 'block' : 'none';
+        toggleTokenBtn.textContent = isHidden ? 'Hide' : 'Edit Token';
+    });
+
+    saveTokenBtn.addEventListener('click', () => {
+        const token = ghTokenInput.value.trim();
+        if (!token) {
+            alert('Please enter a valid GitHub token.');
+            return;
+        }
+        localStorage.setItem('sks_gh_pat', token);
+        tokenStatusText.textContent = 'Token saved securely!';
+        setTimeout(() => {
+            tokenInputSection.style.display = 'none';
+            toggleTokenBtn.textContent = 'Change Token';
+        }, 800);
+    });
+
+    clearTokenBtn.addEventListener('click', () => {
+        localStorage.removeItem('sks_gh_pat');
+        ghTokenInput.value = '';
+        tokenStatusText.textContent = 'Token removed.';
+    });
+
+    function getGitHubToken() {
+        return ghTokenInput.value.trim() || localStorage.getItem('sks_gh_pat') || '';
+    }
+
+    // 2. Logging helper
+    function log(msg) {
+        logBox.style.display = 'block';
+        logBox.textContent += msg + '\n';
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function clearLog() {
+        logBox.textContent = '';
+        logBox.style.display = 'none';
+    }
+
+    function applyConfigToUI(config) {
+        if (!config) return;
+        vacancyActiveToggle.checked = !!config.active;
+        if (config.title) vacancyTitleInput.value = config.title;
+        if (config.subtitle) vacancySubtitleInput.value = config.subtitle;
+        if (config.buttonText) vacancyBtnTextInput.value = config.buttonText;
+        if (config.buttonLink) vacancyBtnLinkInput.value = config.buttonLink;
+
+        updatePreview();
+
+        if (config.active) {
+            currentLiveStatusBadge.textContent = 'Active on Homepage';
+            currentLiveStatusBadge.className = 'status-pill active';
+        } else {
+            currentLiveStatusBadge.textContent = 'Disabled / Inactive';
+            currentLiveStatusBadge.className = 'status-pill inactive';
+        }
+
+        if (config.imageUrl) {
+            previewImage.src = config.imageUrl.startsWith('http') || config.imageUrl.startsWith('data:') 
+                ? config.imageUrl 
+                : `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${config.imageUrl}?_t=${Date.now()}`;
+            previewImage.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+        }
+    }
+
+    // 3. Load Current Configuration from GitHub / Local
+    async function loadCurrentVacancyConfig() {
+        currentLiveStatusBadge.textContent = 'Checking...';
+        currentLiveStatusBadge.className = 'status-pill inactive';
+
+        // 1. Try local fetch (if served over http/https)
+        if (window.location.protocol !== 'file:') {
+            try {
+                const resp = await fetch(`${VACANCY_CONFIG_PATH}?_t=${Date.now()}`);
+                if (resp.ok) {
+                    currentConfig = await resp.json();
+                    applyConfigToUI(currentConfig);
+                    return;
+                }
+            } catch (err) {}
+        }
+
+        // 2. Fetch directly from GitHub Contents API
+        try {
+            const token = getGitHubToken();
+            const headers = { 'Accept': 'application/vnd.github.v3+json' };
+            if (token) headers['Authorization'] = `token ${token}`;
+
+            const ghResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${VACANCY_CONFIG_PATH}?_t=${Date.now()}`, { headers });
+            if (ghResp.ok) {
+                const data = await ghResp.json();
+                const contentStr = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+                currentConfig = JSON.parse(contentStr);
+                applyConfigToUI(currentConfig);
+                return;
+            }
+        } catch (e) {}
+
+        currentLiveStatusBadge.textContent = 'Ready (No Active Config)';
+    }
+
+    // 4. Live Preview Updates
+    function updatePreview() {
+        previewTitle.textContent = vacancyTitleInput.value || 'We Are Hiring!';
+        previewSubtitle.textContent = vacancySubtitleInput.value || '';
+        previewBtn.textContent = vacancyBtnTextInput.value || 'View Openings & Apply Now \u2192';
+    }
+
+    [vacancyTitleInput, vacancySubtitleInput, vacancyBtnTextInput].forEach(el => {
+        el.addEventListener('input', updatePreview);
+    });
+
+    // 5. Image File Selection & Drag-and-Drop
+    imageFileInput.addEventListener('change', handleFileSelect);
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('dragover');
+        });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            processFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    function handleFileSelect(e) {
+        if (e.target.files && e.target.files[0]) {
+            processFile(e.target.files[0]);
+        }
+    }
+
+    function processFile(file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file (JPG, PNG, WEBP).');
+            return;
+        }
+
+        const extMatch = file.name.match(/\.([0-9a-z]+)$/i);
+        selectedFileExtension = extMatch ? extMatch[1].toLowerCase() : 'jpg';
+
+        fileInfoText.style.display = 'block';
+        fileInfoText.textContent = `Selected: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            // Base64 without data:image/...;base64, prefix
+            selectedBase64Image = dataUrl.split(',')[1];
+            
+            previewImage.src = dataUrl;
+            previewImage.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 6. GitHub API Helpers
+    async function getFileSha(path, token) {
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+        try {
+            const res = await fetch(url, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                return data.sha;
+            }
+        } catch (e) {
+            console.error('Error fetching file SHA:', e);
+        }
+        return null;
+    }
+
+    async function putFileToGitHub(path, base64Content, commitMessage, token) {
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+        const sha = await getFileSha(path, token);
+
+        const bodyData = {
+            message: commitMessage,
+            content: base64Content
+        };
+        if (sha) {
+            bodyData.sha = sha;
+        }
+
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bodyData)
+        });
+
+        if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(`GitHub API Error (${res.status}): ${errData.message || res.statusText}`);
+        }
+        return await res.json();
+    }
+
+    // 7. Publish Changes to GitHub
+    vacancyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const token = getGitHubToken();
+        if (!token) {
+            alert('Please provide a GitHub Personal Access Token to publish changes.');
+            tokenInputSection.style.display = 'block';
+            ghTokenInput.focus();
+            return;
+        }
+
+        const isActive = vacancyActiveToggle.checked;
+
+        if (isActive && !selectedBase64Image && (!currentConfig || !currentConfig.imageUrl)) {
+            alert('Please select a vacancy image/poster before publishing.');
+            return;
+        }
+
+        clearLog();
+        logBox.style.display = 'block';
+        saveAndPublishBtn.disabled = true;
+        saveAndPublishBtn.textContent = 'Publishing to GitHub...';
+
+        try {
+            log('Starting deployment to GitHub repository...');
+
+            let imagePath = currentConfig && currentConfig.imageUrl ? currentConfig.imageUrl : BANNER_IMAGE_PATH;
+
+            // 1. Upload new image if chosen
+            if (selectedBase64Image) {
+                imagePath = `assets/images/hiring-banner.${selectedFileExtension}`;
+                log(`Uploading image to ${imagePath}...`);
+                await putFileToGitHub(imagePath, selectedBase64Image, 'Upload vacancy announcement poster', token);
+                log('Image uploaded successfully!');
+            }
+
+            // 2. Upload vacancy.json config
+            const configPayload = {
+                active: isActive,
+                title: vacancyTitleInput.value.trim(),
+                subtitle: vacancySubtitleInput.value.trim(),
+                imageUrl: imagePath,
+                buttonText: vacancyBtnTextInput.value.trim() || 'View Openings & Apply Now \u2192',
+                buttonLink: vacancyBtnLinkInput.value.trim() || 'careers.html',
+                updatedAt: new Date().toISOString()
+            };
+
+            const configBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(configPayload, null, 2))));
+            log(`Updating ${VACANCY_CONFIG_PATH}...`);
+            await putFileToGitHub(VACANCY_CONFIG_PATH, configBase64, `Update vacancy banner state (active: ${isActive})`, token);
+            log('Configuration updated successfully!');
+
+            log('\nSUCCESS: Vacancy flyer published to GitHub repository!');
+            log('GitHub Pages is rebuilding the site. Your changes will be visible on the homepage within 30 to 60 seconds.');
+
+            currentConfig = configPayload;
+            currentLiveStatusBadge.textContent = isActive ? 'Active on Homepage' : 'Disabled / Inactive';
+            currentLiveStatusBadge.className = isActive ? 'status-pill active' : 'status-pill inactive';
+
+            alert(isActive ? 'Vacancy flyer successfully published to homepage!' : 'Vacancy banner settings saved.');
+        } catch (err) {
+            log('\nERROR: ' + err.message);
+            alert('Failed to publish: ' + err.message);
+        } finally {
+            saveAndPublishBtn.disabled = false;
+            saveAndPublishBtn.textContent = 'Publish to Homepage \u2192';
+        }
+    });
+
+    // 8. Turn Off / Deactivate Banner
+    deactivateBtn.addEventListener('click', async () => {
+        const token = getGitHubToken();
+        if (!token) {
+            alert('Please provide a GitHub Personal Access Token.');
+            tokenInputSection.style.display = 'block';
+            return;
+        }
+
+        if (!confirm('Are you sure you want to turn off the vacancy flyer on the homepage?')) return;
+
+        clearLog();
+        logBox.style.display = 'block';
+        deactivateBtn.disabled = true;
+
+        try {
+            log('Deactivating vacancy announcement...');
+            const configPayload = {
+                active: false,
+                title: vacancyTitleInput.value.trim(),
+                subtitle: vacancySubtitleInput.value.trim(),
+                imageUrl: currentConfig && currentConfig.imageUrl ? currentConfig.imageUrl : '',
+                buttonText: vacancyBtnTextInput.value.trim(),
+                buttonLink: vacancyBtnLinkInput.value.trim(),
+                updatedAt: new Date().toISOString()
+            };
+
+            const configBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(configPayload, null, 2))));
+            await putFileToGitHub(VACANCY_CONFIG_PATH, configBase64, 'Deactivate homepage vacancy banner', token);
+            log('Vacancy flyer deactivated on GitHub repository!');
+
+            vacancyActiveToggle.checked = false;
+            currentLiveStatusBadge.textContent = 'Disabled / Inactive';
+            currentLiveStatusBadge.className = 'status-pill inactive';
+            alert('Vacancy flyer has been deactivated.');
+        } catch (err) {
+            log('ERROR: ' + err.message);
+            alert('Failed to deactivate: ' + err.message);
+        } finally {
+            deactivateBtn.disabled = false;
+        }
+    });
+
+    refreshConfigBtn.addEventListener('click', loadCurrentVacancyConfig);
+
+    // Initial run
+    loadSavedToken();
+    loadCurrentVacancyConfig();
+    </script>
+</body>
+</html>

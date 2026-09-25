@@ -1205,6 +1205,37 @@
         </div>
     </aside>
 
+    <!-- Vacancy Announcement Flyer Modal (Triggered when data/vacancy.json is active) -->
+    <div class="vacancy-modal" id="vacancyModal" role="dialog" aria-modal="true" aria-label="Job Vacancy Announcement">
+        <div class="vacancy-modal-backdrop" id="vacancyModalBackdrop"></div>
+        <div class="vacancy-modal-content">
+            <button class="vacancy-close-btn" id="vacancyModalClose" aria-label="Close Announcement">&times;</button>
+            <div class="vacancy-badge-bar">
+                <span class="pulse-dot"></span>
+                <span id="vacancyModalHeading">We Are Hiring!</span>
+            </div>
+            <div class="vacancy-media-frame">
+                <a id="vacancyImageLink" href="careers.html">
+                    <img id="vacancyModalImage" src="" alt="SKS Career Vacancy Announcement Flyer" loading="lazy">
+                </a>
+            </div>
+            <div class="vacancy-info-bar">
+                <p id="vacancyModalSubtitle">Exciting career opportunities at SKS Engineering Solutions Pune plant.</p>
+                <div class="vacancy-actions">
+                    <a id="vacancyModalBtn" href="careers.html" class="btn btn-lime btn-sm" style="width: 100%; justify-content: center;">
+                        View Openings &amp; Apply Now &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating We're Hiring Pill (Shown on homepage when active vacancy exists) -->
+    <button class="floating-hiring-pill" id="floatingHiringPill" aria-label="View Job Vacancy Announcement" style="display: none;">
+        <span class="pill-spark">&#9889;</span>
+        <span class="pill-text">We're Hiring!</span>
+    </button>
+
     <!-- Lightbox Modal Component -->
     <div class="lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true" aria-label="Image Preview">
         <div class="lightbox-content-box">
