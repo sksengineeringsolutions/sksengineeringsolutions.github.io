@@ -273,6 +273,25 @@ ul {
     transform: translateY(-2px);
 }
 
+/* Hero Outline / Glass CTA Button */
+.btn-hero-outline {
+    background: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-hero-outline:hover {
+    background: #FFFFFF;
+    color: var(--c-navy, #0F172A) !important;
+    border-color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
 .btn-sm {
     padding: 0.55rem 1.25rem;
     font-size: 0.875rem;
@@ -940,20 +959,22 @@ header.scrolled {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.75rem;
+    align-items: stretch;
 }
 
 .pillar-card {
     background: #FFFFFF;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
-    padding: 2.25rem 1.75rem;
+    padding: 2.25rem 1.6rem 1.75rem;
     transition: var(--transition);
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    height: 100%;
 }
 
 .pillar-card::before {
@@ -978,12 +999,13 @@ header.scrolled {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    min-height: 28px;
 }
 
 .pillar-icon-box {
-    width: 56px;
-    height: 56px;
+    width: 54px;
+    height: 54px;
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(249, 115, 22, 0.08));
     color: var(--c-primary);
     border: 1px solid rgba(37, 99, 235, 0.2);
@@ -994,6 +1016,7 @@ header.scrolled {
     font-size: 1.65rem;
     margin-bottom: 1.25rem;
     transition: var(--transition);
+    flex-shrink: 0;
 }
 
 .pillar-card:hover .pillar-icon-box {
@@ -1007,40 +1030,61 @@ header.scrolled {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    padding: 0.25rem 0.6rem;
+    padding: 0.28rem 0.65rem;
     border-radius: 999px;
     background: var(--bg-slate);
-    color: var(--text-muted);
-}
-
-.pillar-metric-tag {
+    color: var(--c-navy);
+    border: 1px solid var(--border-light);
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--c-primary);
-    background: var(--c-primary-subtle);
-    border: 1px solid var(--border-blue);
-    padding: 0.25rem 0.6rem;
-    border-radius: var(--radius-sm);
-    white-space: nowrap;
 }
 
 .pillar-card h3 {
-    font-size: 1.2rem;
+    font-size: 1.18rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.75rem;
     line-height: 1.35;
+    min-height: 3.2rem;
+    display: flex;
+    align-items: flex-start;
 }
 
 .pillar-card p {
     font-size: 0.925rem;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 0;
+    margin-bottom: 1.25rem;
     flex-grow: 1;
+}
+
+.pillar-footer {
+    margin-top: auto;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--border-light);
+    width: 100%;
+}
+
+.pillar-metric-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--c-primary);
+    background: var(--c-primary-subtle);
+    border: 1px solid var(--border-blue);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pillar-metric-tag svg {
+    color: var(--c-primary);
+    flex-shrink: 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -3651,6 +3695,10 @@ footer.master-footer {
 
     .pillar-card {
         padding: 1.5rem 1.25rem;
+    }
+
+    .pillar-card h3 {
+        min-height: auto !important;
     }
 
     /* Section 3: Core Services (1 column on mobile) */
