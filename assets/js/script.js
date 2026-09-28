@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. Products Catalog Category Filtering
     // ==========================================================================
     const productFilterButtons = document.querySelectorAll('.filter-btn');
-    const catalogCards = document.querySelectorAll('.products-grid .product-card, #productsCatalog .product-card, .products-catalog-grid .product-item-card');
+    const catalogCards = document.querySelectorAll('.products-grid .product-card, #productsCatalog .product-card');
 
     if (productFilterButtons.length && catalogCards.length) {
         productFilterButtons.forEach(btn => {
