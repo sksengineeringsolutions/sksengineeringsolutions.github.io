@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 1,
             title: "Requirement Understanding & Consultation",
             description: "Detailed engineering review of client architectural schematics, electrical single-line diagrams (SLD), mechanical enclosure dimensions, busbar routes, thermal requirements, and ingress protection targets (IP55/IP65).",
-            image: "assets/images/hero-enclosure-fabrication.jpg",
+            image: "assets/images/facility-design-office.jpg",
             checklist: [
                 "BOM & Dimensional Drawing Review",
                 "Ingress Protection (IP55/IP65) Definition",
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 2,
             title: "Design & CAD Engineering",
             description: "Conversion of architectural schematics into detailed 3D CAD SolidWorks sheet metal models with precise bend deduction calculations, CNC punching toolpaths, and automated nesting for optimal material utilization.",
-            image: "assets/images/panels/panel-modular-3bay.jpg",
+            image: "assets/images/facility-cad-workstation.jpg",
             checklist: [
                 "SolidWorks 3D Sheet Metal Modeling",
                 "Bend Deduction & K-Factor Optimization",
