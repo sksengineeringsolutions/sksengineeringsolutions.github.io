@@ -83,23 +83,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 2. Mobile Navigation Drawer
+    // 2. Mobile Navigation Drawer & Touch Interaction Engine
     // ==========================================================================
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu') || document.querySelector('.nav-menu');
 
     if (navToggle && navMenu) {
+        // Automatically inject or reference mobile navigation backdrop overlay
+        let navBackdrop = document.querySelector('.nav-backdrop');
+        if (!navBackdrop) {
+            navBackdrop = document.createElement('div');
+            navBackdrop.className = 'nav-backdrop';
+            navBackdrop.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(navBackdrop);
+        }
+
         const toggleMenu = (open) => {
             const shouldOpen = typeof open === 'boolean' ? open : !navToggle.classList.contains('active');
             navToggle.classList.toggle('active', shouldOpen);
             navMenu.classList.toggle('active', shouldOpen);
+            navBackdrop.classList.toggle('active', shouldOpen);
             navToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+            document.body.classList.toggle('mobile-menu-open', shouldOpen);
             document.body.style.overflow = shouldOpen ? 'hidden' : '';
         };
 
         navToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             toggleMenu();
+        });
+
+        // Close when clicking the backdrop overlay
+        navBackdrop.addEventListener('click', () => {
+            toggleMenu(false);
         });
 
         // Close when clicking any nav link
@@ -122,6 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 toggleMenu(false);
             }
         });
+
+        // Close mobile drawer if screen is rotated or resized to desktop viewport
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992 && navMenu.classList.contains('active')) {
+                toggleMenu(false);
+            }
+        }, { passive: true });
     }
 
     // ==========================================================================
