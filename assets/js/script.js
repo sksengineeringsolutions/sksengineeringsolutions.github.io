@@ -1092,23 +1092,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
     };
 
-    window.openLightbox = openLightbox;
-
-    window.openControlPanelLightbox = function() {
-        openLightbox(
-            'assets/images/control-panels-industry-banner.png',
-            'Reliable Control Panels For a Smarter Industry',
-            'MCC • PCC • APFC • PLC Solutions for 7 Critical Sectors'
-        );
-    };
-
     const closeLightbox = () => {
         if (lightboxModal) {
             lightboxModal.classList.remove('active');
             document.body.style.overflow = '';
         }
     };
-    window.closeLightbox = closeLightbox;
 
     function bindGalleryLightboxItems() {
         const items = document.querySelectorAll('.gallery-item');
