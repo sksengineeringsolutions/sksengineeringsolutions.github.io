@@ -40,7 +40,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Production Stylesheet -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261006b">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261007d">
 
         <!-- Structured Data (JSON-LD) for LocalBusiness, WebSite & Organization -->
     <script type="application/ld+json">
@@ -140,6 +140,7 @@
             <nav aria-label="Main Navigation">
                 <ul class="nav-menu" id="navMenu">
                     <li><a href="#hero" class="active">Home</a></li>
+                    <li><a href="#controlPanelsNav" class="nav-highlight-link">Control Panels ⚡</a></li>
                     <li><a href="#overview">About Us</a></li>
                     <li><a href="#services">Services</a></li>
                     <li><a href="#products">Products</a></li>
@@ -148,6 +149,15 @@
                     <li><a href="#gallery">Showcase</a></li>
                     <li><a href="careers.html">Careers</a></li>
                     <li><a href="#contact">Contact Us</a></li>
+                    <li class="mobile-nav-banner-item">
+                        <a href="#controlPanelsNav" class="mobile-nav-banner-card">
+                            <img src="assets/images/control-panels-industry-banner.png" alt="Reliable Control Panels" class="mobile-nav-banner-img">
+                            <div class="mobile-nav-banner-info">
+                                <strong>Reliable Control Panels</strong>
+                                <span>MCC • PCC • APFC • PLC Solutions</span>
+                            </div>
+                        </a>
+                    </li>
                     <li class="mobile-nav-cta">
                         <a href="#contact" class="btn btn-lime btn-sm">Request RFQ</a>
                     </li>
@@ -246,6 +256,222 @@
                     <button type="button" class="industry-dot" data-index="2" aria-label="Pharmaceutical Cleanroom"></button>
                     <button type="button" class="industry-dot" data-index="3" aria-label="Food &amp; Beverage Processing"></button>
                     <button type="button" class="industry-dot" data-index="4" aria-label="Precision CNC Laser Plant"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================================
+             Image Nav Menu Section: Reliable Control Panels For a Smarter Industry
+             ================================================================== -->
+        <section id="controlPanelsNav" class="control-panels-nav-section bg-grid-pattern">
+            <div class="container">
+                <div class="section-header reveal">
+                    <div class="tech-tag orange">Control Panels Portfolio</div>
+                    <h2 class="section-title">Reliable <span class="text-orange">Control Panels</span> For a Smarter Industry</h2>
+                    <p class="section-desc">Turnkey fabrication of MCC, PCC, APFC, and PLC panels engineered for continuous industrial uptime, power factor optimization, and custom CAD integration across 7 critical sectors.</p>
+                </div>
+
+                <!-- Main Infographic Banner Card with Click to Enlarge / Lightbox -->
+                <div class="control-panels-banner-card reveal">
+                    <div class="banner-image-wrapper" onclick="window.openControlPanelLightbox()">
+                        <img src="assets/images/control-panels-industry-banner.png" alt="Reliable Control Panels For a Smarter Industry - MCC, PCC, APFC, PLC and Industrial Applications" class="control-panels-main-banner" width="1024" height="376" loading="eager" fetchpriority="high">
+                        <div class="banner-zoom-badge">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                            <span>Tap to Enlarge Infographic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 Operational Pillars (From the Banner) -->
+                <div class="banner-pillars-grid reveal reveal-delay">
+                    <div class="pillar-mini-chip">
+                        <div class="pillar-mini-icon">⚙️</div>
+                        <div class="pillar-mini-text">
+                            <strong>Efficient Operation</strong>
+                            <span>Optimized layout for minimal heat &amp; cabling loss</span>
+                        </div>
+                    </div>
+                    <div class="pillar-mini-chip">
+                        <div class="pillar-mini-icon">🛡️</div>
+                        <div class="pillar-mini-text">
+                            <strong>Safe &amp; Reliable</strong>
+                            <span>IP55/IP65 ingress with formed PU foamed seals</span>
+                        </div>
+                    </div>
+                    <div class="pillar-mini-chip">
+                        <div class="pillar-mini-icon">📈</div>
+                        <div class="pillar-mini-text">
+                            <strong>Energy Optimized</strong>
+                            <span>Low harmonic distortion &amp; high power factor</span>
+                        </div>
+                    </div>
+                    <div class="pillar-mini-chip">
+                        <div class="pillar-mini-icon">🔧</div>
+                        <div class="pillar-mini-text">
+                            <strong>Customized Solutions</strong>
+                            <span>Manufactured to exact 2D/3D CAD dimensions</span>
+                        </div>
+                    </div>
+                    <div class="pillar-mini-chip">
+                        <div class="pillar-mini-icon">🤝</div>
+                        <div class="pillar-mini-text">
+                            <strong>Built for Your Industry</strong>
+                            <span>Heavy-duty duty cycle for tough factory plants</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Control Panels Image Nav Menu Grid (MCC, PCC, APFC, PLC) -->
+                <div class="panels-nav-header reveal">
+                    <h3 class="panels-subheading">Featured Panel Enclosure Types</h3>
+                    <p class="panels-subdesc">Select a panel architecture to explore technical specifications and request custom CAD quotation:</p>
+                </div>
+
+                <div class="panels-model-cards-grid reveal-stagger">
+                    <!-- Panel 1: MCC -->
+                    <div class="p-model-card reveal">
+                        <div class="p-model-badge">MCC Panel</div>
+                        <div class="p-model-title-wrap">
+                            <h4>Motor Control Center</h4>
+                            <span class="p-model-lead">⚡ 7–10 Days Lead</span>
+                        </div>
+                        <p class="p-model-desc">Multi-compartment motor control assemblies supporting direct-on-line (DOL), star-delta, soft starters, and VFD drive modules.</p>
+                        <ul class="p-model-features">
+                            <li>Form 3b / Form 4 segregation</li>
+                            <li>Individual starter compartmentalization</li>
+                            <li>Tinned electrolytic copper busbars</li>
+                        </ul>
+                        <div class="p-model-footer">
+                            <a href="products.html" class="btn btn-sm btn-lime">Explore Enclosure &rarr;</a>
+                            <a href="https://api.whatsapp.com/send?phone=918668742659&amp;text=Hello%20SKS%20Engineering%2C%20I%20need%20a%20quotation%20for%20MCC%20(Motor%20Control%20Center)%20panels" target="_blank" rel="noopener noreferrer" class="btn-wa-link" title="WhatsApp Quote">WhatsApp RFQ</a>
+                        </div>
+                    </div>
+
+                    <!-- Panel 2: PCC -->
+                    <div class="p-model-card reveal reveal-delay">
+                        <div class="p-model-badge p-badge-teal">PCC Panel</div>
+                        <div class="p-model-title-wrap">
+                            <h4>Power Control Center</h4>
+                            <span class="p-model-lead">⚡ 7–10 Days Lead</span>
+                        </div>
+                        <p class="p-model-desc">Main LT power intake and distribution switchboards housing high-capacity Air Circuit Breakers (ACBs) and bus couplers up to 4000A.</p>
+                        <ul class="p-model-features">
+                            <li>High short-circuit withstand rating (50kA/1s)</li>
+                            <li>Modular floor-standing 9-fold rigid frame</li>
+                            <li>Front or rear cabling access options</li>
+                        </ul>
+                        <div class="p-model-footer">
+                            <a href="products.html" class="btn btn-sm btn-lime">Explore Enclosure &rarr;</a>
+                            <a href="https://api.whatsapp.com/send?phone=918668742659&amp;text=Hello%20SKS%20Engineering%2C%20I%20need%20a%20quotation%20for%20PCC%20(Power%20Control%20Center)%20panels" target="_blank" rel="noopener noreferrer" class="btn-wa-link" title="WhatsApp Quote">WhatsApp RFQ</a>
+                        </div>
+                    </div>
+
+                    <!-- Panel 3: APFC -->
+                    <div class="p-model-card reveal reveal-delay-2">
+                        <div class="p-model-badge p-badge-orange">APFC Panel</div>
+                        <div class="p-model-title-wrap">
+                            <h4>Automatic Power Factor Correction</h4>
+                            <span class="p-model-lead">⚡ 7–10 Days Lead</span>
+                        </div>
+                        <p class="p-model-desc">Microprocessor relay-controlled capacitor banks with detuned harmonic filter reactors to maintain unity power factor and prevent grid penalties.</p>
+                        <ul class="p-model-features">
+                            <li>Heavy-duty MPP capacitor banks</li>
+                            <li>Natural convection louvered ventilation</li>
+                            <li>Thyristor / contactor rapid switching</li>
+                        </ul>
+                        <div class="p-model-footer">
+                            <a href="products.html" class="btn btn-sm btn-lime">Explore Enclosure &rarr;</a>
+                            <a href="https://api.whatsapp.com/send?phone=918668742659&amp;text=Hello%20SKS%20Engineering%2C%20I%20need%20a%20quotation%20for%20APFC%20(Power%20Factor%20Correction)%20panels" target="_blank" rel="noopener noreferrer" class="btn-wa-link" title="WhatsApp Quote">WhatsApp RFQ</a>
+                        </div>
+                    </div>
+
+                    <!-- Panel 4: PLC -->
+                    <div class="p-model-card reveal">
+                        <div class="p-model-badge p-badge-purple">PLC Panel</div>
+                        <div class="p-model-title-wrap">
+                            <h4>Automation &amp; PLC Panel</h4>
+                            <span class="p-model-lead">⚡ 7–10 Days Lead</span>
+                        </div>
+                        <p class="p-model-desc">Precision engineered automation cabinets for industrial PLCs, SCADA remote I/O nodes, HMI interfaces, and sensitive servo controls.</p>
+                        <ul class="p-model-features">
+                            <li>Laser-cut HMI screen bezel cutouts</li>
+                            <li>Isolated analog/digital signal trunking</li>
+                            <li>Optional console desk or wall enclosure</li>
+                        </ul>
+                        <div class="p-model-footer">
+                            <a href="products.html" class="btn btn-sm btn-lime">Explore Enclosure &rarr;</a>
+                            <a href="https://api.whatsapp.com/send?phone=918668742659&amp;text=Hello%20SKS%20Engineering%2C%20I%20need%20a%20quotation%20for%20PLC%20(Automation)%20panels" target="_blank" rel="noopener noreferrer" class="btn-wa-link" title="WhatsApp Quote">WhatsApp RFQ</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7 Target Industries Interactive Visual Rail (From the Banner) -->
+                <div class="industries-nav-block reveal">
+                    <div class="industries-nav-title-row">
+                        <div>
+                            <h3 class="industries-nav-heading">7 Industries Served</h3>
+                            <p class="industries-nav-sub">Engineered panel enclosures proven in high-demand sector environments:</p>
+                        </div>
+                        <div class="industries-pill-tag">Sector-Specific Solutions</div>
+                    </div>
+
+                    <div class="industries-nav-carousel">
+                        <!-- Industry 1 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">🍕</div>
+                            <h5>Food &amp; Beverage</h5>
+                            <span class="ind-tagline">Reliable Power for Continuous Production</span>
+                            <p class="ind-detail">Sanitary washdown SS304/SS316 enclosures with non-porous seals for food processing lines.</p>
+                        </div>
+
+                        <!-- Industry 2 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">⚙️</div>
+                            <h5>Manufacturing</h5>
+                            <span class="ind-tagline">Powering Productivity</span>
+                            <p class="ind-detail">Multi-bay heavy-duty MCC &amp; PCC suites built to withstand continuous industrial vibration.</p>
+                        </div>
+
+                        <!-- Industry 3 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">💊</div>
+                            <h5>Pharmaceutical</h5>
+                            <span class="ind-tagline">Controlled Power for Critical Processes</span>
+                            <p class="ind-detail">Cleanroom-grade brushed stainless steel enclosures compliant with FDA &amp; GMP protocols.</p>
+                        </div>
+
+                        <!-- Industry 4 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">💧</div>
+                            <h5>Water Treatment</h5>
+                            <span class="ind-tagline">Efficient Control for Better Operations</span>
+                            <p class="ind-detail">Outdoor weatherproof IP65 pump control panels with rain canopy roofs and insect mesh.</p>
+                        </div>
+
+                        <!-- Industry 5 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">🏢</div>
+                            <h5>Infrastructure</h5>
+                            <span class="ind-tagline">Power Solutions for Growing Needs</span>
+                            <p class="ind-detail">Commercial and airport distribution boards, metering cabinets, and riser feeder pillars.</p>
+                        </div>
+
+                        <!-- Industry 6 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">🛢️</div>
+                            <h5>Oil &amp; Gas</h5>
+                            <span class="ind-tagline">Safe &amp; Reliable Power Systems</span>
+                            <p class="ind-detail">Heavy corrosion-resistant sheet metal enclosures with double-lip polyurethane gasketing.</p>
+                        </div>
+
+                        <!-- Industry 7 -->
+                        <div class="ind-nav-card">
+                            <div class="ind-icon-bubble">☀️</div>
+                            <h5>Renewable Energy</h5>
+                            <span class="ind-tagline">Smart Control for a Cleaner Future</span>
+                            <p class="ind-detail">Solar ACDB/DCDB combiner boxes, inverter enclosures, and wind farm distribution pillars.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1302,6 +1528,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js?v=20261007"></script>
     <!-- Production Interactive Scripts -->
-    <script src="assets/js/script.js?v=20261007"></script>
+    <script src="assets/js/script.js?v=20261007d"></script>
 </body>
 </html>
