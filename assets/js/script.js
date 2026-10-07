@@ -443,40 +443,99 @@ document.addEventListener('DOMContentLoaded', () => {
         updateProcessStage(0);
     }
 
+    // Helper function for HTML escaping
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     // ==========================================================================
-    // 7. Products Catalog Category Filtering
+    // 7. Products Catalog Category Filtering & Dynamic DB Integration
     // ==========================================================================
     const productFilterButtons = document.querySelectorAll('.filter-btn');
-    const catalogCards = document.querySelectorAll('.products-grid .product-card, #productsCatalog .product-card');
+    const productsCatalog = document.getElementById('productsCatalog');
 
-    if (productFilterButtons.length && catalogCards.length) {
+    function applyProductFilter(targetFilter) {
+        const cards = document.querySelectorAll('.products-grid .product-card, #productsCatalog .product-card');
+        cards.forEach(card => {
+            const cardCategory = card.getAttribute('data-category') || '';
+            if (targetFilter === 'all' || cardCategory === targetFilter) {
+                card.style.display = '';
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            } else {
+                card.style.display = 'none';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.96)';
+            }
+        });
+    }
+
+    function bindProductFilters() {
+        if (!productFilterButtons.length) return;
         productFilterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const targetFilter = btn.getAttribute('data-filter') || 'all';
-
                 productFilterButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-
-                catalogCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category') || '';
-                    if (targetFilter === 'all' || cardCategory === targetFilter) {
-                        card.style.display = '';
-                        card.style.opacity = '1';
-                        card.style.transform = 'scale(1)';
-                    } else {
-                        card.style.display = 'none';
-                        card.style.opacity = '0';
-                        card.style.transform = 'scale(0.96)';
-                    }
-                });
+                applyProductFilter(targetFilter);
             });
         });
     }
 
+    bindProductFilters();
+
+    // Dynamic Cloud Products Render (if Supabase / SKS_DB is available)
+    async function loadDynamicProducts() {
+        if (!productsCatalog || !window.SKS_DB || typeof window.SKS_DB.getProducts !== 'function') return;
+        try {
+            const products = await window.SKS_DB.getProducts();
+            if (products && products.length > 0) {
+                productsCatalog.innerHTML = products.map((p, idx) => {
+                    const delayClass = idx % 3 === 1 ? ' reveal-delay' : (idx % 3 === 2 ? ' reveal-delay-2' : '');
+                    const feats = Array.isArray(p.features) ? p.features : (p.features ? p.features.split('\n').filter(Boolean) : []);
+                    return `
+                    <div class="product-card reveal${delayClass}" data-category="${escapeHtml(p.category)}">
+                        <div class="product-img-wrap">
+                            <img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title)}" width="1200" height="896" loading="lazy" decoding="async">
+                            <span class="product-badge ip-badge">${escapeHtml(p.ip_rating || 'IP55 / IP65')}</span>
+                        </div>
+                        <div class="product-body">
+                            <span class="product-category">${escapeHtml(p.category_label || (p.category.toUpperCase() + ' Enclosure'))}</span>
+                            <h3>${escapeHtml(p.title)}</h3>
+                            <p>${escapeHtml(p.summary || '')}</p>
+                            ${feats.length ? `
+                            <ul class="product-feature-list">
+                                ${feats.map(f => `<li>${escapeHtml(f)}</li>`).join('')}
+                            </ul>` : ''}
+                            <div class="product-actions" style="margin-top: 1.5rem;">
+                                <a href="contact-us.html?product=${encodeURIComponent(p.title)}" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                // Preserve active filter if selected
+                const activeFilterBtn = document.querySelector('.filter-btn.active');
+                if (activeFilterBtn) {
+                    applyProductFilter(activeFilterBtn.getAttribute('data-filter') || 'all');
+                }
+            }
+        } catch (err) {
+            console.warn('Could not load dynamic products, retaining static cards:', err);
+        }
+    }
+
+    loadDynamicProducts();
+
     // ==========================================================================
-    // 8. Plant Showcase Gallery & Lightbox Modal
+    // 8. Plant Showcase Gallery & Lightbox Modal (Dynamic DB Enabled)
     // ==========================================================================
-    const galleryItems = document.querySelectorAll('.gallery-item');
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxCaption = document.getElementById('lightboxCaption');
@@ -500,17 +559,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    galleryItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const img = item.querySelector('img');
-            const title = item.querySelector('h4') ? item.querySelector('h4').textContent : 'SKS Plant Showcase';
-            const subtitle = item.querySelector('p') ? item.querySelector('p').textContent : '';
-
-            if (img) {
-                openLightbox(img.src, title, subtitle);
-            }
+    function bindGalleryLightboxItems() {
+        const items = document.querySelectorAll('.gallery-item');
+        items.forEach(item => {
+            if (item.dataset.lightboxBound) return;
+            item.dataset.lightboxBound = 'true';
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                const title = item.querySelector('h4') ? item.querySelector('h4').textContent : 'SKS Plant Showcase';
+                const subtitle = item.querySelector('p') ? item.querySelector('p').textContent : '';
+                if (img) {
+                    openLightbox(img.src, title, subtitle);
+                }
+            });
         });
-    });
+    }
+
+    bindGalleryLightboxItems();
 
     if (lightboxClose) {
         lightboxClose.addEventListener('click', closeLightbox);
@@ -525,22 +590,78 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') closeLightbox();
     });
 
+    // Dynamic Cloud Gallery Render
+    async function loadDynamicGallery() {
+        const galleryGrid = document.querySelector('.gallery-grid');
+        if (!galleryGrid || !window.SKS_DB || typeof window.SKS_DB.getGallery !== 'function') return;
+        try {
+            const gallery = await window.SKS_DB.getGallery();
+            if (gallery && gallery.length > 0) {
+                galleryGrid.innerHTML = gallery.map((item, idx) => {
+                    const delayClass = idx % 3 === 1 ? ' reveal-delay' : (idx % 3 === 2 ? ' reveal-delay-2' : '');
+                    return `
+                    <div class="gallery-item reveal${delayClass}" data-category="${escapeHtml(item.category || '')}">
+                        <img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" width="1205" height="1600" loading="lazy" decoding="async">
+                        <div class="gallery-overlay">
+                            <h4>${escapeHtml(item.title)}</h4>
+                            <p>${escapeHtml(item.description || '')}</p>
+                        </div>
+                    </div>`;
+                }).join('');
+                bindGalleryLightboxItems();
+            }
+        } catch (err) {
+            console.warn('Could not load dynamic gallery, retaining static items:', err);
+        }
+    }
+
+    loadDynamicGallery();
+
     // ==========================================================================
-    // 9. Contact / RFQ Form Validation & Feedback Desk
+    // 9. Contact / RFQ Form Validation & Cloud Database Submission Desk
     // ==========================================================================
     const activeForm = document.getElementById('contactForm') || document.getElementById('rfqForm');
     const formNotice = document.getElementById('formNotice');
 
+    // Pre-fill requested product if URL has ?product=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefillProduct = urlParams.get('product');
+    if (prefillProduct && activeForm) {
+        const detailsField = activeForm.querySelector('#projectDetails') || activeForm.querySelector('[name="message"]');
+        if (detailsField && !detailsField.value) {
+            detailsField.value = `Inquiry regarding: ${prefillProduct}\nTarget Quantity: \nCustom Dimensions (H x W x D mm): \nSpecific Ingress or Finish Requirements: `;
+        }
+    }
+
     if (activeForm) {
-        activeForm.addEventListener('submit', (e) => {
+        activeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const submitBtn = activeForm.querySelector('button[type="submit"]');
             const originalText = submitBtn ? submitBtn.innerText : 'Submit RFQ Inquiry \u2192';
 
             if (submitBtn) {
-                submitBtn.innerText = 'Submitting Request...';
+                submitBtn.innerText = 'Transmitting to Cloud...';
                 submitBtn.disabled = true;
+            }
+
+            const formData = new FormData(activeForm);
+            const inquiryPayload = {
+                name: formData.get('name') || activeForm.querySelector('[name="name"]')?.value || 'Anonymous',
+                company: formData.get('company') || activeForm.querySelector('[name="company"]')?.value || '',
+                email: formData.get('email') || activeForm.querySelector('[name="email"]')?.value || '',
+                phone: formData.get('phone') || activeForm.querySelector('[name="phone"]')?.value || '',
+                product_interest: formData.get('service') || prefillProduct || 'Custom Enclosures',
+                message: formData.get('message') || activeForm.querySelector('[name="message"]')?.value || ''
+            };
+
+            let saveResult = null;
+            if (window.SKS_DB && typeof window.SKS_DB.submitInquiry === 'function') {
+                try {
+                    saveResult = await window.SKS_DB.submitInquiry(inquiryPayload);
+                } catch (dbErr) {
+                    console.warn('DB submission note:', dbErr);
+                }
             }
 
             setTimeout(() => {
@@ -553,14 +674,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     formNotice.style.borderRadius = '8px';
                     formNotice.style.color = '#0F172A';
                     formNotice.style.marginTop = '1.25rem';
+
+                    const waMsg = encodeURIComponent(`Hello SKS Engineering, I submitted an RFQ inquiry for ${inquiryPayload.product_interest}. My name is ${inquiryPayload.name} (${inquiryPayload.company}).`);
+                    const waLink = `https://api.whatsapp.com/send?phone=918668742659&text=${waMsg}`;
+
                     formNotice.innerHTML = `
                         <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
-                            <div style="width: 26px; height: 26px; border-radius: 50%; background: #25D366; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; margin-top: 2px;">✓</div>
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: #25D366; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; margin-top: 2px;">✓</div>
                             <div>
-                                <strong style="color: #0369A1; font-size: 1.05rem; display: block; margin-bottom: 0.35rem;">Quotation Request Received!</strong>
-                                <p style="margin: 0; font-size: 0.92rem; color: #334155; line-height: 1.5;">
-                                    Thank you for reaching out to SKS Engineering Solutions. Our engineering estimation desk will review your technical specifications and contact you shortly via email at sales@sksengineeringsolutions.com.
+                                <strong style="color: #0369A1; font-size: 1.05rem; display: block; margin-bottom: 0.35rem;">Quotation Request Registered!</strong>
+                                <p style="margin: 0 0 0.75rem 0; font-size: 0.92rem; color: #334155; line-height: 1.5;">
+                                    Thank you, <strong>${escapeHtml(inquiryPayload.name)}</strong>. Your request has been recorded into our engineering portal. Our estimation desk will review your technical drawings and provide a commercial proposal shortly.
                                 </p>
+                                <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background: #25D366; color: #FFFFFF; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 6px; text-decoration: none;">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.55 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.19 8.19 0 0 1-5.83 2.41c-1.55 0-3.07-.43-4.39-1.25l-.31-.19-3.26.85.87-3.18-.21-.34a8.217 8.217 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.55 3.41c-.19 0-.41.07-.63.29-.22.22-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.29s-1.44-.71-1.66-.79c-.22-.08-.39-.12-.55.12-.16.25-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.47-.4-.41-.55-.42z"/></svg>
+                                    Priority Direct WhatsApp Follow-up &rarr;
+                                </a>
                             </div>
                         </div>
                     `;
@@ -573,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.innerText = originalText;
                     submitBtn.disabled = false;
                 }
-            }, 800);
+            }, 600);
         });
     }
 
@@ -679,6 +808,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const candidateName = careerNameInput && careerNameInput.value ? careerNameInput.value.trim() : 'Candidate';
             const selectedPosition = careerPositionSelect && careerPositionSelect.value ? careerPositionSelect.value : 'Applied Role';
+
+            // Store in cloud DB if available
+            if (window.SKS_DB && typeof window.SKS_DB.submitInquiry === 'function') {
+                try {
+                    const phoneVal = careerForm.querySelector('[name="phone"]')?.value || '';
+                    const emailVal = careerForm.querySelector('[name="email"]')?.value || '';
+                    const locVal = careerForm.querySelector('[name="location"]')?.value || '';
+                    const expVal = careerForm.querySelector('[name="experience"]')?.value || '';
+                    const resumeVal = careerForm.querySelector('[name="resumeLink"]')?.value || '';
+                    window.SKS_DB.submitInquiry({
+                        name: candidateName,
+                        email: emailVal,
+                        phone: phoneVal,
+                        company: locVal ? `Location: ${locVal}` : 'Job Candidate',
+                        industry: 'Career Application',
+                        product_interest: `Job Role: ${selectedPosition}`,
+                        message: `Years of Exp: ${expVal} | Location: ${locVal} | Portfolio/Resume: ${resumeVal}`
+                    });
+                } catch (e) {
+                    console.warn('Career submission note:', e);
+                }
+            }
 
             setTimeout(() => {
                 if (careerFormNotice) {

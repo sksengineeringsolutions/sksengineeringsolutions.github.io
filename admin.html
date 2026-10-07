@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKS Engineering Admin Portal | Dynamic Headless CMS &amp; Lead Inbox</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css?v=20261006b">
+
+    <style>
+        :root {
+            --admin-bg: #0F172A;
+            --admin-card: #1E293B;
+            --admin-sidebar: #090E1A;
+            --admin-border: rgba(255, 255, 255, 0.08);
+            --admin-text: #F8FAFC;
+            --admin-muted: #94A3B8;
+            --admin-primary: #0284C7;
+            --admin-accent: #F97316;
+            --admin-success: #10B981;
+            --admin-warning: #F59E0B;
+            --admin-danger: #EF4444;
+        }
+
+        body {
+            background-color: var(--admin-bg);
+            color: var(--admin-text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Admin Navbar */
+        .admin-nav {
+            background: var(--admin-sidebar);
+            border-bottom: 1px solid var(--admin-border);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .admin-brand img {
+            height: 38px;
+            background: #FFFFFF;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .admin-badge {
+            background: rgba(2, 132, 199, 0.2);
+            border: 1px solid rgba(2, 132, 199, 0.4);
+            color: #38BDF8;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .db-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.78rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34D399;
+        }
+
+        .db-status-pill.offline {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.35);
+            color: #FBBF24;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            display: inline-block;
+        }
+
+        /* Admin Layout */
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: calc(100vh - 65px);
+        }
+
+        @media (max-width: 900px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar Tabs */
+        .admin-sidebar {
+            background: var(--admin-sidebar);
+            border-right: 1px solid var(--admin-border);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .admin-tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--admin-muted);
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .admin-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #FFFFFF;
+        }
+
+        .admin-tab-btn.active {
+            background: var(--admin-primary);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+        }
+
+        .admin-tab-btn svg {
+            flex-shrink: 0;
+        }
+
+        /* Main Content View */
+        .admin-main {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 600px) {
+            .admin-main {
+                padding: 1rem;
+            }
+        }
+
+        /* View Panels */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Headings & Action Bars */
+        .admin-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        .admin-desc {
+            color: var(--admin-muted);
+            font-size: 0.88rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .metric-card .title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--admin-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Data Tables */
+        .table-responsive {
+            overflow-x: auto;
+            background: var(--admin-card);
+            border-radius: 12px;
+            border: 1px solid var(--admin-border);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        .admin-table th {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.85rem 1rem;
+            font-weight: 700;
+            color: var(--admin-muted);
+            border-bottom: 1px solid var(--admin-border);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-table td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #E2E8F0;
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Thumbnail Image in Table */
+        .table-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: #FFFFFF;
+            padding: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Status Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-new { background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); }
+        .badge-contacted { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-quoted { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-closed { background: rgba(148, 163, 184, 0.2); color: #94A3B8; border: 1px solid rgba(148, 163, 184, 0.4); }
+
+        /* Action Buttons */
+        .action-btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #FFFFFF;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .btn-action.wa {
+            background: #25D366;
+            color: #FFFFFF;
+            border-color: #25D366;
+        }
+
+        .btn-action.wa:hover {
+            background: #1EBE5D;
+        }
+
+        .btn-action.danger {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #F87171;
+        }
+
+        .btn-action.danger:hover {
+            background: #EF4444;
+            color: #FFFFFF;
+        }
+
+        /* Gallery Cards Grid in Admin */
+        .admin-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .admin-gallery-card {
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-gallery-img {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            background: #0B132B;
+        }
+
+        .admin-gallery-body {
+            padding: 0.85rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Modal Styles */
+        .admin-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .admin-modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--admin-card);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #FFFFFF;
+        }
+
+        .modal-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--admin-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #CBD5E1;
+            margin-bottom: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 0.95rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        .btn-submit {
+            background: var(--admin-accent);
+            border: none;
+            color: #FFFFFF;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.92rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background: #EA580C;
+        }
+
+        /* SQL Setup Box */
+        .sql-box {
+            background: #090E1A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-family: monospace;
+            font-size: 0.84rem;
+            color: #38BDF8;
+            max-height: 240px;
+            overflow-y: auto;
+            white-space: pre;
+            margin: 1rem 0;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #10B981;
+            color: #FFFFFF;
+            padding: 0.85rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.error {
+            background: #EF4444;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ======================================================================
+         Top Admin Navigation
+         ====================================================================== -->
+    <header class="admin-nav">
+        <a href="index.html" class="admin-brand">
+            <img src="assets/images/logo.png" alt="SKS Engineering Logo">
+            <span class="admin-badge">Headless CMS &amp; Portal</span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div id="dbStatusPill" class="db-status-pill offline">
+                <span class="status-dot"></span>
+                <span id="dbStatusText">Checking Connection...</span>
+            </div>
+            <a href="index.html" target="_blank" class="btn-action">
+                <span>View Live Site</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3zM5 5h6V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-6h-2v6H5V5z"/></svg>
+            </a>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <!-- ==================================================================
+             Left Sidebar Navigation
+             ================================================================== -->
+        <aside class="admin-sidebar">
+            <button class="admin-tab-btn active" data-tab="dashboard">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                <span>Dashboard</span>
+            </button>
+            <button class="admin-tab-btn" data-tab="products">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                <span>Products Catalog</span>
+            </button>
+            <button class="admin-tab-btn" data-tab="gallery">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Plant Gallery</span>
+            </button>
+            <button class="admin-tab-btn" data-tab="inquiries">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <span>RFQ Leads Inbox</span>
+            </button>
+            <button class="admin-tab-btn" data-tab="settings">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span>Database Setup</span>
+            </button>
+        </aside>
+
+        <!-- ==================================================================
+             Main Admin Viewport
+             ================================================================== -->
+        <main class="admin-main">
+
+            <!-- Panel 1: Dashboard Overview -->
+            <section id="panel-dashboard" class="admin-panel active">
+                <div class="admin-header-bar">
+                    <div>
+                        <h2 class="admin-title">Plant Operations &amp; CMS Overview</h2>
+                        <div class="admin-desc">Real-time status of catalog items, showcase photos, and incoming quotation leads.</div>
+                    </div>
+                    <button class="btn-action" onclick="refreshAllData()">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                        <span>Refresh Data</span>
+                    </button>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="title">Active Products</div>
+                        <div class="value" id="statProductsCount">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="title">Showcase Photos</div>
+                        <div class="value" id="statGalleryCount">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="title">Total RFQ Leads</div>
+                        <div class="value" id="statInquiriesCount">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="title">New Inquiries</div>
+                        <div class="value" style="color: #38BDF8;" id="statNewInquiriesCount">0</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #FFFFFF;">Recent RFQ Inquiries</h3>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Contact Phone</th>
+                                <th>Company / Plant</th>
+                                <th>Product Interest</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentInquiriesBody">
+                            <tr><td colspan="7" style="text-align: center; color: var(--admin-muted);">Loading recent leads...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Panel 2: Products Manager -->
+            <section id="panel-products" class="admin-panel">
+                <div class="admin-header-bar">
+                    <div>
+                        <h2 class="admin-title">Products Catalog Management</h2>
+                        <div class="admin-desc">Add, edit, and organize industrial enclosures displayed on the live website.</div>
+                    </div>
+                    <button class="btn-action" style="background: var(--admin-accent); border: none;" onclick="openProductModal()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Add New Product</span>
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Product Title</th>
+                                <th>Category</th>
+                                <th>IP Rating</th>
+                                <th>Material Spec</th>
+                                <th>Order</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr><td colspan="7" style="text-align: center; color: var(--admin-muted);">Loading products...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Panel 3: Plant Gallery Manager -->
+            <section id="panel-gallery" class="admin-panel">
+                <div class="admin-header-bar">
+                    <div>
+                        <h2 class="admin-title">Plant Showcase Gallery</h2>
+                        <div class="admin-desc">Manage fabricated electrical enclosure showcase photos produced at Pune plant.</div>
+                    </div>
+                    <button class="btn-action" style="background: var(--admin-primary); border: none;" onclick="openGalleryModal()">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Add Showcase Photo</span>
+                    </button>
+                </div>
+
+                <div class="admin-gallery-grid" id="adminGalleryGrid">
+                    <!-- Dynamic Gallery Cards loaded via JS -->
+                </div>
+            </section>
+
+            <!-- Panel 4: RFQ Leads Inbox -->
+            <section id="panel-inquiries" class="admin-panel">
+                <div class="admin-header-bar">
+                    <div>
+                        <h2 class="admin-title">RFQ Inquiries &amp; Quotation Leads</h2>
+                        <div class="admin-desc">Incoming client inquiries from website forms with 1-click WhatsApp follow-up.</div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Phone / WhatsApp</th>
+                                <th>Email</th>
+                                <th>Company</th>
+                                <th>Requirement</th>
+                                <th>Status</th>
+                                <th>Quick Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allInquiriesBody">
+                            <tr><td colspan="8" style="text-align: center; color: var(--admin-muted);">Loading inquiries...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Panel 5: Database Settings & SQL Setup -->
+            <section id="panel-settings" class="admin-panel">
+                <div class="admin-header-bar">
+                    <div>
+                        <h2 class="admin-title">Supabase Database Integration</h2>
+                        <div class="admin-desc">Connect your free Supabase project to enable real-time cloud data storage.</div>
+                    </div>
+                </div>
+
+                <div style="max-width: 720px;">
+                    <div class="metric-card" style="margin-bottom: 2rem;">
+                        <h3 style="margin-top: 0; color: #FFFFFF;">Supabase Project Credentials</h3>
+                        <p style="color: var(--admin-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
+                            Find your Project URL and Anon Public Key in your Supabase Dashboard under <strong>Project Settings &rarr; API</strong>.
+                        </p>
+
+                        <div class="form-group">
+                            <label class="form-label">Project URL</label>
+                            <input type="url" id="cfgSupabaseUrl" class="form-control" placeholder="https://your-project-id.supabase.co">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Anon Public Key</label>
+                            <input type="text" id="cfgSupabaseKey" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                            <button class="btn-action" style="background: var(--admin-primary); border: none; padding: 0.65rem 1.25rem;" onclick="saveDatabaseConfig()">
+                                Save &amp; Connect to Supabase
+                            </button>
+                            <button class="btn-action" onclick="testDatabaseConfig()">
+                                Test Connection
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; color: #FFFFFF;">1-Click SQL Database Schema</h3>
+                            <button class="btn-action" onclick="copySqlSchema()">
+                                <span>Copy SQL Script</span>
+                            </button>
+                        </div>
+                        <p style="color: var(--admin-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+                            Paste this in your Supabase <strong>SQL Editor</strong> to create the <code>products</code>, <code>gallery</code>, and <code>inquiries</code> tables with Row Level Security:
+                        </p>
+                        <div class="sql-box" id="sqlBox">-- SKS Engineering Solutions - Supabase Setup Script
+CREATE TABLE IF NOT EXISTS public.products (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    title TEXT NOT NULL,
+    category TEXT NOT NULL,
+    category_label TEXT,
+    image_url TEXT NOT NULL,
+    ip_rating TEXT DEFAULT 'IP55 / IP65',
+    summary TEXT,
+    material TEXT,
+    features JSONB DEFAULT '[]'::jsonb,
+    display_order INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS public.gallery (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    title TEXT NOT NULL,
+    description TEXT,
+    image_url TEXT NOT NULL,
+    category TEXT DEFAULT 'enclosure',
+    display_order INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS public.inquiries (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT NOT NULL,
+    company TEXT,
+    industry TEXT,
+    product_interest TEXT,
+    message TEXT,
+    status TEXT DEFAULT 'new'
+);
+
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gallery ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read products" ON public.products FOR SELECT USING (true);
+CREATE POLICY "Public read gallery" ON public.gallery FOR SELECT USING (true);
+CREATE POLICY "Public insert inquiries" ON public.inquiries FOR INSERT WITH CHECK (true);
+CREATE POLICY "Admin full products" ON public.products FOR ALL USING (true);
+CREATE POLICY "Admin full gallery" ON public.gallery FOR ALL USING (true);
+CREATE POLICY "Admin full inquiries" ON public.inquiries FOR ALL USING (true);</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         Product Add / Edit Modal
+         ====================================================================== -->
+    <div class="admin-modal" id="productModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Add New Product</h3>
+                <button class="modal-close-btn" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="prodId">
+                <div class="form-group">
+                    <label class="form-label">Product Name *</label>
+                    <input type="text" id="prodTitle" class="form-control" required placeholder="e.g. Modular Floor-Standing Electrical Cabinet">
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label class="form-label">Category *</label>
+                        <select id="prodCategory" class="form-control" required>
+                            <option value="modular">Modular Cabinets</option>
+                            <option value="wallmount">Wall-Mounted</option>
+                            <option value="stainless">Stainless Steel</option>
+                            <option value="outdoor">Feeder Pillars</option>
+                            <option value="console">Operator Desks</option>
+                            <option value="junction">Junction Boxes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">IP Rating</label>
+                        <input type="text" id="prodIpRating" class="form-control" placeholder="e.g. IP55 / IP65">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL / File Path *</label>
+                    <input type="text" id="prodImageUrl" class="form-control" required placeholder="assets/images/product-modular-enclosure.jpg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Material Specification</label>
+                    <input type="text" id="prodMaterial" class="form-control" placeholder="e.g. 2.0mm CRCA Sheet Metal with Powder Coating">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Summary Description</label>
+                    <textarea id="prodSummary" class="form-control" placeholder="Brief technical summary..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Features / Specifications (1 per line)</label>
+                    <textarea id="prodFeatures" class="form-control" placeholder="Modular multi-bay interlockable frame&#10;Formed PU foam seal&#10;Galvanized mounting plate"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Display Order</label>
+                    <input type="number" id="prodOrder" class="form-control" value="1" min="1">
+                </div>
+                <button type="submit" class="btn-submit" id="saveProductBtn">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         Gallery Add Modal
+         ====================================================================== -->
+    <div class="admin-modal" id="galleryModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Add Showcase Photo</h3>
+                <button class="modal-close-btn" onclick="closeGalleryModal()">&times;</button>
+            </div>
+            <form id="galleryForm">
+                <div class="form-group">
+                    <label class="form-label">Title *</label>
+                    <input type="text" id="galTitle" class="form-control" required placeholder="e.g. 3-Bay Distribution Panel Frame">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image Path / URL *</label>
+                    <input type="text" id="galImage" class="form-control" required placeholder="assets/images/panels/panel-modular-suite.jpg">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="galDesc" class="form-control" placeholder="Factory floor photo description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Display Order</label>
+                    <input type="number" id="galOrder" class="form-control" value="1">
+                </div>
+                <button type="submit" class="btn-submit">Add to Showcase</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="adminToast" class="toast">Operation completed successfully</div>
+
+    <!-- Supabase JS Client & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js?v=20261007"></script>
+
+    <script>
+        // =====================================================================
+        // Admin Portal Logic
+        // =====================================================================
+        let currentProducts = [];
+        let currentGallery = [];
+        let currentInquiries = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            initAdminTabs();
+            loadSettingsForm();
+            await checkDatabaseStatus();
+            await refreshAllData();
+        });
+
+        // Tab Switching
+        function initAdminTabs() {
+            const tabs = document.querySelectorAll('.admin-tab-btn');
+            tabs.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('data-tab');
+                    tabs.forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+                    const activePanel = document.getElementById(`panel-${target}`);
+                    if (activePanel) activePanel.classList.add('active');
+                });
+            });
+        }
+
+        // Database Status Check
+        async function checkDatabaseStatus() {
+            const pill = document.getElementById('dbStatusPill');
+            const text = document.getElementById('dbStatusText');
+            const creds = SKS_DB.getCredentials();
+
+            if (!creds.url || !creds.key) {
+                pill.className = 'db-status-pill offline';
+                text.textContent = 'Local Mode (No Supabase)';
+                return;
+            }
+
+            text.textContent = 'Connecting...';
+            const res = await SKS_DB.testConnection();
+            if (res.success) {
+                pill.className = 'db-status-pill';
+                text.textContent = 'Live Cloud Supabase';
+            } else {
+                pill.className = 'db-status-pill offline';
+                text.textContent = 'Local / Fallback Mode';
+            }
+        }
+
+        // Load Settings
+        function loadSettingsForm() {
+            const creds = SKS_DB.getCredentials();
+            const urlInput = document.getElementById('cfgSupabaseUrl');
+            const keyInput = document.getElementById('cfgSupabaseKey');
+            if (urlInput && creds.url) urlInput.value = creds.url;
+            if (keyInput && creds.key) keyInput.value = creds.key;
+        }
+
+        async function saveDatabaseConfig() {
+            const url = document.getElementById('cfgSupabaseUrl').value.trim();
+            const key = document.getElementById('cfgSupabaseKey').value.trim();
+            SKS_DB.setCredentials(url, key);
+            showToast('Database credentials saved');
+            await checkDatabaseStatus();
+            await refreshAllData();
+        }
+
+        async function testDatabaseConfig() {
+            showToast('Testing Supabase connection...');
+            const res = await SKS_DB.testConnection();
+            if (res.success) {
+                showToast('✅ Supabase connected successfully!');
+            } else {
+                showToast(`❌ Connection failed: ${res.message}`, true);
+            }
+            await checkDatabaseStatus();
+        }
+
+        // Refresh Data
+        async function refreshAllData() {
+            currentProducts = await SKS_DB.getProducts();
+            currentGallery = await SKS_DB.getGallery();
+            currentInquiries = await SKS_DB.getInquiries();
+
+            renderDashboardStats();
+            renderProductsTable();
+            renderGalleryGrid();
+            renderInquiries();
+        }
+
+        function renderDashboardStats() {
+            document.getElementById('statProductsCount').textContent = currentProducts.length;
+            document.getElementById('statGalleryCount').textContent = currentGallery.length;
+            document.getElementById('statInquiriesCount').textContent = currentInquiries.length;
+            const newCount = currentInquiries.filter(i => i.status === 'new').length;
+            document.getElementById('statNewInquiriesCount').textContent = newCount;
+        }
+
+        // Products Table Rendering
+        function renderProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            if (!tbody) return;
+
+            if (currentProducts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--admin-muted);">No products registered yet. Click "Add New Product" to create one.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = currentProducts.map(p => `
+                <tr>
+                    <td><img src="${p.image_url}" alt="${p.title}" class="table-thumb" onerror="this.src='assets/images/logo.png'"></td>
+                    <td><strong>${escapeHtml(p.title)}</strong></td>
+                    <td><span class="badge badge-new">${escapeHtml(p.category)}</span></td>
+                    <td>${escapeHtml(p.ip_rating || 'N/A')}</td>
+                    <td style="max-width: 200px; font-size: 0.82rem; color: var(--admin-muted);">${escapeHtml(p.material || '')}</td>
+                    <td>${p.display_order || 1}</td>
+                    <td>
+                        <div class="action-btn-group">
+                            <button class="btn-action" onclick="editProduct('${p.id}')">Edit</button>
+                            <button class="btn-action danger" onclick="deleteProduct('${p.id}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Gallery Grid Rendering
+        function renderGalleryGrid() {
+            const grid = document.getElementById('adminGalleryGrid');
+            if (!grid) return;
+
+            if (currentGallery.length === 0) {
+                grid.innerHTML = '<div style="color: var(--admin-muted); padding: 2rem;">No gallery photos added yet.</div>';
+                return;
+            }
+
+            grid.innerHTML = currentGallery.map(g => `
+                <div class="admin-gallery-card">
+                    <img src="${g.image_url}" alt="${g.title}" class="admin-gallery-img" onerror="this.src='assets/images/logo.png'">
+                    <div class="admin-gallery-body">
+                        <div>
+                            <strong style="display: block; font-size: 0.92rem; margin-bottom: 0.25rem;">${escapeHtml(g.title)}</strong>
+                            <p style="font-size: 0.78rem; color: var(--admin-muted); margin: 0 0 0.85rem;">${escapeHtml(g.description || '')}</p>
+                        </div>
+                        <button class="btn-action danger" style="width: 100%; justify-content: center;" onclick="deleteGalleryItem('${g.id}')">Delete Photo</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Inquiries Table Rendering
+        function renderInquiries() {
+            const recentTbody = document.getElementById('recentInquiriesBody');
+            const allTbody = document.getElementById('allInquiriesBody');
+
+            if (!currentInquiries.length) {
+                const emptyRow = '<tr><td colspan="8" style="text-align: center; color: var(--admin-muted); padding: 2rem;">No quotation leads in inbox yet. Incoming customer inquiries will appear here automatically.</td></tr>';
+                if (recentTbody) recentTbody.innerHTML = emptyRow;
+                if (allTbody) allTbody.innerHTML = emptyRow;
+                return;
+            }
+
+            const renderRow = (inq, isRecent) => {
+                const cleanPhone = (inq.phone || '').replace(/\D/g, '');
+                const waText = encodeURIComponent(`Hello ${inq.name}, thank you for your RFQ inquiry with SKS Engineering Solutions regarding ${inq.product_interest || 'customized enclosures'}.`);
+                const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone.startsWith('91') ? cleanPhone : '91' + cleanPhone}&text=${waText}`;
+                const dateStr = new Date(inq.created_at || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <tr>
+                        <td style="font-size: 0.8rem; color: var(--admin-muted);">${dateStr}</td>
+                        <td><strong>${escapeHtml(inq.name)}</strong></td>
+                        <td><a href="tel:${inq.phone}" style="color: #38BDF8; text-decoration: none;">${escapeHtml(inq.phone)}</a></td>
+                        ${!isRecent ? `<td><a href="mailto:${inq.email}" style="color: #94A3B8; text-decoration: none;">${escapeHtml(inq.email || '-')}</a></td>` : ''}
+                        <td>${escapeHtml(inq.company || inq.industry || '-')}</td>
+                        <td style="max-width: 220px; font-size: 0.82rem;">${escapeHtml(inq.product_interest || inq.message || '-')}</td>
+                        <td>
+                            <select class="form-control" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; width: auto;" onchange="changeInquiryStatus('${inq.id}', this.value)">
+                                <option value="new" ${inq.status === 'new' ? 'selected' : ''}>New Lead</option>
+                                <option value="contacted" ${inq.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                                <option value="quoted" ${inq.status === 'quoted' ? 'selected' : ''}>Quoted</option>
+                                <option value="closed" ${inq.status === 'closed' ? 'selected' : ''}>Closed</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="action-btn-group">
+                                ${inq.phone ? `<a href="${waUrl}" target="_blank" class="btn-action wa" title="Chat on WhatsApp">WhatsApp</a>` : ''}
+                                ${inq.email ? `<a href="mailto:${inq.email}?subject=Quote%20from%20SKS%20Engineering%20Solutions" class="btn-action" title="Send Email">Email</a>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            };
+
+            if (recentTbody) {
+                recentTbody.innerHTML = currentInquiries.slice(0, 5).map(i => renderRow(i, true)).join('');
+            }
+            if (allTbody) {
+                allTbody.innerHTML = currentInquiries.map(i => renderRow(i, false)).join('');
+            }
+        }
+
+        async function changeInquiryStatus(id, newStatus) {
+            await SKS_DB.updateInquiryStatus(id, newStatus);
+            showToast(`Status updated to "${newStatus}"`);
+            await refreshAllData();
+        }
+
+        // Product Modal Operations
+        function openProductModal() {
+            document.getElementById('productForm').reset();
+            document.getElementById('prodId').value = '';
+            document.getElementById('productModalTitle').textContent = 'Add New Product';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        function editProduct(id) {
+            const p = currentProducts.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('prodId').value = p.id;
+            document.getElementById('prodTitle').value = p.title || '';
+            document.getElementById('prodCategory').value = p.category || 'modular';
+            document.getElementById('prodIpRating').value = p.ip_rating || '';
+            document.getElementById('prodImageUrl').value = p.image_url || '';
+            document.getElementById('prodMaterial').value = p.material || '';
+            document.getElementById('prodSummary').value = p.summary || '';
+            document.getElementById('prodFeatures').value = Array.isArray(p.features) ? p.features.join('\n') : (p.features || '');
+            document.getElementById('prodOrder').value = p.display_order || 1;
+            document.getElementById('productModalTitle').textContent = 'Edit Product';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('prodId').value;
+            const productData = {
+                title: document.getElementById('prodTitle').value.trim(),
+                category: document.getElementById('prodCategory').value,
+                ip_rating: document.getElementById('prodIpRating').value.trim(),
+                image_url: document.getElementById('prodImageUrl').value.trim(),
+                material: document.getElementById('prodMaterial').value.trim(),
+                summary: document.getElementById('prodSummary').value.trim(),
+                features: document.getElementById('prodFeatures').value.split('\n').filter(Boolean),
+                display_order: parseInt(document.getElementById('prodOrder').value, 10) || 1
+            };
+
+            if (id) {
+                await SKS_DB.updateProduct(id, productData);
+                showToast('Product updated successfully');
+            } else {
+                await SKS_DB.addProduct(productData);
+                showToast('New product added to catalog');
+            }
+
+            closeProductModal();
+            await refreshAllData();
+        });
+
+        async function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                await SKS_DB.deleteProduct(id);
+                showToast('Product deleted');
+                await refreshAllData();
+            }
+        }
+
+        // Gallery Modal Operations
+        function openGalleryModal() {
+            document.getElementById('galleryForm').reset();
+            document.getElementById('galleryModal').classList.add('active');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').classList.remove('active');
+        }
+
+        document.getElementById('galleryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const itemData = {
+                title: document.getElementById('galTitle').value.trim(),
+                image_url: document.getElementById('galImage').value.trim(),
+                description: document.getElementById('galDesc').value.trim(),
+                display_order: parseInt(document.getElementById('galOrder').value, 10) || 1
+            };
+
+            await SKS_DB.addGalleryItem(itemData);
+            showToast('Showcase photo added');
+            closeGalleryModal();
+            await refreshAllData();
+        });
+
+        async function deleteGalleryItem(id) {
+            if (confirm('Are you sure you want to remove this showcase photo?')) {
+                await SKS_DB.deleteGalleryItem(id);
+                showToast('Photo removed');
+                await refreshAllData();
+            }
+        }
+
+        // Copy SQL Schema
+        function copySqlSchema() {
+            const sql = document.getElementById('sqlBox').innerText;
+            navigator.clipboard.writeText(sql).then(() => {
+                showToast('SQL schema copied to clipboard!');
+            }).catch(() => {
+                showToast('Please manually select and copy the SQL box', true);
+            });
+        }
+
+        // Toast Feedback
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('adminToast');
+            toast.textContent = message;
+            toast.className = isError ? 'toast error' : 'toast';
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3500);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>
