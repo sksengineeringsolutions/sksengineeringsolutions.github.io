@@ -40,7 +40,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Production Stylesheet -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261006b">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261007c">
     <!-- Structured Data (JSON-LD) for ItemList, FAQPage & BreadcrumbList -->
     <script type="application/ld+json">
     {
@@ -223,169 +223,283 @@
         </section>
 
         <!-- ==================================================================
-             Product Catalog Section (with Filter Controls)
+             Blinkit-Style Interactive Product Catalog Application
              ================================================================== -->
-        <section class="page-section bg-grid-pattern">
+        <section class="page-section bg-grid-pattern" id="blinkitCatalogSection">
             <div class="container">
                 <div class="section-header reveal">
-                    <div class="tech-tag lime">Enclosure Portfolio</div>
-                    <h2 class="section-title">Engineered <span class="text-teal">Enclosure Solutions</span></h2>
-                    <p class="section-desc">From standard modular cabinets to bespoke stainless steel boxes, every product is manufactured to precision CAD specifications.</p>
+                    <div class="tech-tag lime">Interactive Enclosure Store</div>
+                    <h2 class="section-title">Engineered <span class="text-teal">Enclosure Portfolio</span></h2>
+                    <p class="section-desc">Select enclosure models, customize target dimensions, and build your quotation basket with 1-click WhatsApp or engineering review.</p>
                 </div>
 
-                <!-- Product Filters -->
-                <div class="product-filters reveal" id="productFilterBar">
-                    <button type="button" class="filter-btn active" data-filter="all">All Enclosures</button>
-                    <button type="button" class="filter-btn" data-filter="modular">Modular Cabinets</button>
-                    <button type="button" class="filter-btn" data-filter="wallmount">Wall-Mounted</button>
-                    <button type="button" class="filter-btn" data-filter="stainless">Stainless Steel</button>
-                    <button type="button" class="filter-btn" data-filter="outdoor">Feeder Pillars</button>
-                    <button type="button" class="filter-btn" data-filter="console">Operator Desks</button>
-                    <button type="button" class="filter-btn" data-filter="junction">Junction Boxes</button>
+                <!-- Blinkit App Header Bar -->
+                <div class="blinkit-app-header reveal">
+                    <div class="blinkit-header-top">
+                        <div class="blinkit-loc-pill">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                            <span><strong>Pune Works:</strong> Direct Factory Supply</span>
+                            <span class="blinkit-lead-pill">⚡ 7–10 Days Lead</span>
+                        </div>
+                        <div class="blinkit-header-actions">
+                            <button type="button" class="blinkit-cart-shortcut-btn" id="openCartHeaderBtn" aria-label="Open RFQ Quote Basket">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                <span>RFQ Cart</span>
+                                <span class="blinkit-cart-count-badge" id="headerCartCount">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search Input Bar -->
+                    <div class="blinkit-search-bar">
+                        <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <input type="text" id="catalogSearchInput" placeholder="Search 'Modular', 'Wall-Mount', 'Stainless SS304', 'IP65', 'Feeder Pillar'..." aria-label="Search electrical enclosures">
+                        <button type="button" id="clearSearchBtn" class="clear-search-btn" style="display: none;" aria-label="Clear search">&times;</button>
+                    </div>
+
+                    <!-- Mobile Horizontal Category Chips Rail -->
+                    <div class="blinkit-mobile-cat-rail" id="mobileCatRail">
+                        <button type="button" class="b-cat-chip active" data-filter="all">⚡ All Items</button>
+                        <button type="button" class="b-cat-chip" data-filter="modular">🏢 Modular</button>
+                        <button type="button" class="b-cat-chip" data-filter="wallmount">📦 Wall-Mount</button>
+                        <button type="button" class="b-cat-chip" data-filter="stainless">🛡️ Stainless SS</button>
+                        <button type="button" class="b-cat-chip" data-filter="outdoor">🌧️ Pillars</button>
+                        <button type="button" class="b-cat-chip" data-filter="console">🖥️ Desks</button>
+                        <button type="button" class="b-cat-chip" data-filter="junction">🔌 Junctions</button>
+                    </div>
                 </div>
 
-                <!-- Products Grid -->
-                <div class="products-grid reveal-stagger" id="productsCatalog">
-                    <!-- Product 1: Modular Floor-Standing Cabinets -->
-                    <div class="product-card reveal" data-category="modular">
-                        <div class="product-img-wrap">
-                            <img src="assets/images/product-modular-enclosure.jpg" alt="Modular Floor-Standing Electrical Panel Enclosure" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">IP55 / IP65</span>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category">Electrical Enclosures &bull; Panel Enclosures</span>
-                            <h3>Modular Floor-Standing Cabinets</h3>
-                            <p>Engineered for low-voltage (LV) switchgear, motor control centers (MCC), and industrial automation. Features rigid structural corner profiles, multi-bay interlocking capability, and removable side/rear panels.</p>
-                            
-                            <ul class="product-feature-list">
-                                <li><strong>Material:</strong> Prime CRCA Sheet (2.0mm frame / 1.6mm covers)</li>
-                                <li><strong>Ingress Protection:</strong> IP55 / IP65 Formed PU Foamed Gasket</li>
-                                <li><strong>Modularity:</strong> Baying kit ready for side-by-side extension</li>
-                                <li><strong>Mounting:</strong> Depth-adjustable galvanized mounting plate</li>
-                            </ul>
+                <!-- Blinkit Store 2-Column Layout -->
+                <div class="blinkit-store-layout">
+                    <!-- Left Category Sidebar Rail (Desktop Sticky) -->
+                    <aside class="blinkit-sidebar-rail reveal">
+                        <div class="rail-title">Enclosure Catalog</div>
+                        <nav class="rail-nav" id="desktopCatNav">
+                            <button type="button" class="rail-btn active" data-filter="all">
+                                <span class="rail-emoji">⚡</span>
+                                <span class="rail-text">All Enclosures</span>
+                                <span class="rail-count" id="count-all">6</span>
+                            </button>
+                            <button type="button" class="rail-btn" data-filter="modular">
+                                <span class="rail-emoji">🏢</span>
+                                <span class="rail-text">Modular Cabinets</span>
+                                <span class="rail-count" id="count-modular">1</span>
+                            </button>
+                            <button type="button" class="rail-btn" data-filter="wallmount">
+                                <span class="rail-emoji">📦</span>
+                                <span class="rail-text">Wall-Mounted</span>
+                                <span class="rail-count" id="count-wallmount">1</span>
+                            </button>
+                            <button type="button" class="rail-btn" data-filter="stainless">
+                                <span class="rail-emoji">🛡️</span>
+                                <span class="rail-text">Stainless Steel SS304</span>
+                                <span class="rail-count" id="count-stainless">1</span>
+                            </button>
+                            <button type="button" class="rail-btn" data-filter="outdoor">
+                                <span class="rail-emoji">🌧️</span>
+                                <span class="rail-text">Outdoor Feeder Pillars</span>
+                                <span class="rail-count" id="count-outdoor">1</span>
+                            </button>
+                            <button type="button" class="rail-btn" data-filter="console">
+                                <span class="rail-emoji">🖥️</span>
+                                <span class="rail-text">Operator Console Desks</span>
+                                <span class="rail-count" id="count-console">1</span>
+                            </button>
+                            <button type="button" class="rail-btn" data-filter="junction">
+                                <span class="rail-emoji">🔌</span>
+                                <span class="rail-text">Junction Boxes</span>
+                                <span class="rail-count" id="count-junction">1</span>
+                            </button>
+                        </nav>
 
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                        <!-- Custom CAD Assist Promo Card -->
+                        <div class="rail-promo-card">
+                            <div class="promo-badge">Custom 2D/3D CAD</div>
+                            <h4>Have Custom Drawings?</h4>
+                            <p>Send your STEP / DWG files for instant sheet metal DFM estimation.</p>
+                            <a href="https://api.whatsapp.com/send?phone=918668742659&amp;text=Hello%20SKS%20Engineering%2C%20I%20have%20custom%20CAD%20drawings%20for%20enclosure%20fabrication" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-wa-promo">
+                                WhatsApp CAD Files &rarr;
+                            </a>
+                        </div>
+                    </aside>
+
+                    <!-- Main Products Listing Area -->
+                    <div class="blinkit-main-grid-area">
+                        <div class="blinkit-grid-header reveal">
+                            <div>
+                                <h3 id="currentCategoryTitle" class="current-cat-heading">All Enclosures</h3>
+                                <span class="current-cat-subtitle" id="catalogResultsCount">Showing 6 models</span>
+                            </div>
+                            <div class="blinkit-tag-chips" id="subfilterChips">
+                                <button type="button" class="chip-tag active" data-subfilter="all">All Specs</button>
+                                <button type="button" class="chip-tag" data-subfilter="ip65">IP65</button>
+                                <button type="button" class="chip-tag" data-subfilter="ss">SS304</button>
+                                <button type="button" class="chip-tag" data-subfilter="weatherproof">Outdoor</button>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Product 2: Wall-Mounted Enclosures -->
-                    <div class="product-card reveal reveal-delay" data-category="wallmount">
-                        <div class="product-img-wrap">
-                            <img src="assets/images/product-wall-mount-enclosure.jpg" alt="Customized Wall-Mounted Industrial Enclosure" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">IP65 Standard</span>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category">Customized Electrical Enclosures</span>
-                            <h3>Wall-Mounted Enclosures</h3>
-                            <p>Compact, rigid sheet metal boxes designed for field instrumentation, lighting distribution, and PLC remote I/O nodes. Equipped with concealed hinges and quarter-turn cam latches.</p>
-                            
-                            <ul class="product-feature-list">
-                                <li><strong>Material:</strong> 1.6mm CRCA / GI Sheet Metal</li>
-                                <li><strong>Protection:</strong> IP65 continuous polyurethane foam seal</li>
-                                <li><strong>Door Swing:</strong> 120&deg; reversible opening with earthing studs</li>
-                                <li><strong>Gland Plate:</strong> Removable bottom cable entry plate</li>
-                            </ul>
-
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                        <!-- Products Grid Container (Populated dynamically & pre-rendered) -->
+                        <div class="blinkit-products-grid reveal-stagger" id="productsCatalog">
+                            <!-- Product 1: Modular Floor-Standing Cabinets -->
+                            <div class="b-card reveal" data-category="modular" data-product-id="prod-01" data-ip="ip65">
+                                <div class="b-card-img-box" onclick="window.openQuickSpecsModal('prod-01')">
+                                    <div class="b-tag-top-left">⚡ 7–10 Days Lead</div>
+                                    <div class="b-tag-top-right">IP55 / IP65</div>
+                                    <img src="assets/images/product-modular-enclosure.jpg" alt="Modular Floor-Standing Electrical Panel Enclosure" width="1200" height="896" loading="lazy" decoding="async">
+                                    <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                                </div>
+                                <div class="b-card-details">
+                                    <div class="b-card-lead-time">⏱️ 7–10 Days &bull; Modular Series</div>
+                                    <h4 class="b-card-title">Modular Floor-Standing Cabinets</h4>
+                                    <div class="b-card-specs-pill">Prime 2.0mm CRCA &bull; PU Foamed Seal</div>
+                                    <p class="b-card-desc">Engineered for LV switchgear, MCC panels, and automation. Rigid 9-fold structural corner profiles with multi-bay extension kit.</p>
+                                    <div class="b-card-footer">
+                                        <div class="b-price-stack">
+                                            <span class="b-price-tag">Custom CAD Pricing</span>
+                                            <span class="b-price-sub">Bespoke H &times; W &times; D</span>
+                                        </div>
+                                        <div class="b-action-wrap" id="action-prod-01">
+                                            <button type="button" class="b-add-btn" onclick="window.addToRfqCart('prod-01')">
+                                                ADD <span class="plus-icon">+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 3: Stainless Steel SS304/SS316 -->
-                    <div class="product-card reveal reveal-delay-2" data-category="stainless">
-                        <div class="product-img-wrap">
-                            <img src="assets/images/product-stainless-steel.jpg" alt="Stainless Steel SS304 Industrial Electrical Box" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">IP66 / SS304</span>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category">Industrial Enclosures &bull; Fabricated Metal</span>
-                            <h3>Stainless Steel (SS304/SS316) Boxes</h3>
-                            <p>Corrosion-resistant stainless steel enclosures designed for food processing, pharmaceutical cleanrooms, chemical plants, and marine coastal environments. Non-reactive and easy to sanitize.</p>
-                            
-                            <ul class="product-feature-list">
-                                <li><strong>Grade:</strong> AISI 304 or AISI 316 Stainless Steel</li>
-                                <li><strong>Finish:</strong> Scotch-Brite brushed satin linishing (grain 240)</li>
-                                <li><strong>Protection:</strong> IP66 washdown water-tight protection</li>
-                                <li><strong>Hardware:</strong> Heavy-duty stainless steel hinges and locks</li>
-                            </ul>
-
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                            <!-- Product 2: Wall-Mounted Enclosures -->
+                            <div class="b-card reveal reveal-delay" data-category="wallmount" data-product-id="prod-02" data-ip="ip65">
+                                <div class="b-card-img-box" onclick="window.openQuickSpecsModal('prod-02')">
+                                    <div class="b-tag-top-left">⚡ 7–10 Days Lead</div>
+                                    <div class="b-tag-top-right">IP65 Standard</div>
+                                    <img src="assets/images/product-wall-mount-enclosure.jpg" alt="Customized Wall-Mounted Industrial Enclosure" width="1200" height="896" loading="lazy" decoding="async">
+                                    <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                                </div>
+                                <div class="b-card-details">
+                                    <div class="b-card-lead-time">⏱️ 7–10 Days &bull; Compact Series</div>
+                                    <h4 class="b-card-title">Wall-Mounted Enclosures</h4>
+                                    <div class="b-card-specs-pill">1.6mm CRCA / GI &bull; Reversible Door</div>
+                                    <p class="b-card-desc">Compact, rigid sheet metal boxes for instrumentation and PLC nodes. Concealed hinges with bottom gland plate.</p>
+                                    <div class="b-card-footer">
+                                        <div class="b-price-stack">
+                                            <span class="b-price-tag">Custom CAD Pricing</span>
+                                            <span class="b-price-sub">Wall Brackets Included</span>
+                                        </div>
+                                        <div class="b-action-wrap" id="action-prod-02">
+                                            <button type="button" class="b-add-btn" onclick="window.addToRfqCart('prod-02')">
+                                                ADD <span class="plus-icon">+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 4: Outdoor Feeder Pillars -->
-                    <div class="product-card reveal" data-category="outdoor">
-                        <div class="product-img-wrap">
-                            <img src="assets/images/product-feeder-pillar.jpg" alt="Outdoor Rainproof Electrical Feeder Pillar Enclosure" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">IP55 Weatherproof</span>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category">Electrical Enclosures &bull; Panel Enclosures</span>
-                            <h3>Outdoor Feeder Pillars</h3>
-                            <p>Robust outdoor power distribution pillars designed with rain canopy roofs, insect-screened ventilation louvers, and reinforced tamper-resistant 3-point espagnolette locking systems.</p>
-                            
-                            <ul class="product-feature-list">
-                                <li><strong>Canopy:</strong> Integrated sloped drip-shield rain canopy</li>
-                                <li><strong>Ventilation:</strong> Internal fine brass mesh insect screens</li>
-                                <li><strong>Locking:</strong> Padlockable 3-point rod latching mechanism</li>
-                                <li><strong>Base:</strong> Hot-dip galvanized concrete root mounting plinth</li>
-                            </ul>
-
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                            <!-- Product 3: Stainless Steel SS304/SS316 -->
+                            <div class="b-card reveal reveal-delay-2" data-category="stainless" data-product-id="prod-03" data-ip="ss">
+                                <div class="b-card-img-box" onclick="window.openQuickSpecsModal('prod-03')">
+                                    <div class="b-tag-top-left">⚡ Washdown Grade</div>
+                                    <div class="b-tag-top-right">IP66 / SS304</div>
+                                    <img src="assets/images/product-stainless-steel.jpg" alt="Stainless Steel SS304 Industrial Electrical Box" width="1200" height="896" loading="lazy" decoding="async">
+                                    <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                                </div>
+                                <div class="b-card-details">
+                                    <div class="b-card-lead-time">⏱️ Washdown &bull; Stainless Series</div>
+                                    <h4 class="b-card-title">Stainless Steel (SS304/SS316) Boxes</h4>
+                                    <div class="b-card-specs-pill">Scotch-Brite Satin &bull; IP66 Seal</div>
+                                    <p class="b-card-desc">Corrosion-resistant stainless enclosures for pharma, food processing, and coastal plants. Sanitary and non-reactive.</p>
+                                    <div class="b-card-footer">
+                                        <div class="b-price-stack">
+                                            <span class="b-price-tag">Custom CAD Pricing</span>
+                                            <span class="b-price-sub">SS304 or SS316</span>
+                                        </div>
+                                        <div class="b-action-wrap" id="action-prod-03">
+                                            <button type="button" class="b-add-btn" onclick="window.addToRfqCart('prod-03')">
+                                                ADD <span class="plus-icon">+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 5: Operator Console Desks -->
-                    <div class="product-card reveal reveal-delay" data-category="console">
-                        <div class="product-img-wrap">
-                            <img src="assets/images/product-console-desk.jpg" alt="Customized Operator Control Console Desk" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">IP54 / Ergonomic</span>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category">Client-Specific Enclosures &bull; Fabricated Metal</span>
-                            <h3>Operator Console Desks</h3>
-                            <p>Ergonomic sheet metal control desks engineered for factory control rooms, automated machinery cells, and process observation stations. Sloped desk lid with pneumatic gas-spring stays.</p>
-                            
-                            <ul class="product-feature-list">
-                                <li><strong>Ergonomics:</strong> Sloped top panel for HMI touchscreens and meters</li>
-                                <li><strong>Top Lid:</strong> Gas-spring assist stays for safe, effortless opening</li>
-                                <li><strong>Lower Bay:</strong> Spacious internal bay for PLCs, power supplies, and wiring</li>
-                                <li><strong>Access:</strong> Front and rear double doors with quarter-turn latches</li>
-                            </ul>
-
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                            <!-- Product 4: Outdoor Feeder Pillars -->
+                            <div class="b-card reveal" data-category="outdoor" data-product-id="prod-04" data-ip="weatherproof">
+                                <div class="b-card-img-box" onclick="window.openQuickSpecsModal('prod-04')">
+                                    <div class="b-tag-top-left">⚡ Rain Canopy</div>
+                                    <div class="b-tag-top-right">IP55 Weatherproof</div>
+                                    <img src="assets/images/product-feeder-pillar.jpg" alt="Outdoor Rainproof Electrical Feeder Pillar Enclosure" width="1200" height="896" loading="lazy" decoding="async">
+                                    <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                                </div>
+                                <div class="b-card-details">
+                                    <div class="b-card-lead-time">⏱️ Outdoor &bull; Distribution Series</div>
+                                    <h4 class="b-card-title">Outdoor Feeder Pillars</h4>
+                                    <div class="b-card-specs-pill">2.0mm GI &bull; Louvers with Mesh</div>
+                                    <p class="b-card-desc">Outdoor power distribution pillars with rain canopies, insect-screened ventilation, and tamper-resistant 3-point locking.</p>
+                                    <div class="b-card-footer">
+                                        <div class="b-price-stack">
+                                            <span class="b-price-tag">Custom CAD Pricing</span>
+                                            <span class="b-price-sub">Root Plinth Included</span>
+                                        </div>
+                                        <div class="b-action-wrap" id="action-prod-04">
+                                            <button type="button" class="b-add-btn" onclick="window.addToRfqCart('prod-04')">
+                                                ADD <span class="plus-icon">+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 6: Custom Junction Boxes -->
-                    <div class="product-card reveal reveal-delay-2" data-category="junction">
-                        <div class="product-img-wrap">
-                            <img src="assets/images/product-junction-boxes.jpg" alt="Custom Sheet Metal Junction Box with Gasket" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">IP65 Ingress</span>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category">Customized Enclosures &bull; Fabricated Metal</span>
-                            <h3>Custom Junction Boxes</h3>
-                            <p>Precision-punched terminal and junction enclosures designed for cable marshalling, solar string boxes, and instrumentation junctions. Complete with internal DIN rails and grounding bolts.</p>
-                            
-                            <ul class="product-feature-list">
-                                <li><strong>Configurations:</strong> Hinged door or screw-fixed cover options</li>
-                                <li><strong>Cutouts:</strong> Factory laser-punched cable gland hole patterns</li>
-                                <li><strong>Internal Rail:</strong> Adjustable DIN-rail and terminal mounting plates</li>
-                                <li><strong>Protection:</strong> Formed-in-place continuous PU sealing gasket</li>
-                            </ul>
+                            <!-- Product 5: Operator Console Desks -->
+                            <div class="b-card reveal reveal-delay" data-category="console" data-product-id="prod-05" data-ip="all">
+                                <div class="b-card-img-box" onclick="window.openQuickSpecsModal('prod-05')">
+                                    <div class="b-tag-top-left">⚡ Gas-Spring Top</div>
+                                    <div class="b-tag-top-right">IP54 / Ergonomic</div>
+                                    <img src="assets/images/product-console-desk.jpg" alt="Customized Operator Control Console Desk" width="1200" height="896" loading="lazy" decoding="async">
+                                    <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                                </div>
+                                <div class="b-card-details">
+                                    <div class="b-card-lead-time">⏱️ Ergonomic &bull; HMI Workstation</div>
+                                    <h4 class="b-card-title">Operator Console Desks</h4>
+                                    <div class="b-card-specs-pill">Sloped Lid &bull; Gas Strut Assist</div>
+                                    <p class="b-card-desc">Ergonomic control desks for factory plants and automated lines. Laser cutouts for screens, meters, and pushbuttons.</p>
+                                    <div class="b-card-footer">
+                                        <div class="b-price-stack">
+                                            <span class="b-price-tag">Custom CAD Pricing</span>
+                                            <span class="b-price-sub">Rear &amp; Front Doors</span>
+                                        </div>
+                                        <div class="b-action-wrap" id="action-prod-05">
+                                            <button type="button" class="b-add-btn" onclick="window.addToRfqCart('prod-05')">
+                                                ADD <span class="plus-icon">+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                            <!-- Product 6: Custom Junction Boxes -->
+                            <div class="b-card reveal reveal-delay-2" data-category="junction" data-product-id="prod-06" data-ip="ip65">
+                                <div class="b-card-img-box" onclick="window.openQuickSpecsModal('prod-06')">
+                                    <div class="b-tag-top-left">⚡ Fast Dispatch</div>
+                                    <div class="b-tag-top-right">IP65 Ingress</div>
+                                    <img src="assets/images/product-junction-boxes.jpg" alt="Custom Sheet Metal Junction Box with Gasket" width="1200" height="896" loading="lazy" decoding="async">
+                                    <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                                </div>
+                                <div class="b-card-details">
+                                    <div class="b-card-lead-time">⏱️ Terminal &bull; Junction Series</div>
+                                    <h4 class="b-card-title">Custom Junction Boxes</h4>
+                                    <div class="b-card-specs-pill">1.6mm Sheet &bull; Formed PU Seal</div>
+                                    <p class="b-card-desc">Precision-punched terminal and junction enclosures for cable marshalling and instrumentation. DIN rail brackets included.</p>
+                                    <div class="b-card-footer">
+                                        <div class="b-price-stack">
+                                            <span class="b-price-tag">Custom CAD Pricing</span>
+                                            <span class="b-price-sub">Custom Gland Punches</span>
+                                        </div>
+                                        <div class="b-action-wrap" id="action-prod-06">
+                                            <button type="button" class="b-add-btn" onclick="window.addToRfqCart('prod-06')">
+                                                ADD <span class="plus-icon">+</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -517,7 +631,85 @@
                     </details>
                 </div>
             </div>
-        </section>
+        <!-- ==================================================================
+             Blinkit Floating Bottom Cart Bar & Slide-Over RFQ Drawer
+             ================================================================== -->
+        <!-- Floating Bottom Cart Bar -->
+        <div class="blinkit-bottom-cart-bar" id="floatingCartBar" style="display: none;">
+            <div class="b-cart-bar-inner">
+                <div class="b-cart-bar-left" id="cartBarOpenTrigger">
+                    <div class="b-cart-bar-icon-wrap">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        <span class="b-cart-bar-count" id="floatingCartCount">0</span>
+                    </div>
+                    <div class="b-cart-bar-text">
+                        <div class="b-cart-bar-title"><span id="floatingCartSummary">0 Items in Quote Basket</span></div>
+                        <div class="b-cart-bar-sub">Instant Engineering Estimate &bull; Direct WhatsApp / Email</div>
+                    </div>
+                </div>
+                <button type="button" class="b-cart-bar-btn" id="cartBarActionBtn">
+                    View RFQ Cart &rarr;
+                </button>
+            </div>
+        </div>
+
+        <!-- Slide-Over RFQ Cart Drawer -->
+        <div class="b-drawer-overlay" id="rfqDrawerOverlay" aria-hidden="true"></div>
+        <aside class="b-drawer-panel" id="rfqDrawerPanel" role="dialog" aria-modal="true" aria-label="RFQ Quote Basket">
+            <div class="b-drawer-header">
+                <div class="b-drawer-title-wrap">
+                    <h3>🛒 Your RFQ Quote Basket</h3>
+                    <span class="b-drawer-badge" id="drawerItemCountBadge">0 Models</span>
+                </div>
+                <button type="button" class="b-drawer-close" id="closeDrawerBtn" aria-label="Close cart">&times;</button>
+            </div>
+
+            <div class="b-drawer-body">
+                <!-- Selected Items List -->
+                <div class="b-drawer-items" id="drawerItemList">
+                    <!-- Dynamically populated item cards -->
+                </div>
+
+                <!-- Custom Sizing / Note Field -->
+                <div class="b-drawer-notes-box">
+                    <label for="rfqCustomSpecs"><strong>Target Dimensions / Special Requirements:</strong></label>
+                    <textarea id="rfqCustomSpecs" rows="3" placeholder="e.g. Dimensions (H x W x D mm), material thickness (e.g. 2.0mm), cable gland positions, powder coat RAL shade..."></textarea>
+                </div>
+
+                <!-- Quick Contact Form -->
+                <div class="b-drawer-contact-form">
+                    <h4>Your Contact Information</h4>
+                    <div class="form-row-compact">
+                        <input type="text" id="rfqUserName" placeholder="Your Full Name *" required>
+                        <input type="text" id="rfqUserCompany" placeholder="Company Name *" required>
+                    </div>
+                    <div class="form-row-compact">
+                        <input type="tel" id="rfqUserPhone" placeholder="Mobile / WhatsApp *" required>
+                        <input type="email" id="rfqUserEmail" placeholder="Work Email *" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="b-drawer-footer">
+                <!-- WhatsApp 1-Click Button -->
+                <button type="button" class="b-btn-wa-submit" id="btnSubmitWhatsApp">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.55 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.19 8.19 0 0 1-5.83 2.41c-1.55 0-3.07-.43-4.39-1.25l-.31-.19-3.26.85.87-3.18-.21-.34a8.217 8.217 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.55 3.41c-.19 0-.41.07-.63.29-.22.22-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.29s-1.44-.71-1.66-.79c-.22-.08-.39-.12-.55.12-.16.25-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.47-.4-.41-.55-.42z"/></svg>
+                    Send RFQ on WhatsApp (+91-8668742659) &rarr;
+                </button>
+                <!-- Cloud DB Submission Button -->
+                <button type="button" class="b-btn-email-submit" id="btnSubmitDesk">
+                    Submit RFQ to Engineering Desk &rarr;
+                </button>
+            </div>
+        </aside>
+
+        <!-- Quick Specs Preview Modal -->
+        <div class="b-specs-modal" id="quickSpecsModal" style="display: none;" role="dialog" aria-modal="true" aria-label="Product Technical Specifications">
+            <div class="b-specs-modal-dialog">
+                <button type="button" class="b-specs-close" id="closeSpecsModalBtn">&times;</button>
+                <div class="b-specs-content" id="quickSpecsContent"></div>
+            </div>
+        </div>
     </main>
 
     <!-- ======================================================================
@@ -668,10 +860,103 @@
         </svg>
     </button>
 
+    <!-- ======================================================================
+         Blinkit Floating Bottom Cart Bar (Appears when items are added)
+         ====================================================================== -->
+    <div class="blinkit-bottom-cart-bar" id="floatingCartBar" style="display: none;" role="region" aria-label="RFQ Quote Basket Summary">
+        <div class="b-cart-bar-inner">
+            <div class="b-cart-bar-left" id="cartBarOpenTrigger" role="button" tabindex="0" aria-label="Open RFQ Quote Basket">
+                <div class="b-cart-bar-icon-wrap">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span class="b-cart-bar-count" id="floatingCartCount">0</span>
+                </div>
+                <div class="b-cart-bar-text">
+                    <div class="b-cart-bar-title" id="floatingCartSummary">0 Items in RFQ Basket</div>
+                    <div class="b-cart-bar-sub">Tap to review specs &amp; get WhatsApp quotation</div>
+                </div>
+            </div>
+            <button type="button" class="b-cart-bar-btn" id="cartBarActionBtn" aria-label="View RFQ Basket">
+                View RFQ Cart &rarr;
+            </button>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         Blinkit Slide-Over RFQ Cart Drawer
+         ====================================================================== -->
+    <div class="b-drawer-overlay" id="rfqDrawerOverlay" aria-hidden="true"></div>
+    <div class="b-drawer-panel" id="rfqDrawerPanel" role="dialog" aria-modal="true" aria-label="RFQ Quote Basket Drawer">
+        <div class="b-drawer-header">
+            <div class="b-drawer-title-wrap">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#00A896">
+                    <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                <h3>RFQ Quote Basket</h3>
+                <span class="b-drawer-badge" id="drawerItemCountBadge">0 Models</span>
+            </div>
+            <button type="button" class="b-drawer-close" id="closeDrawerBtn" aria-label="Close RFQ Cart Drawer">&times;</button>
+        </div>
+
+        <div class="b-drawer-body">
+            <!-- Selected Enclosure Models List -->
+            <div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: #64748B; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.05em;">Selected Enclosure Models</div>
+                <div class="b-drawer-items" id="drawerItemList">
+                    <!-- Populated dynamically by script.js -->
+                </div>
+            </div>
+
+            <!-- Custom Dimensions & CAD Specs Textarea -->
+            <div class="b-drawer-notes-box">
+                <label for="rfqCustomSpecs"><strong>Custom Dimensions / Engineering Notes:</strong></label>
+                <textarea id="rfqCustomSpecs" rows="3" placeholder="e.g. Height 2000 x Width 800 x Depth 600 mm, IP65 with top canopy, 2mm CRCA, RAL 7035 powder coat..."></textarea>
+            </div>
+
+            <!-- Buyer Contact Information -->
+            <div class="b-drawer-contact-form">
+                <h4>Procurement / Contact Details</h4>
+                <div class="form-row-compact">
+                    <input type="text" id="rfqUserName" placeholder="Your Name *" required>
+                    <input type="text" id="rfqUserCompany" placeholder="Company Name *" required>
+                </div>
+                <div class="form-row-compact">
+                    <input type="tel" id="rfqUserPhone" placeholder="Mobile / WhatsApp *" required>
+                    <input type="email" id="rfqUserEmail" placeholder="Work Email">
+                </div>
+            </div>
+        </div>
+
+        <div class="b-drawer-footer">
+            <button type="button" class="b-btn-wa-submit" onclick="window.submitRfqViaWhatsApp()">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c4.55 0 8.24 3.7 8.24 8.24 0 2.2-.86 4.28-2.42 5.84a8.19 8.19 0 0 1-5.83 2.41c-1.55 0-3.07-.43-4.39-1.25l-.31-.19-3.26.85.87-3.18-.21-.34a8.217 8.217 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m-3.55 3.41c-.19 0-.41.07-.63.29-.22.22-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.29s-1.44-.71-1.66-.79c-.22-.08-.39-.12-.55.12-.16.25-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.47-.4-.41-.55-.42z"/>
+                </svg>
+                <span>Generate WhatsApp Quote &rarr;</span>
+            </button>
+            <button type="button" class="b-btn-email-submit" id="btnSubmitDesk" onclick="window.submitRfqToDatabase()">
+                Submit RFQ to Engineering Desk &rarr;
+            </button>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         Quick Specs Modal Dialog
+         ====================================================================== -->
+    <div class="b-specs-modal" id="quickSpecsModal" style="display: none;" role="dialog" aria-modal="true" aria-label="Enclosure Technical Specifications">
+        <div class="b-specs-modal-dialog">
+            <button type="button" class="b-specs-close" id="closeSpecsModalBtn" aria-label="Close specifications dialog">&times;</button>
+            <div id="quickSpecsContent">
+                <!-- Dynamically filled by script.js -->
+            </div>
+        </div>
+    </div>
+
     <!-- Supabase Cloud Engine & Dynamic SKS Database -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js?v=20261007"></script>
     <!-- Production Interactive Scripts -->
-    <script src="assets/js/script.js?v=20261007"></script>
+    <script src="assets/js/script.js?v=20261007c"></script>
 </body>
 </html>

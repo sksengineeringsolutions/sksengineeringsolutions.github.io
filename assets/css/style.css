@@ -4204,3 +4204,1103 @@ img, video, iframe, embed, object {
         border-radius: 50% !important;
     }
 }
+
+/* ==========================================================================
+   Blinkit-Style Application Catalog & RFQ Basket System
+   ========================================================================== */
+.blinkit-app-header {
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.blinkit-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.blinkit-loc-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    background: #F1F5F9;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid #E2E8F0;
+}
+
+.blinkit-loc-pill svg {
+    color: #0C831F;
+}
+
+.blinkit-lead-pill {
+    background: #DCFCE7;
+    color: #15803D;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.blinkit-cart-shortcut-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #0C831F;
+    color: #FFFFFF;
+    border: none;
+    padding: 0.55rem 1.15rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 10px rgba(12, 131, 31, 0.25);
+}
+
+.blinkit-cart-shortcut-btn:hover {
+    background: #096818;
+    transform: translateY(-1px);
+}
+
+.blinkit-cart-count-badge {
+    background: #FFFFFF;
+    color: #0C831F;
+    font-size: 0.75rem;
+    font-weight: 800;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+}
+
+/* Blinkit Search Bar */
+.blinkit-search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.blinkit-search-bar .search-icon {
+    position: absolute;
+    left: 1rem;
+    color: #94A3B8;
+    pointer-events: none;
+}
+
+.blinkit-search-bar input {
+    width: 100%;
+    padding: 0.85rem 2.8rem 0.85rem 2.85rem;
+    font-size: 0.96rem;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    background: #F8FAFC;
+    color: #0F172A;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.blinkit-search-bar input:focus {
+    outline: none;
+    border-color: #0C831F;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(12, 131, 31, 0.12);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #94A3B8;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* Mobile Category Chips Rail */
+.blinkit-mobile-cat-rail {
+    display: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 0.5rem;
+    padding-top: 0.85rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.blinkit-mobile-cat-rail::-webkit-scrollbar {
+    display: none;
+}
+
+.b-cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.b-cat-chip.active {
+    background: #0C831F;
+    color: #FFFFFF;
+    border-color: #0C831F;
+    box-shadow: 0 2px 8px rgba(12, 131, 31, 0.25);
+}
+
+/* Store 2-Column Layout */
+.blinkit-store-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* Desktop Sidebar Rail */
+.blinkit-sidebar-rail {
+    position: sticky;
+    top: 90px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1.25rem 0.85rem;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.rail-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #94A3B8;
+    padding: 0 0.65rem 0.75rem 0.65rem;
+    border-bottom: 1px solid #F1F5F9;
+    margin-bottom: 0.5rem;
+}
+
+.rail-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.rail-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #334155;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s ease;
+}
+
+.rail-btn:hover {
+    background: #F8FAFC;
+    color: #0C831F;
+}
+
+.rail-btn.active {
+    background: rgba(12, 131, 31, 0.08);
+    border-color: rgba(12, 131, 31, 0.25);
+    color: #0C831F;
+    font-weight: 700;
+}
+
+.rail-emoji {
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+.rail-text {
+    flex-grow: 1;
+}
+
+.rail-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: #F1F5F9;
+    color: #64748B;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+}
+
+.rail-btn.active .rail-count {
+    background: #0C831F;
+    color: #FFFFFF;
+}
+
+/* Rail Promo Card */
+.rail-promo-card {
+    margin-top: 1.5rem;
+    background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
+    border-radius: 12px;
+    padding: 1.15rem;
+    color: #FFFFFF;
+}
+
+.rail-promo-card .promo-badge {
+    display: inline-block;
+    background: rgba(0, 168, 150, 0.25);
+    border: 1px solid #00A896;
+    color: #2DD4BF;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.rail-promo-card h4 {
+    color: #FFFFFF;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+}
+
+.rail-promo-card p {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    line-height: 1.4;
+    margin-bottom: 0.85rem;
+}
+
+.btn-wa-promo {
+    background: #25D366 !important;
+    color: #FFFFFF !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    padding: 0.4rem 0.75rem !important;
+    width: 100%;
+    text-align: center;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Blinkit Main Grid Header */
+.blinkit-main-grid-area {
+    min-width: 0;
+}
+
+.blinkit-grid-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.current-cat-heading {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0;
+    font-family: var(--font-heading);
+}
+
+.current-cat-subtitle {
+    font-size: 0.85rem;
+    color: #64748B;
+    margin-top: 0.15rem;
+    display: block;
+}
+
+.blinkit-tag-chips {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.chip-tag {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #E2E8F0;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.chip-tag.active {
+    background: #0F172A;
+    color: #FFFFFF;
+    border-color: #0F172A;
+}
+
+/* Blinkit Products Grid */
+.blinkit-products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+}
+
+/* Blinkit Product Card */
+.b-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    position: relative;
+}
+
+.b-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+    border-color: #0C831F;
+}
+
+.b-card-img-box {
+    position: relative;
+    height: 200px;
+    background: #F8FAFC;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.b-card-img-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+}
+
+.b-card:hover .b-card-img-box img {
+    transform: scale(1.06);
+}
+
+.b-tag-top-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #0F172A;
+    color: #F8FAFC;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.b-tag-top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(12, 131, 31, 0.12);
+    border: 1px solid #0C831F;
+    color: #0C831F;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    z-index: 2;
+    text-transform: uppercase;
+}
+
+.b-quick-view-btn {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0;
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(4px);
+    color: #FFFFFF;
+    border: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 3;
+}
+
+.b-card:hover .b-quick-view-btn {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* Card Details */
+.b-card-details {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.b-card-lead-time {
+    font-size: 0.72rem;
+    color: #64748B;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.b-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0F172A;
+    line-height: 1.35;
+    margin: 0 0 0.4rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--font-heading);
+}
+
+.b-card-specs-pill {
+    display: inline-block;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #0369A1;
+    background: #E0F2FE;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+}
+
+.b-card-desc {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.45;
+    margin: 0 0 0.85rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+/* Card Bottom Price & Action */
+.b-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed #E2E8F0;
+    margin-top: auto;
+}
+
+.b-price-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.b-price-tag {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0F172A;
+}
+
+.b-price-sub {
+    font-size: 0.68rem;
+    color: #64748B;
+}
+
+/* Blinkit Style ADD & Stepper Buttons */
+.b-action-wrap {
+    min-width: 90px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.b-add-btn {
+    background: #FFFFFF;
+    color: #0C831F;
+    border: 1.5px solid #0C831F;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.18s ease;
+}
+
+.b-add-btn:hover {
+    background: #0C831F;
+    color: #FFFFFF;
+    box-shadow: 0 3px 8px rgba(12, 131, 31, 0.28);
+}
+
+.b-stepper {
+    display: inline-flex;
+    align-items: center;
+    background: #0C831F;
+    color: #FFFFFF;
+    border-radius: 8px;
+    overflow: hidden;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 3px 8px rgba(12, 131, 31, 0.28);
+}
+
+.b-stepper-btn {
+    background: transparent;
+    color: #FFFFFF;
+    border: none;
+    width: 28px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 800;
+    transition: background 0.15s ease;
+}
+
+.b-stepper-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.b-stepper-val {
+    min-width: 24px;
+    text-align: center;
+    font-size: 0.88rem;
+    user-select: none;
+}
+
+/* ==========================================================================
+   Blinkit Floating Bottom Cart Bar
+   ========================================================================== */
+.blinkit-bottom-cart-bar {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92%, 620px);
+    z-index: 998;
+    animation: slideUpCart 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpCart {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 40px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.b-cart-bar-inner {
+    background: #0F172A;
+    color: #FFFFFF;
+    border: 1px solid rgba(0, 168, 150, 0.5);
+    border-radius: 16px;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.38);
+}
+
+.b-cart-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+.b-cart-bar-icon-wrap {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #0C831F;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.b-cart-bar-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #FFFFFF;
+    color: #0C831F;
+    font-size: 0.72rem;
+    font-weight: 800;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.b-cart-bar-text {
+    line-height: 1.35;
+}
+
+.b-cart-bar-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #FFFFFF;
+}
+
+.b-cart-bar-sub {
+    font-size: 0.75rem;
+    color: #94A3B8;
+}
+
+.b-cart-bar-btn {
+    background: #0C831F;
+    color: #FFFFFF;
+    border: none;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(12, 131, 31, 0.35);
+}
+
+.b-cart-bar-btn:hover {
+    background: #096818;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Blinkit Slide-Over RFQ Cart Drawer
+   ========================================================================== */
+.b-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 1050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.b-drawer-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.b-drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(100%, 480px);
+    background: #FFFFFF;
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
+    z-index: 1051;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.b-drawer-panel.active {
+    transform: translateX(0);
+}
+
+.b-drawer-header {
+    padding: 1.15rem 1.35rem;
+    background: #0F172A;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.b-drawer-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.b-drawer-title-wrap h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.b-drawer-badge {
+    background: rgba(12, 131, 31, 0.25);
+    border: 1px solid #0C831F;
+    color: #34D399;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+}
+
+.b-drawer-close {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.3rem;
+}
+
+.b-drawer-close:hover {
+    color: #FFFFFF;
+}
+
+.b-drawer-body {
+    padding: 1.25rem 1.35rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Cart Items inside Drawer */
+.b-drawer-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.b-cart-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 0.65rem 0.75rem;
+}
+
+.b-cart-item-img {
+    width: 54px;
+    height: 54px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 4px;
+    object-fit: contain;
+    border: 1px solid #E2E8F0;
+    flex-shrink: 0;
+}
+
+.b-cart-item-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.b-cart-item-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 0.2rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.b-cart-item-meta {
+    font-size: 0.74rem;
+    color: #64748B;
+}
+
+.b-cart-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.b-cart-item-delete {
+    background: none;
+    border: none;
+    color: #EF4444;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 0.95rem;
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+}
+
+.b-cart-item-delete:hover {
+    opacity: 1;
+}
+
+.b-drawer-notes-box label {
+    display: block;
+    font-size: 0.82rem;
+    color: #334155;
+    margin-bottom: 0.35rem;
+}
+
+.b-drawer-notes-box textarea {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    background: #F8FAFC;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.b-drawer-contact-form {
+    background: #F1F5F9;
+    padding: 0.95rem;
+    border-radius: 10px;
+}
+
+.b-drawer-contact-form h4 {
+    margin: 0 0 0.65rem 0;
+    font-size: 0.88rem;
+    color: #0F172A;
+}
+
+.form-row-compact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-row-compact input {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    background: #FFFFFF;
+    font-family: inherit;
+}
+
+.b-drawer-footer {
+    padding: 1rem 1.35rem;
+    background: #FFFFFF;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.b-btn-wa-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.85rem;
+    background: #25D366;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+}
+
+.b-btn-wa-submit:hover {
+    background: #1EBE5D;
+}
+
+.b-btn-email-submit {
+    width: 100%;
+    padding: 0.65rem;
+    background: #0F172A;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.b-btn-email-submit:hover {
+    background: #1E293B;
+}
+
+/* ==========================================================================
+   Quick Specs Modal
+   ========================================================================== */
+.b-specs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.b-specs-modal-dialog {
+    background: #FFFFFF;
+    border-radius: 16px;
+    width: min(100%, 640px);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 1.75rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.b-specs-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #F1F5F9;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+}
+
+/* Responsive layout adjustments for mobile */
+@media (max-width: 992px) {
+    .blinkit-store-layout {
+        grid-template-columns: 1fr;
+    }
+    .blinkit-sidebar-rail {
+        display: none;
+    }
+    .blinkit-mobile-cat-rail {
+        display: flex;
+    }
+    .blinkit-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .blinkit-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.65rem;
+    }
+    .b-card-img-box {
+        height: 140px;
+        padding: 0.5rem;
+    }
+    .b-card-details {
+        padding: 0.75rem 0.65rem;
+    }
+    .b-card-title {
+        font-size: 0.88rem;
+    }
+    .b-card-desc {
+        display: none;
+    }
+    .b-card-specs-pill {
+        font-size: 0.68rem;
+        padding: 0.15rem 0.35rem;
+        margin-bottom: 0.35rem;
+    }
+    .b-price-tag {
+        font-size: 0.78rem;
+    }
+    .b-price-sub {
+        display: none;
+    }
+    .b-add-btn {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+    }
+    .b-stepper-btn {
+        width: 24px;
+        height: 28px;
+    }
+    .blinkit-bottom-cart-bar {
+        width: calc(100% - 24px);
+        bottom: 12px;
+    }
+    .b-cart-bar-inner {
+        padding: 0.65rem 0.85rem;
+    }
+    .b-cart-bar-title {
+        font-size: 0.85rem;
+    }
+    .b-cart-bar-btn {
+        padding: 0.5rem 0.85rem;
+        font-size: 0.78rem;
+    }
+    .form-row-compact {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Elevate Back-to-Top when Blinkit Floating Cart is Visible */
+body.has-active-cart .back-to-top {
+    bottom: 84px !important;
+}

@@ -455,83 +455,623 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 7. Products Catalog Category Filtering & Dynamic DB Integration
+    // 7. Blinkit-Style Interactive Product Store & RFQ Basket System
     // ==========================================================================
-    const productFilterButtons = document.querySelectorAll('.filter-btn');
     const productsCatalog = document.getElementById('productsCatalog');
 
-    function applyProductFilter(targetFilter) {
-        const cards = document.querySelectorAll('.products-grid .product-card, #productsCatalog .product-card');
-        cards.forEach(card => {
-            const cardCategory = card.getAttribute('data-category') || '';
-            if (targetFilter === 'all' || cardCategory === targetFilter) {
-                card.style.display = '';
-                card.style.opacity = '1';
-                card.style.transform = 'scale(1)';
-            } else {
-                card.style.display = 'none';
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.96)';
-            }
-        });
+    // Default In-Memory / Fallback Inventory
+    const defaultStoreProducts = [
+        {
+            id: 'prod-01',
+            title: 'Modular Floor-Standing Cabinets',
+            category: 'modular',
+            category_label: 'Modular Series',
+            image_url: 'assets/images/product-modular-enclosure.jpg',
+            ip_rating: 'IP55 / IP65',
+            summary: 'Engineered for LV switchgear, MCC panels, and automation. Rigid 9-fold structural corner profiles with multi-bay extension kit.',
+            material: 'Prime 2.0mm CRCA Frame / 1.6mm Covers',
+            features: [
+                'Modular multi-bay interlockable frame system',
+                'Continuous formed polyurethane (PU) foamed gasket',
+                'Depth-adjustable passivated galvanized mounting plate',
+                'Standard 100mm / 200mm cable entry plinth base'
+            ]
+        },
+        {
+            id: 'prod-02',
+            title: 'Wall-Mounted Enclosures',
+            category: 'wallmount',
+            category_label: 'Compact Series',
+            image_url: 'assets/images/product-wall-mount-enclosure.jpg',
+            ip_rating: 'IP65 Standard',
+            summary: 'Compact, rigid sheet metal boxes for instrumentation and PLC nodes. Concealed hinges with bottom gland plate.',
+            material: '1.6mm CRCA / GI Sheet Metal',
+            features: [
+                'IP65 continuous polyurethane foam seal',
+                '120° reversible door opening with earthing studs',
+                'Removable bottom cable entry gland plate',
+                'External wall-mounting heavy brackets included'
+            ]
+        },
+        {
+            id: 'prod-03',
+            title: 'Stainless Steel (SS304/SS316) Boxes',
+            category: 'stainless',
+            category_label: 'Stainless Series',
+            image_url: 'assets/images/product-stainless-steel.jpg',
+            ip_rating: 'IP66 / SS304',
+            summary: 'Corrosion-resistant stainless enclosures for pharma, food processing, and coastal plants. Sanitary and non-reactive.',
+            material: 'AISI 304 / AISI 316 Stainless Steel (1.6mm / 2.0mm)',
+            features: [
+                'Scotch-Brite brushed satin linishing (grain 240)',
+                'IP66 washdown water-tight protection',
+                'Heavy-duty stainless steel hinges and locks',
+                'Food-grade silicone or PU door seal'
+            ]
+        },
+        {
+            id: 'prod-04',
+            title: 'Outdoor Feeder Pillars',
+            category: 'outdoor',
+            category_label: 'Distribution Series',
+            image_url: 'assets/images/product-feeder-pillar.jpg',
+            ip_rating: 'IP55 Weatherproof',
+            summary: 'Outdoor power distribution pillars with rain canopies, insect-screened ventilation, and tamper-resistant 3-point locking.',
+            material: '2.0mm Galvanized Iron (GI) / CRCA Sheet Metal',
+            features: [
+                'Sloped rain canopy overhang roof design',
+                'Natural convection ventilation louvers with brass mesh',
+                'Padlockable 3-point espagnolette latch mechanism',
+                'Ground-burial root plinth or flange mounting base'
+            ]
+        },
+        {
+            id: 'prod-05',
+            title: 'Operator Console Desks',
+            category: 'console',
+            category_label: 'HMI Workstation',
+            image_url: 'assets/images/product-console-desk.jpg',
+            ip_rating: 'IP54 / Ergonomic',
+            summary: 'Ergonomic control desks for factory plants and automated lines. Laser cutouts for screens, meters, and pushbuttons.',
+            material: '1.6mm / 2.0mm CRCA Sheet',
+            features: [
+                'Sloped desk top with pneumatic gas struts for easy lifting',
+                'Laser cutouts for HMI screens, pushbuttons & meters',
+                'Rear & bottom cable management access doors',
+                'Dual-tone powder coat finish for high aesthetics'
+            ]
+        },
+        {
+            id: 'prod-06',
+            title: 'Custom Junction Boxes',
+            category: 'junction',
+            category_label: 'Terminal Series',
+            image_url: 'assets/images/product-junction-boxes.jpg',
+            ip_rating: 'IP65 Ingress',
+            summary: 'Precision-punched terminal and junction enclosures for cable marshalling and instrumentation. DIN rail brackets included.',
+            material: '1.2mm - 1.6mm CRCA / GI / SS304 Sheet',
+            features: [
+                'Screw-cover or hinged door configurations',
+                'DIN-rail mounting brackets & internal earthing studs',
+                'Custom punch array for multi-cable glands',
+                'Oil-resistant continuous PU foam gasketing'
+            ]
+        }
+    ];
+
+    let storeProducts = [...defaultStoreProducts];
+    let rfqCart = {};
+    try {
+        const savedCart = localStorage.getItem('sks_rfq_cart');
+        if (savedCart) rfqCart = JSON.parse(savedCart);
+    } catch (e) {
+        rfqCart = {};
     }
 
-    function bindProductFilters() {
-        if (!productFilterButtons.length) return;
-        productFilterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const targetFilter = btn.getAttribute('data-filter') || 'all';
-                productFilterButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                applyProductFilter(targetFilter);
-            });
-        });
-    }
+    let activeCategory = 'all';
+    let activeSubfilter = 'all';
+    let searchQuery = '';
 
-    bindProductFilters();
-
-    // Dynamic Cloud Products Render (if Supabase / SKS_DB is available)
-    async function loadDynamicProducts() {
-        if (!productsCatalog || !window.SKS_DB || typeof window.SKS_DB.getProducts !== 'function') return;
+    // Save cart state
+    function saveCartState() {
         try {
-            const products = await window.SKS_DB.getProducts();
-            if (products && products.length > 0) {
-                productsCatalog.innerHTML = products.map((p, idx) => {
-                    const delayClass = idx % 3 === 1 ? ' reveal-delay' : (idx % 3 === 2 ? ' reveal-delay-2' : '');
-                    const feats = Array.isArray(p.features) ? p.features : (p.features ? p.features.split('\n').filter(Boolean) : []);
+            localStorage.setItem('sks_rfq_cart', JSON.stringify(rfqCart));
+        } catch (e) {
+            console.warn('Could not save cart:', e);
+        }
+        updateCartUI();
+    }
+
+    // Add Item to RFQ Cart
+    window.addToRfqCart = function(productId) {
+        const prod = storeProducts.find(p => p.id === productId);
+        if (!prod) return;
+
+        if (!rfqCart[productId]) {
+            rfqCart[productId] = {
+                id: prod.id,
+                title: prod.title,
+                category: prod.category,
+                category_label: prod.category_label || (prod.category.toUpperCase()),
+                image_url: prod.image_url,
+                ip_rating: prod.ip_rating || 'IP65',
+                material: prod.material || 'Sheet Metal',
+                qty: 1
+            };
+        } else {
+            rfqCart[productId].qty += 1;
+        }
+        saveCartState();
+    };
+
+    // Decrement item quantity
+    window.decrementRfqCart = function(productId) {
+        if (!rfqCart[productId]) return;
+        rfqCart[productId].qty -= 1;
+        if (rfqCart[productId].qty <= 0) {
+            delete rfqCart[productId];
+        }
+        saveCartState();
+    };
+
+    // Remove item completely
+    window.removeRfqCart = function(productId) {
+        if (rfqCart[productId]) {
+            delete rfqCart[productId];
+            saveCartState();
+        }
+    };
+
+    // Update Cart UI across the page
+    function updateCartUI() {
+        const itemIds = Object.keys(rfqCart);
+        const totalItems = itemIds.reduce((sum, id) => sum + rfqCart[id].qty, 0);
+        const uniqueModels = itemIds.length;
+
+        // Header Cart Badge
+        const headerCount = document.getElementById('headerCartCount');
+        if (headerCount) {
+            headerCount.textContent = totalItems;
+        }
+
+        // Floating Bottom Cart Bar
+        const floatBar = document.getElementById('floatingCartBar');
+        const floatCount = document.getElementById('floatingCartCount');
+        const floatSummary = document.getElementById('floatingCartSummary');
+        if (floatBar) {
+            if (totalItems > 0) {
+                floatBar.style.display = 'block';
+                document.body.classList.add('has-active-cart');
+                if (floatCount) floatCount.textContent = totalItems;
+                if (floatSummary) floatSummary.textContent = `${totalItems} Enclosure ${totalItems === 1 ? 'Unit' : 'Units'} in RFQ Quote Basket`;
+            } else {
+                floatBar.style.display = 'none';
+                document.body.classList.remove('has-active-cart');
+            }
+        }
+
+        // Drawer Counter & Items
+        const drawerBadge = document.getElementById('drawerItemCountBadge');
+        if (drawerBadge) {
+            drawerBadge.textContent = `${uniqueModels} ${uniqueModels === 1 ? 'Model' : 'Models'}`;
+        }
+
+        const drawerList = document.getElementById('drawerItemList');
+        if (drawerList) {
+            if (uniqueModels === 0) {
+                drawerList.innerHTML = `
+                    <div style="text-align: center; padding: 2.5rem 1rem; color: #94A3B8;">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor" style="opacity: 0.35; margin-bottom: 0.75rem;"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        <h4 style="color: #475569; margin: 0 0 0.35rem 0;">Your RFQ Quote Basket is Empty</h4>
+                        <p style="font-size: 0.85rem; margin: 0;">Click the green <strong>ADD +</strong> button on any enclosure to request a commercial quote.</p>
+                    </div>`;
+            } else {
+                drawerList.innerHTML = itemIds.map(id => {
+                    const item = rfqCart[id];
                     return `
-                    <div class="product-card reveal${delayClass}" data-category="${escapeHtml(p.category)}">
-                        <div class="product-img-wrap">
-                            <img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title)}" width="1200" height="896" loading="lazy" decoding="async">
-                            <span class="product-badge ip-badge">${escapeHtml(p.ip_rating || 'IP55 / IP65')}</span>
+                    <div class="b-cart-item">
+                        <img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" class="b-cart-item-img">
+                        <div class="b-cart-item-info">
+                            <h4 class="b-cart-item-title">${escapeHtml(item.title)}</h4>
+                            <div class="b-cart-item-meta">${escapeHtml(item.ip_rating)} &bull; ${escapeHtml(item.material)}</div>
                         </div>
-                        <div class="product-body">
-                            <span class="product-category">${escapeHtml(p.category_label || (p.category.toUpperCase() + ' Enclosure'))}</span>
-                            <h3>${escapeHtml(p.title)}</h3>
-                            <p>${escapeHtml(p.summary || '')}</p>
-                            ${feats.length ? `
-                            <ul class="product-feature-list">
-                                ${feats.map(f => `<li>${escapeHtml(f)}</li>`).join('')}
-                            </ul>` : ''}
-                            <div class="product-actions" style="margin-top: 1.5rem;">
-                                <a href="contact-us.html?product=${encodeURIComponent(p.title)}" class="btn btn-teal btn-sm" style="width: 100%; text-align: center;">Request RFQ for This Product</a>
+                        <div class="b-cart-item-actions">
+                            <div class="b-stepper">
+                                <button type="button" class="b-stepper-btn" onclick="decrementRfqCart('${id}')">&minus;</button>
+                                <span class="b-stepper-val">${item.qty}</span>
+                                <button type="button" class="b-stepper-btn" onclick="addToRfqCart('${id}')">+</button>
                             </div>
+                            <button type="button" class="b-cart-item-delete" onclick="removeRfqCart('${id}')" title="Remove">&times;</button>
                         </div>
                     </div>`;
                 }).join('');
+            }
+        }
 
-                // Preserve active filter if selected
-                const activeFilterBtn = document.querySelector('.filter-btn.active');
-                if (activeFilterBtn) {
-                    applyProductFilter(activeFilterBtn.getAttribute('data-filter') || 'all');
+        // Update all button wraps on cards
+        storeProducts.forEach(prod => {
+            const actionWrap = document.getElementById(`action-${prod.id}`);
+            if (actionWrap) {
+                const qty = rfqCart[prod.id] ? rfqCart[prod.id].qty : 0;
+                if (qty > 0) {
+                    actionWrap.innerHTML = `
+                        <div class="b-stepper">
+                            <button type="button" class="b-stepper-btn" onclick="decrementRfqCart('${prod.id}')">&minus;</button>
+                            <span class="b-stepper-val">${qty}</span>
+                            <button type="button" class="b-stepper-btn" onclick="addToRfqCart('${prod.id}')">+</button>
+                        </div>`;
+                } else {
+                    actionWrap.innerHTML = `
+                        <button type="button" class="b-add-btn" onclick="addToRfqCart('${prod.id}')">
+                            ADD <span class="plus-icon">+</span>
+                        </button>`;
                 }
             }
-        } catch (err) {
-            console.warn('Could not load dynamic products, retaining static cards:', err);
+        });
+    }
+
+    // Slide-Over Drawer Controls
+    window.openRfqDrawer = function() {
+        const overlay = document.getElementById('rfqDrawerOverlay');
+        const panel = document.getElementById('rfqDrawerPanel');
+        if (overlay && panel) {
+            overlay.classList.add('active');
+            panel.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            updateCartUI();
+        }
+    };
+
+    window.closeRfqDrawer = function() {
+        const overlay = document.getElementById('rfqDrawerOverlay');
+        const panel = document.getElementById('rfqDrawerPanel');
+        if (overlay && panel) {
+            overlay.classList.remove('active');
+            panel.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    };
+
+    // Quick Specs Modal Controls
+    window.openQuickSpecsModal = function(productId) {
+        const prod = storeProducts.find(p => p.id === productId);
+        if (!prod) return;
+
+        const modal = document.getElementById('quickSpecsModal');
+        const content = document.getElementById('quickSpecsContent');
+        if (!modal || !content) return;
+
+        const feats = Array.isArray(prod.features) ? prod.features : [];
+        content.innerHTML = `
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;">
+                <div style="width: 220px; flex-shrink: 0; background: #F8FAFC; border-radius: 12px; padding: 1rem; border: 1px solid #E2E8F0; text-align: center;">
+                    <img src="${escapeHtml(prod.image_url)}" alt="${escapeHtml(prod.title)}" style="max-width: 100%; max-height: 200px; object-fit: contain;">
+                    <div style="margin-top: 0.75rem; font-size: 0.75rem; font-weight: 700; color: #0C831F; background: #DCFCE7; padding: 0.3rem 0.6rem; border-radius: 999px;">
+                        ${escapeHtml(prod.ip_rating || 'IP65 Verified')}
+                    </div>
+                </div>
+                <div style="flex-grow: 1; min-width: 260px;">
+                    <span style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700; color: #00A896;">${escapeHtml(prod.category_label || 'Enclosure Specs')}</span>
+                    <h3 style="font-size: 1.35rem; margin: 0.25rem 0 0.5rem 0; color: #0F172A;">${escapeHtml(prod.title)}</h3>
+                    <p style="font-size: 0.88rem; color: #475569; line-height: 1.5; margin-bottom: 1rem;">${escapeHtml(prod.summary || '')}</p>
+                    
+                    <div style="background: #F1F5F9; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #1E293B; margin-bottom: 0.35rem;">Technical Construction:</div>
+                        <div style="font-size: 0.82rem; color: #334155;"><strong>Material:</strong> ${escapeHtml(prod.material || 'CRCA / GI Sheet')}</div>
+                    </div>
+
+                    ${feats.length ? `
+                    <div style="margin-bottom: 1.25rem;">
+                        <strong style="font-size: 0.82rem; color: #0F172A; display: block; margin-bottom: 0.4rem;">Engineering Features:</strong>
+                        <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.82rem; color: #475569; line-height: 1.6;">
+                            ${feats.map(f => `<li>${escapeHtml(f)}</li>`).join('')}
+                        </ul>
+                    </div>` : ''}
+
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button type="button" class="btn btn-lime btn-sm" onclick="addToRfqCart('${prod.id}'); closeQuickSpecsModal(); openRfqDrawer();" style="flex-grow: 1; justify-content: center;">
+                            Add to RFQ Quote Basket &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeQuickSpecsModal = function() {
+        const modal = document.getElementById('quickSpecsModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    };
+
+    // Submit RFQ via WhatsApp
+    window.submitRfqViaWhatsApp = function() {
+        const itemIds = Object.keys(rfqCart);
+        if (itemIds.length === 0) {
+            alert('Please add at least one enclosure model to your RFQ Quote Basket.');
+            return;
+        }
+
+        const name = (document.getElementById('rfqUserName')?.value || '').trim() || 'Purchaser';
+        const company = (document.getElementById('rfqUserCompany')?.value || '').trim() || 'Client Company';
+        const phone = (document.getElementById('rfqUserPhone')?.value || '').trim();
+        const email = (document.getElementById('rfqUserEmail')?.value || '').trim();
+        const customSpecs = (document.getElementById('rfqCustomSpecs')?.value || '').trim();
+
+        let message = `*RFQ INQUIRY - SKS ENGINEERING SOLUTIONS*\n`;
+        message += `=====================================\n`;
+        message += `*Client:* ${name}\n`;
+        message += `*Company:* ${company}\n`;
+        if (phone) message += `*Contact:* ${phone}\n`;
+        if (email) message += `*Email:* ${email}\n\n`;
+        message += `*REQUESTED ENCLOSURE MODELS:*\n`;
+
+        itemIds.forEach((id, idx) => {
+            const item = rfqCart[id];
+            message += `${idx + 1}. *${item.title}* - Qty: ${item.qty} units (${item.ip_rating})\n`;
+        });
+
+        if (customSpecs) {
+            message += `\n*TARGET DIMENSIONS & SPECS:*\n${customSpecs}\n`;
+        }
+
+        message += `\n=====================================\n`;
+        message += `Please review technical feasibility and share a formal estimation proposal.`;
+
+        const waUrl = `https://api.whatsapp.com/send?phone=918668742659&text=${encodeURIComponent(message)}`;
+        window.open(waUrl, '_blank');
+    };
+
+    // Submit RFQ to Cloud Database
+    window.submitRfqToDatabase = async function() {
+        const itemIds = Object.keys(rfqCart);
+        if (itemIds.length === 0) {
+            alert('Your RFQ basket is empty. Please add an enclosure model.');
+            return;
+        }
+
+        const nameInput = document.getElementById('rfqUserName');
+        const companyInput = document.getElementById('rfqUserCompany');
+        const phoneInput = document.getElementById('rfqUserPhone');
+        const emailInput = document.getElementById('rfqUserEmail');
+        const customSpecsInput = document.getElementById('rfqCustomSpecs');
+
+        const name = (nameInput?.value || '').trim();
+        const company = (companyInput?.value || '').trim();
+        const phone = (phoneInput?.value || '').trim();
+        const email = (emailInput?.value || '').trim();
+        const customSpecs = (customSpecsInput?.value || '').trim();
+
+        if (!name || !company || (!phone && !email)) {
+            alert('Please provide your Name, Company, and Mobile Number or Work Email to submit the quotation request.');
+            if (nameInput && !name) nameInput.focus();
+            return;
+        }
+
+        const submitBtn = document.getElementById('btnSubmitDesk');
+        if (submitBtn) {
+            submitBtn.innerText = 'Submitting to Engineering Desk...';
+            submitBtn.disabled = true;
+        }
+
+        const itemsSummary = itemIds.map(id => `${rfqCart[id].title} (x${rfqCart[id].qty})`).join(', ');
+        const fullMessage = `Items: ${itemsSummary}\n\nCustom Specs / Dimensions: ${customSpecs || 'Standard CAD specs'}`;
+
+        if (window.SKS_DB && typeof window.SKS_DB.submitInquiry === 'function') {
+            try {
+                await window.SKS_DB.submitInquiry({
+                    name,
+                    company,
+                    phone,
+                    email,
+                    product_interest: `Store RFQ (${itemIds.length} Models)`,
+                    message: fullMessage
+                });
+            } catch (err) {
+                console.warn('Database note:', err);
+            }
+        }
+
+        alert(`Quotation Request Received! Thank you, ${name}. Our engineering estimation desk will review your CAD specs and contact you within 24–48 hours.`);
+        
+        // Reset Cart
+        rfqCart = {};
+        saveCartState();
+        closeRfqDrawer();
+
+        if (submitBtn) {
+            submitBtn.innerText = 'Submit RFQ to Engineering Desk \u2192';
+            submitBtn.disabled = false;
+        }
+    };
+
+    // Filtering logic
+    function filterAndRenderStoreCards() {
+        const cards = document.querySelectorAll('#productsCatalog .b-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const cat = card.getAttribute('data-category') || '';
+            const ip = card.getAttribute('data-ip') || '';
+            const textContent = card.innerText.toLowerCase();
+
+            const matchCat = (activeCategory === 'all' || cat === activeCategory);
+            const matchSub = (activeSubfilter === 'all' || ip === activeSubfilter || cat.includes(activeSubfilter));
+            const matchSearch = (!searchQuery || textContent.includes(searchQuery));
+
+            if (matchCat && matchSub && matchSearch) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const countLabel = document.getElementById('catalogResultsCount');
+        if (countLabel) {
+            countLabel.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'model' : 'models'}`;
+        }
+
+        const heading = document.getElementById('currentCategoryTitle');
+        if (heading) {
+            const catMap = {
+                all: 'All Enclosures',
+                modular: 'Modular Floor-Standing Cabinets',
+                wallmount: 'Wall-Mounted Enclosures',
+                stainless: 'Stainless Steel SS304/SS316',
+                outdoor: 'Outdoor Feeder Pillars',
+                console: 'Operator Console Desks',
+                junction: 'Custom Sheet Metal Junction Boxes'
+            };
+            heading.textContent = catMap[activeCategory] || 'Enclosures Portfolio';
         }
     }
 
+    // Bind Blinkit Controls
+    function initBlinkitStore() {
+        // Search Input
+        const searchInput = document.getElementById('catalogSearchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase().trim();
+                if (clearBtn) clearBtn.style.display = searchQuery ? 'block' : 'none';
+                filterAndRenderStoreCards();
+            });
+        }
+        if (clearBtn && searchInput) {
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                searchQuery = '';
+                clearBtn.style.display = 'none';
+                filterAndRenderStoreCards();
+                searchInput.focus();
+            });
+        }
+
+        // Category Navigation (Desktop Rail & Mobile Chips)
+        const catButtons = document.querySelectorAll('#desktopCatNav .rail-btn, #mobileCatRail .b-cat-chip, #productFilterBar .filter-btn');
+        catButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetCat = btn.getAttribute('data-filter') || 'all';
+                activeCategory = targetCat;
+
+                // Sync all button active states
+                document.querySelectorAll('#desktopCatNav .rail-btn, #mobileCatRail .b-cat-chip, #productFilterBar .filter-btn').forEach(b => {
+                    if (b.getAttribute('data-filter') === targetCat) {
+                        b.classList.add('active');
+                    } else {
+                        b.classList.remove('active');
+                    }
+                });
+
+                filterAndRenderStoreCards();
+            });
+        });
+
+        // Subfilter Chips
+        const subChips = document.querySelectorAll('#subfilterChips .chip-tag');
+        subChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                subChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeSubfilter = chip.getAttribute('data-subfilter') || 'all';
+                filterAndRenderStoreCards();
+            });
+        });
+
+        // Cart Drawer Triggers
+        const headerCartBtn = document.getElementById('openCartHeaderBtn');
+        if (headerCartBtn) headerCartBtn.addEventListener('click', openRfqDrawer);
+
+        const cartBarTrigger = document.getElementById('cartBarOpenTrigger');
+        if (cartBarTrigger) cartBarTrigger.addEventListener('click', openRfqDrawer);
+
+        const cartBarActionBtn = document.getElementById('cartBarActionBtn');
+        if (cartBarActionBtn) cartBarActionBtn.addEventListener('click', openRfqDrawer);
+
+        const closeDrawer = document.getElementById('closeDrawerBtn');
+        if (closeDrawer) closeDrawer.addEventListener('click', closeRfqDrawer);
+
+        const overlay = document.getElementById('rfqDrawerOverlay');
+        if (overlay) overlay.addEventListener('click', closeRfqDrawer);
+
+        // Quick Specs Modal Triggers
+        const closeSpecsBtn = document.getElementById('closeSpecsModalBtn');
+        if (closeSpecsBtn) closeSpecsBtn.addEventListener('click', closeQuickSpecsModal);
+
+        const specsModal = document.getElementById('quickSpecsModal');
+        if (specsModal) {
+            specsModal.addEventListener('click', (e) => {
+                if (e.target === specsModal) closeQuickSpecsModal();
+            });
+        }
+
+        // Esc key closes drawer and specs
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeRfqDrawer();
+                closeQuickSpecsModal();
+            }
+        });
+
+        updateCartUI();
+    }
+
+    // Dynamic Cloud Products Render (if Supabase / SKS_DB is available)
+    async function loadDynamicProducts() {
+        if (!productsCatalog) return;
+        if (window.SKS_DB && typeof window.SKS_DB.getProducts === 'function') {
+            try {
+                const cloudProds = await window.SKS_DB.getProducts();
+                if (cloudProds && cloudProds.length > 0) {
+                    storeProducts = cloudProds;
+                    productsCatalog.innerHTML = cloudProds.map((p, idx) => {
+                        const delayClass = idx % 3 === 1 ? ' reveal-delay' : (idx % 3 === 2 ? ' reveal-delay-2' : '');
+                        return `
+                        <div class="b-card reveal${delayClass}" data-category="${escapeHtml(p.category)}" data-product-id="${escapeHtml(p.id)}" data-ip="${escapeHtml((p.ip_rating || '').toLowerCase())}">
+                            <div class="b-card-img-box" onclick="window.openQuickSpecsModal('${escapeHtml(p.id)}')">
+                                <div class="b-tag-top-left">⚡ 7–10 Days Lead</div>
+                                <div class="b-tag-top-right">${escapeHtml(p.ip_rating || 'IP65')}</div>
+                                <img src="${escapeHtml(p.image_url)}" alt="${escapeHtml(p.title)}" width="1200" height="896" loading="lazy" decoding="async">
+                                <button type="button" class="b-quick-view-btn" aria-label="Quick specs preview">Specs &bull; View</button>
+                            </div>
+                            <div class="b-card-details">
+                                <div class="b-card-lead-time">⏱️ 7–10 Days &bull; ${escapeHtml(p.category_label || 'Enclosures')}</div>
+                                <h4 class="b-card-title">${escapeHtml(p.title)}</h4>
+                                <div class="b-card-specs-pill">${escapeHtml(p.material || 'Sheet Metal')}</div>
+                                <p class="b-card-desc">${escapeHtml(p.summary || '')}</p>
+                                <div class="b-card-footer">
+                                    <div class="b-price-stack">
+                                        <span class="b-price-tag">Custom CAD Pricing</span>
+                                        <span class="b-price-sub">Bespoke H &times; W &times; D</span>
+                                    </div>
+                                    <div class="b-action-wrap" id="action-${escapeHtml(p.id)}">
+                                        <button type="button" class="b-add-btn" onclick="window.addToRfqCart('${escapeHtml(p.id)}')">
+                                            ADD <span class="plus-icon">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    updateCartUI();
+                    filterAndRenderStoreCards();
+                }
+            } catch (err) {
+                console.warn('Could not load dynamic products, retaining store cards:', err);
+            }
+        }
+    }
+
+    initBlinkitStore();
     loadDynamicProducts();
+
 
     // ==========================================================================
     // 8. Plant Showcase Gallery & Lightbox Modal (Dynamic DB Enabled)
