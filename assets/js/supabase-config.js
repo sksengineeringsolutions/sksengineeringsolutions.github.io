@@ -1,9 +1,17 @@
 /**
- * SKS Engineering Solutions - Supabase Dynamic CMS & Database Client
- * Handles real-time products, plant gallery, and RFQ inquiries
+ * SKS Engineering Solutions - Dynamic CMS & Real-Time Client
+ * Powers real-time product catalog, plant showcase gallery, and RFQ inquiries
+ *
+ * CLOUD CONFIGURATION (Optional):
+ * To connect to a live Supabase project, simply provide your project URL
+ * and Anon Key in CLOUD_SUPABASE_URL and CLOUD_SUPABASE_ANON_KEY below.
+ * If left empty, the website operates dynamically using the local/offline data store.
  */
 
 'use strict';
+
+const CLOUD_SUPABASE_URL = '';
+const CLOUD_SUPABASE_ANON_KEY = '';
 
 const SKS_DB = (() => {
     // Default Storage Keys
@@ -177,8 +185,8 @@ const SKS_DB = (() => {
      * Get configured Supabase Credentials
      */
     function getCredentials() {
-        const url = localStorage.getItem(STORAGE_URL_KEY) || window.SKS_SUPABASE_URL || '';
-        const key = localStorage.getItem(STORAGE_KEY_KEY) || window.SKS_SUPABASE_ANON_KEY || '';
+        const url = CLOUD_SUPABASE_URL || localStorage.getItem(STORAGE_URL_KEY) || window.SKS_SUPABASE_URL || '';
+        const key = CLOUD_SUPABASE_ANON_KEY || localStorage.getItem(STORAGE_KEY_KEY) || window.SKS_SUPABASE_ANON_KEY || '';
         return { url, key };
     }
 

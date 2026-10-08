@@ -68,7 +68,7 @@ CREATE POLICY "Public can view gallery" ON public.gallery
 CREATE POLICY "Public can insert inquiries" ON public.inquiries
     FOR INSERT WITH CHECK (true);
 
--- Allow Full Access for Authenticated Admins (Or anon key if admin portal uses direct token)
+-- Allow Full Access for Authenticated Backend / Service Role
 CREATE POLICY "Admin full access products" ON public.products
     FOR ALL USING (true) WITH CHECK (true);
 

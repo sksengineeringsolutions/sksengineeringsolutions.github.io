@@ -1072,6 +1072,57 @@ document.addEventListener('DOMContentLoaded', () => {
     initBlinkitStore();
     loadDynamicProducts();
 
+    // ==========================================================================
+    // 7b. Homepage Dynamic Product Categories Filter & RFQ Pre-fill
+    // ==========================================================================
+    const homeProductFilters = document.querySelectorAll('#productFilterBar .filter-btn');
+    const homeProductCards = document.querySelectorAll('#homeProductsGrid .product-card');
+
+    if (homeProductFilters.length && homeProductCards.length) {
+        homeProductFilters.forEach(btn => {
+            btn.addEventListener('click', () => {
+                homeProductFilters.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const targetCat = (btn.getAttribute('data-filter') || 'all').toLowerCase();
+
+                homeProductCards.forEach(card => {
+                    const cardCat = (card.getAttribute('data-category') || '').toLowerCase();
+                    if (targetCat === 'all' || cardCat === targetCat) {
+                        card.style.display = '';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(12px)';
+                        setTimeout(() => {
+                            card.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 20);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    }
+
+    // Connect Homepage Product RFQ Buttons to the Contact Form
+    document.querySelectorAll('#homeProductsGrid .product-card a[href="#contact"]').forEach(link => {
+        link.addEventListener('click', () => {
+            const card = link.closest('.product-card');
+            const title = card ? card.querySelector('h3')?.textContent?.trim() : '';
+            if (title) {
+                const serviceSelect = document.getElementById('serviceCategory');
+                if (serviceSelect) {
+                    for (let opt of serviceSelect.options) {
+                        if (opt.value && title.toLowerCase().includes(opt.value.toLowerCase().slice(0, 10))) {
+                            serviceSelect.value = opt.value;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    });
+
 
     // ==========================================================================
     // 8. Plant Showcase Gallery & Lightbox Modal (Dynamic DB Enabled)
@@ -1132,22 +1183,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dynamic Cloud Gallery Render
     async function loadDynamicGallery() {
-        const galleryGrid = document.querySelector('.gallery-grid');
-        if (!galleryGrid || !window.SKS_DB || typeof window.SKS_DB.getGallery !== 'function') return;
+        const galleryGrids = document.querySelectorAll('.gallery-grid');
+        if (!galleryGrids.length || !window.SKS_DB || typeof window.SKS_DB.getGallery !== 'function') return;
         try {
             const gallery = await window.SKS_DB.getGallery();
             if (gallery && gallery.length > 0) {
-                galleryGrid.innerHTML = gallery.map((item, idx) => {
-                    const delayClass = idx % 3 === 1 ? ' reveal-delay' : (idx % 3 === 2 ? ' reveal-delay-2' : '');
-                    return `
-                    <div class="gallery-item reveal${delayClass}" data-category="${escapeHtml(item.category || '')}">
-                        <img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" width="1205" height="1600" loading="lazy" decoding="async">
-                        <div class="gallery-overlay">
-                            <h4>${escapeHtml(item.title)}</h4>
-                            <p>${escapeHtml(item.description || '')}</p>
-                        </div>
-                    </div>`;
-                }).join('');
+                galleryGrids.forEach(galleryGrid => {
+                    galleryGrid.innerHTML = gallery.map((item, idx) => {
+                        const delayClass = idx % 3 === 1 ? ' reveal-delay' : (idx % 3 === 2 ? ' reveal-delay-2' : '');
+                        return `
+                        <div class="gallery-item reveal${delayClass}" data-category="${escapeHtml(item.category || '')}">
+                            <img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" width="1205" height="1600" loading="lazy" decoding="async">
+                            <div class="gallery-overlay">
+                                <h4>${escapeHtml(item.title)}</h4>
+                                <p>${escapeHtml(item.description || '')}</p>
+                            </div>
+                        </div>`;
+                    }).join('');
+                });
                 bindGalleryLightboxItems();
             }
         } catch (err) {
