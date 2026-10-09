@@ -1457,4 +1457,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 800);
         });
     }
+
+    // ==========================================================================
+    // 16. Site-Wide SKS AI Engineering Assistant Loader Fallback
+    // ==========================================================================
+    if (!window.__SKS_CHATBOT_LOADED__ && !document.querySelector('script[src*="sks-chatbot.js"]')) {
+        const chatScript = document.createElement('script');
+        chatScript.src = 'assets/js/sks-chatbot.js?v=20261009';
+        chatScript.async = true;
+        document.body.appendChild(chatScript);
+    }
 });

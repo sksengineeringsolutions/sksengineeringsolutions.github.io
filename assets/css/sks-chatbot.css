@@ -1,0 +1,936 @@
+/**
+ * SKS Engineering Solutions - AI Engineering Assistant Stylesheet
+ * High-performance dark glassmorphism design system
+ * Matches SKS corporate palette: Dark Slate (#0B1120 / #0F172A), Cyan (#06B6D4), Teal (#0D9488), Laser Orange (#F97316)
+ */
+
+/* ==========================================================================
+   1. Floating Dock Integration & Dedicated Launcher Button
+   ========================================================================== */
+.dock-item.dock-chatbot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    pointer-events: auto;
+}
+
+.dock-btn-chatbot {
+    background: linear-gradient(135deg, #0284c7 0%, #0d9488 50%, #10b981 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.55), 0 8px 24px rgba(13, 148, 136, 0.42);
+    border: 1.5px solid rgba(255, 255, 255, 0.65);
+    color: #FFFFFF;
+    position: relative;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.dock-btn-chatbot:hover {
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 12px 28px rgba(6, 182, 212, 0.55), 0 0 18px rgba(13, 148, 136, 0.5);
+    transform: translateY(-4px) scale(1.08);
+}
+
+.dock-badge-pulse.green {
+    background: #10B981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: sksPulseGreen 2s infinite;
+}
+
+@keyframes sksPulseGreen {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.75);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+/* ==========================================================================
+   2. Proactive Teaser Greeting Pill
+   ========================================================================== */
+.sks-chat-teaser {
+    position: fixed;
+    right: 80px;
+    bottom: 28px;
+    z-index: 1490;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(13, 148, 136, 0.4);
+    border-radius: 9999px;
+    padding: 8px 14px 8px 10px;
+    box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 16px rgba(13, 148, 136, 0.25);
+    color: #F8FAFC;
+    cursor: pointer;
+    transform: translateX(20px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.sks-chat-teaser.visible {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sks-teaser-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(13, 148, 136, 0.5);
+}
+
+.sks-teaser-text strong {
+    color: #38BDF8;
+    font-weight: 600;
+}
+
+.sks-teaser-close {
+    background: transparent;
+    border: none;
+    color: #94A3B8;
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 1rem;
+    line-height: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    transition: color 0.2s ease;
+}
+
+.sks-teaser-close:hover {
+    color: #FFFFFF;
+}
+
+/* ==========================================================================
+   3. Main Chatbot Modal Window
+   ========================================================================== */
+.sks-chat-widget {
+    position: fixed;
+    right: 22px;
+    bottom: 86px;
+    width: 395px;
+    max-width: calc(100vw - 28px);
+    height: 610px;
+    max-height: calc(100vh - 110px);
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(13, 148, 136, 0.25);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 2500;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(24px) scale(0.94);
+    transform-origin: bottom right;
+    transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.sks-chat-widget.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.sks-chat-widget.expanded {
+    width: 520px;
+    height: 720px;
+    max-height: calc(100vh - 40px);
+}
+
+/* ==========================================================================
+   4. Chat Header
+   ========================================================================== */
+.sks-chat-header {
+    background: linear-gradient(135deg, #0b1120 0%, #162033 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.sks-chat-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sks-bot-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0284c7 0%, #0d9488 50%, #10b981 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
+    flex-shrink: 0;
+}
+
+.sks-bot-avatar svg {
+    width: 22px;
+    height: 22px;
+}
+
+.sks-avatar-status {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #10B981;
+    border: 2px solid #0F172A;
+    border-radius: 50%;
+}
+
+.sks-brand-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sks-brand-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: -0.01em;
+}
+
+.sks-brand-badge {
+    background: rgba(13, 148, 136, 0.25);
+    border: 1px solid rgba(13, 148, 136, 0.5);
+    color: #2DD4BF;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sks-brand-status {
+    font-size: 0.72rem;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 1px;
+}
+
+.sks-status-dot {
+    width: 6px;
+    height: 6px;
+    background: #10B981;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.sks-chat-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sks-ctrl-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.sks-ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FFFFFF;
+}
+
+.sks-ctrl-btn.active {
+    color: #38BDF8;
+    background: rgba(56, 189, 248, 0.15);
+    border-color: rgba(56, 189, 248, 0.35);
+}
+
+/* ==========================================================================
+   5. Dynamic Operational Notice Bar
+   ========================================================================== */
+.sks-chat-notice-bar {
+    background: rgba(13, 148, 136, 0.12);
+    border-bottom: 1px solid rgba(13, 148, 136, 0.25);
+    padding: 6px 14px;
+    font-size: 0.72rem;
+    color: #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.sks-chat-notice-bar.thursday-off {
+    background: rgba(249, 115, 22, 0.14);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.3);
+    color: #FDBA74;
+}
+
+.sks-notice-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.sks-notice-highlight {
+    color: #38BDF8;
+    font-weight: 600;
+}
+
+.sks-chat-notice-bar.thursday-off .sks-notice-highlight {
+    color: #F97316;
+}
+
+/* ==========================================================================
+   6. Messages Body Area
+   ========================================================================== */
+.sks-chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+}
+
+.sks-chat-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sks-chat-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sks-chat-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+}
+
+.sks-chat-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.26);
+}
+
+/* Message Item */
+.sks-msg-row {
+    display: flex;
+    gap: 10px;
+    max-width: 90%;
+    animation: sksMsgIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes sksMsgIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sks-msg-row.bot {
+    align-self: flex-start;
+}
+
+.sks-msg-row.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.sks-msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0284c7, #0d9488);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    margin-top: 2px;
+}
+
+.sks-msg-bubble {
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    line-height: 1.48;
+    position: relative;
+    word-break: break-word;
+}
+
+.sks-msg-row.bot .sks-msg-bubble {
+    background: #1E293B;
+    color: #F1F5F9;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top-left-radius: 4px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.sks-msg-row.user .sks-msg-bubble {
+    background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+    color: #FFFFFF;
+    border-top-right-radius: 4px;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+}
+
+.sks-msg-bubble p {
+    margin: 0 0 6px 0;
+}
+
+.sks-msg-bubble p:last-child {
+    margin-bottom: 0;
+}
+
+.sks-msg-bubble strong {
+    color: #38BDF8;
+    font-weight: 600;
+}
+
+.sks-msg-row.user .sks-msg-bubble strong {
+    color: #FFFFFF;
+}
+
+.sks-msg-bubble ul {
+    margin: 6px 0 6px 18px;
+    padding: 0;
+}
+
+.sks-msg-bubble li {
+    margin-bottom: 4px;
+}
+
+.sks-msg-bubble code {
+    background: rgba(0, 0, 0, 0.35);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: #FCD34D;
+}
+
+.sks-msg-time {
+    font-size: 0.65rem;
+    color: #64748B;
+    margin-top: 4px;
+    display: block;
+    text-align: right;
+}
+
+.sks-msg-row.user .sks-msg-time {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Typing Indicator */
+.sks-typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    background: #1E293B;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    border-top-left-radius: 4px;
+    width: fit-content;
+}
+
+.sks-typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #38BDF8;
+    border-radius: 50%;
+    animation: sksBouncingDot 1.4s infinite ease-in-out both;
+}
+
+.sks-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.sks-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes sksBouncingDot {
+    0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+    }
+    40% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   7. In-Chat Cards & Action Elements
+   ========================================================================== */
+.sks-card-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 6px 0;
+}
+
+.sks-spec-pill {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: rgba(13, 148, 136, 0.2);
+    color: #2DD4BF;
+    border: 1px solid rgba(13, 148, 136, 0.35);
+}
+
+.sks-spec-pill.orange {
+    background: rgba(249, 115, 22, 0.2);
+    color: #FB923C;
+    border-color: rgba(249, 115, 22, 0.35);
+}
+
+.sks-spec-pill.blue {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38BDF8;
+    border-color: rgba(56, 189, 248, 0.35);
+}
+
+.sks-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.sks-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    width: 100%;
+}
+
+.sks-action-btn.whatsapp {
+    background: #25D366;
+    color: #052e16;
+}
+
+.sks-action-btn.whatsapp:hover {
+    background: #22c55e;
+    color: #022c22;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.sks-action-btn.primary {
+    background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+    color: #FFFFFF;
+}
+
+.sks-action-btn.primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.35);
+}
+
+.sks-action-btn.secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #E2E8F0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sks-action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #FFFFFF;
+}
+
+/* Interactive RFQ Wizard Card */
+.sks-rfq-wizard-card {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(13, 148, 136, 0.35);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sks-rfq-wizard-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #38BDF8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sks-wizard-step-label {
+    font-size: 0.72rem;
+    color: #94A3B8;
+    margin-bottom: 3px;
+    font-weight: 500;
+}
+
+.sks-wizard-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+
+.sks-wizard-option-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #E2E8F0;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.sks-wizard-option-btn:hover,
+.sks-wizard-option-btn.selected {
+    background: rgba(13, 148, 136, 0.25);
+    border-color: #0D9488;
+    color: #5EEAD4;
+}
+
+.sks-wizard-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.sks-wizard-input:focus {
+    border-color: #38BDF8;
+}
+
+/* ==========================================================================
+   8. Suggestion Chips Bar
+   ========================================================================== */
+.sks-chat-chips-container {
+    padding: 6px 12px;
+    background: rgba(11, 17, 32, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scrollbar-width: none;
+}
+
+.sks-chat-chips-container::-webkit-scrollbar {
+    display: none;
+}
+
+.sks-chip-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #CBD5E1;
+    border-radius: 9999px;
+    padding: 4px 10px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.sks-chip-btn:hover {
+    background: rgba(13, 148, 136, 0.22);
+    border-color: rgba(13, 148, 136, 0.5);
+    color: #38BDF8;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   9. Chat Input Form
+   ========================================================================== */
+.sks-chat-footer {
+    padding: 10px 14px;
+    background: #0B1120;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sks-input-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sks-chat-input {
+    width: 100%;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    padding: 9px 38px 9px 14px;
+    color: #FFFFFF;
+    font-size: 0.82rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.sks-chat-input:focus {
+    border-color: #0D9488;
+    background: #1E293B;
+    box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25);
+}
+
+.sks-chat-input::placeholder {
+    color: #64748B;
+}
+
+.sks-mic-btn {
+    position: absolute;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: #94A3B8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.sks-mic-btn:hover {
+    color: #38BDF8;
+}
+
+.sks-mic-btn.listening {
+    color: #EF4444;
+    animation: sksMicPulse 1s infinite alternate;
+}
+
+@keyframes sksMicPulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.2); }
+}
+
+.sks-send-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
+    border: none;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+}
+
+.sks-send-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 16px rgba(6, 182, 212, 0.5);
+}
+
+.sks-send-btn:active {
+    transform: scale(0.95);
+}
+
+.sks-send-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   10. Settings Modal (Optional Gemini API Key)
+   ========================================================================== */
+.sks-settings-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 17, 32, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+}
+
+.sks-settings-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sks-settings-box {
+    background: #1E293B;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 18px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.sks-settings-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sks-settings-desc {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    line-height: 1.45;
+}
+
+.sks-settings-input {
+    width: 100%;
+    background: #0F172A;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.sks-settings-input:focus {
+    border-color: #38BDF8;
+}
+
+.sks-settings-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.sks-settings-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.sks-settings-btn.save {
+    background: #0D9488;
+    color: #FFFFFF;
+}
+
+.sks-settings-btn.cancel {
+    background: rgba(255, 255, 255, 0.08);
+    color: #CBD5E1;
+}
+
+/* ==========================================================================
+   11. Mobile Screen Adaptations
+   ========================================================================== */
+@media (max-width: 640px) {
+    .floating-right-dock {
+        gap: 10px !important;
+    }
+
+    .dock-item.dock-chatbot {
+        display: flex !important;
+    }
+
+    .sks-chat-widget {
+        right: 8px !important;
+        bottom: 8px !important;
+        left: 8px !important;
+        width: calc(100vw - 16px) !important;
+        max-width: 100vw !important;
+        height: calc(100dvh - 16px) !important;
+        max-height: calc(100dvh - 16px) !important;
+        border-radius: 16px !important;
+        transform-origin: bottom center !important;
+    }
+
+    .sks-chat-teaser {
+        right: 76px !important;
+        bottom: 18px !important;
+        font-size: 0.76rem !important;
+        padding: 6px 10px !important;
+    }
+}

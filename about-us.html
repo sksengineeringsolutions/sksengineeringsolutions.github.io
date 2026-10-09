@@ -41,6 +41,8 @@
 
     <!-- Production Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css?v=20261006b">
+    <!-- SKS AI Assistant Stylesheet -->
+    <link rel="stylesheet" href="assets/css/sks-chatbot.css?v=20261009">
     <!-- Structured Data (JSON-LD) for AboutPage & BreadcrumbList -->
     <script type="application/ld+json">
     {
@@ -120,6 +122,7 @@
                     <li><a href="process.html">Process</a></li>
                     <li><a href="careers.html">Careers</a></li>
                     <li><a href="contact-us.html">Contact Us</a></li>
+                    <li><a href="#" class="open-sks-chat" style="color: #2DD4BF; font-weight: 600;">Ask AI ✨</a></li>
                     <li class="mobile-nav-cta">
                         <a href="contact-us.html" class="btn btn-lime btn-sm">Request RFQ</a>
                     </li>
@@ -128,6 +131,10 @@
 
             <!-- Actions & Mobile Trigger -->
             <div class="nav-actions">
+                <button type="button" class="btn btn-outline btn-sm open-sks-chat" id="navChatBtn" style="border-color: rgba(6,182,212,0.5); color: #38BDF8; display: inline-flex; align-items: center; gap: 5px; cursor: pointer;" title="Ask SKS AI Assistant (24/7)">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><rect x="4" y="8" width="16" height="12" rx="4"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/><path d="M9 17h6"/></svg>
+                    <span>Ask AI ✨</span>
+                </button>
                 <a href="contact-us.html" class="btn btn-teal btn-sm" id="navQuoteBtn">Request RFQ</a>
                 <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation Menu">
                     <span></span>
@@ -455,6 +462,23 @@
          Icons ONLY: Instagram, YouTube, LinkedIn, Email
          ====================================================================== -->
     <aside class="floating-right-dock" id="floatingRightDock" aria-label="Social and Contact Channels">
+        <!-- 0. SKS AI Assistant Tab -->
+        <div class="dock-item dock-chatbot">
+            <button type="button" class="dock-btn dock-btn-chatbot" id="sksChatbotDockBtn" aria-label="Open SKS AI Engineering Assistant" title="AI Engineering Assistant">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                    <rect x="4" y="8" width="16" height="12" rx="4"/>
+                    <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+                    <path d="M9 17h6"/>
+                    <line x1="2" y1="14" x2="4" y2="14"/>
+                    <line x1="20" y1="14" x2="22" y2="14"/>
+                </svg>
+                <span class="dock-badge-pulse green" title="AI Assistant Online 24/7"></span>
+                <span class="dock-tooltip">Ask SKS AI Assistant (24/7)</span>
+            </button>
+        </div>
+
         <!-- 1. WhatsApp Tab -->
         <div class="dock-item dock-whatsapp">
             <a href="https://api.whatsapp.com/send?phone=918668742659&amp;text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20to%20inquire%20about%20customized%20enclosures" target="_blank" rel="noopener noreferrer" class="dock-btn dock-btn-whatsapp" aria-label="Chat with SKS Engineering on WhatsApp" title="WhatsApp: +91-8668742659">
@@ -506,5 +530,7 @@
 
     <!-- Production Interactive Scripts -->
     <script src="assets/js/script.js?v=20261006b"></script>
+    <!-- SKS AI Assistant Engine -->
+    <script src="assets/js/sks-chatbot.js?v=20261009"></script>
 </body>
 </html>
