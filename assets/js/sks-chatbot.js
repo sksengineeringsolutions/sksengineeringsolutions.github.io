@@ -44,7 +44,7 @@
         isExpanded: false,
         soundEnabled: true,
         isListening: false,
-        geminiApiKey: localStorage.getItem('sks_gemini_api_key') || '',
+        geminiApiKey: window.SKS_GEMINI_API_KEY || localStorage.getItem('sks_gemini_api_key') || '',
         messages: [],
         wizardStep: 0,
         wizardData: {
@@ -438,7 +438,8 @@ Clients and procurement teams are welcome to visit for plant audits, machine ins
     // 4. Optional Google Gemini API Engine
     // ==========================================================================
     async function queryGeminiApi(userText) {
-        if (!state.geminiApiKey) return null;
+        const apiKey = state.geminiApiKey || window.SKS_GEMINI_API_KEY;
+        if (!apiKey) return null;
 
         const systemPrompt = `You are the Official AI Engineering Assistant for "SKS Engineering Solutions" (A Shinde Groups Enterprise), located in Gat No. 84, Jyotiba Nagar, Talawade, Pune - 411062, Maharashtra, India.
 Key details:
@@ -450,10 +451,11 @@ Key details:
 - Capabilities: CNC Fiber Laser cutting (±0.05mm), CNC Hydraulic Multi-Axis Bending, 7-Tank chemical pre-treatment, Pure polyester powder coating (RAL 7035/7032), automated continuous PU foam gasketing (FIPFG).
 - Accepted CAD formats: DXF, DWG, STEP, STP, PDF.
 - Quote turnaround: 24-48 hours. Fabrication lead time: 7-15 working days.
-Keep answers concise, polite, professional, and engineering-accurate. Always format with HTML bullet points or bold text. If asked about contact or quotation, provide the WhatsApp number +91-8668742659.`;
+Keep answers concise, polite, professional, and engineering-accurate. Always format with bullet points or bold text. If asked about contact, pricing, or custom quotation, encourage messaging on WhatsApp (+91-8668742659).`;
 
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.geminiApiKey}`;
+            // Support latest Gemini 1.5 Flash endpoint
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -462,27 +464,39 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
                         { role: 'user', parts: [{ text: `${systemPrompt}\n\nUser Question: ${userText}` }] }
                     ],
                     generationConfig: {
-                        temperature: 0.3,
-                        maxOutputTokens: 600
+                        temperature: 0.35,
+                        maxOutputTokens: 500
                     }
                 })
             });
 
             if (!response.ok) {
-                console.warn('Gemini API error, falling back to local engine:', response.status);
+                console.warn('Gemini API returned status:', response.status);
                 return null;
             }
 
             const data = await response.json();
             const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
             if (reply) {
-                // Convert markdown bullet points to HTML
-                return reply
+                // Convert markdown into clean HTML
+                let formatted = reply
                     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/^\* (.*$)/gim, '<li>$1</li>')
-                    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-                    .replace(/\n\n/g, '<p></p>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/^\s*[\*\-]\s+(.*$)/gim, '<li>$1</li>')
+                    .replace(/^\s*\d+\.\s+(.*$)/gim, '<li>$1</li>')
+                    .replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gis, '<ul>$1</ul>')
+                    .replace(/\n\n+/g, '</p><p>')
                     .replace(/\n/g, '<br>');
+
+                formatted = `<p>${formatted}</p>`;
+
+                // Append quick contact action buttons
+                formatted += `
+                <div class="sks-card-actions" style="margin-top: 10px;">
+                    <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20via%20AI%20Chat" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Message on WhatsApp (+91-8668742659)</a>
+                    <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">⚡ Calculate Guided Quote</button>
+                </div>`;
+                return formatted;
             }
         } catch (err) {
             console.warn('Gemini fetch failed, using local engine:', err);
