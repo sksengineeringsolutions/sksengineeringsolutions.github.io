@@ -46,13 +46,26 @@
         }
     })();
 
+    function getActiveApiKey() {
+        const local = (localStorage.getItem('sks_gemini_api_key') || '').trim();
+        if (local && local.length > 25 && local !== 'null' && local !== 'undefined') {
+            return local;
+        }
+        const winKey = (window.SKS_GEMINI_API_KEY || '').trim();
+        if (winKey && winKey.length > 25 && winKey !== 'null' && winKey !== 'undefined') {
+            return winKey;
+        }
+        return DEFAULT_GEMINI_KEY;
+    }
+
     // State management
     const state = {
         isOpen: false,
         isExpanded: false,
         soundEnabled: true,
         isListening: false,
-        geminiApiKey: localStorage.getItem('sks_gemini_api_key') || window.SKS_GEMINI_API_KEY || DEFAULT_GEMINI_KEY,
+        geminiApiKey: getActiveApiKey(),
+        conversationHistory: [],
         messages: [],
         wizardStep: 0,
         wizardData: {
@@ -444,85 +457,122 @@ Clients and procurement teams are welcome to visit for plant audits, machine ins
     }
 
     // ==========================================================================
-    // 4. Optional Google Gemini API Engine
+    // 4. Live Google Gemini Conversational Intelligence Engine
     // ==========================================================================
+    const SKS_SYSTEM_INSTRUCTION = `You are the Official AI Engineering Consultant for "SKS Engineering Solutions" (A Shinde Groups Enterprise), located at Gat No. 84, Jyotiba Nagar, Talawade, Pune - 411062, Maharashtra, India.
+Contact: Phone/WhatsApp: +91-8668742659 | Email: sales@sksengineeringsolutions.com.
+Operational Hours: Friday – Wednesday: 9:30 AM – 6:30 PM (Thursday is completely CLOSED for Weekly Off).
+
+About SKS & Manufacturing Capabilities:
+- Specialization: Custom sheet metal fabrication, industrial & electrical panel enclosures:
+  1. Modular Floor-Standing 9-Fold Profile Cabinets (PCC, MCC, LT/HT switchgear, automation suites)
+  2. Wall-Mounted Enclosures (IP65, CRCA 1.6mm / SS304)
+  3. Stainless Steel SS304 & SS316L Washdown Enclosures (IP66, Scotch-Brite hairline finish for pharma, food, dairy, chemical)
+  4. Outdoor Weatherproof Feeder Pillars with canopy roofs and ventilation louvers
+  5. Operator Control Desks & HMI Workstations
+  6. Custom Sheet Metal Junction Boxes (IP65, terminal boxes, solar combiner boxes)
+- In-house Plant Facilities in Pune:
+  - CNC Fiber Laser Cutting (±0.05mm precision)
+  - CNC Hydraulic Multi-Axis Bending Press Brakes
+  - 7-Tank Chemical Pre-Treatment Plant (Degreasing, Derusting, Phosphating, Passivation)
+  - Automated Powder Coating Booth (Pure Polyester, RAL 7035 / RAL 7032 / custom shades, 500+ hrs salt spray resistance)
+  - Continuous CNC PU Foam Formed-In-Place Gasketing (FIPFG for IP55 / IP65 / IP66 seamless seal)
+- Accepted CAD formats: DXF, DWG, STEP, STP, IGES, PDF drawings.
+- Turnaround: 24–48 hours for CAD quotation review; 7–15 working days for production batch fabrication.
+
+Conversational Rules:
+1. Always be conversational, polite, helpful, and engineering-accurate. Never give generic boilerplate answers. Answer the user's specific question directly and thoroughly.
+2. Collecting User Details: When users ask about pricing, custom orders, quotations, fabrication lead times, or have specific enclosure dimensions, politely answer their technical questions and warmly ask for their Name, Phone / WhatsApp number, and Company name so that our Pune engineering sales team can send them a formal quote.
+3. If the user shares their name, phone number, or company, warmly thank them, acknowledge their details, and confirm that the SKS engineering team will review their requirement and contact them directly.
+4. Keep answers readable with clean bullet points or bold text where helpful. Avoid overly long walls of text.`;
+
     async function queryGeminiApi(userText) {
-        const apiKey = state.geminiApiKey || window.SKS_GEMINI_API_KEY || DEFAULT_GEMINI_KEY;
+        const apiKey = getActiveApiKey();
         if (!apiKey) return null;
 
-        const systemPrompt = `You are the Official AI Engineering Assistant for "SKS Engineering Solutions" (A Shinde Groups Enterprise), located in Gat No. 84, Jyotiba Nagar, Talawade, Pune - 411062, Maharashtra, India.
-Key details:
-- Specialization: Custom sheet metal fabrication, industrial & electrical panel enclosures (Modular Floor-Standing 9-Fold Cabinets, Wall-Mount Enclosures, Stainless Steel SS304/SS316 Enclosures, Outdoor Feeder Pillars, Control Desks, Junction Boxes).
-- Operating Hours: Friday – Wednesday: 9:30 AM – 6:30 PM.
-- Weekly Off: Thursday is completely CLOSED (Weekly Off).
-- Phone/WhatsApp: +91-8668742659.
-- Sales Email: sales@sksengineeringsolutions.com.
-- Capabilities: CNC Fiber Laser cutting (±0.05mm), CNC Hydraulic Multi-Axis Bending, 7-Tank chemical pre-treatment, Pure polyester powder coating (RAL 7035/7032), automated continuous PU foam gasketing (FIPFG).
-- Accepted CAD formats: DXF, DWG, STEP, STP, PDF.
-- Quote turnaround: 24-48 hours. Fabrication lead time: 7-15 working days.
-Keep answers concise, polite, professional, and engineering-accurate. Always format with bullet points or bold text. If asked about contact, pricing, or custom quotation, encourage messaging on WhatsApp (+91-8668742659).`;
+        // Build multi-turn context
+        const contentsPayload = [];
+        if (state.conversationHistory && state.conversationHistory.length > 0) {
+            // Keep recent turns for rich context
+            const recent = state.conversationHistory.slice(-8);
+            recent.forEach(msg => contentsPayload.push(msg));
+        }
+        contentsPayload.push({
+            role: 'user',
+            parts: [{ text: userText }]
+        });
 
-        try {
-            // Support latest high-speed Gemini Flash endpoints
-            const modelsToTry = ['gemini-flash-lite-latest', 'gemini-flash-latest'];
-            let data = null;
+        const modelsToTry = ['gemini-flash-lite-latest', 'gemini-flash-latest'];
+        let data = null;
 
-            for (const modelName of modelsToTry) {
-                try {
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [
-                                { role: 'user', parts: [{ text: `${systemPrompt}\n\nUser Question: ${userText}` }] }
-                            ],
-                            generationConfig: {
-                                temperature: 0.35,
-                                maxOutputTokens: 500
-                            }
-                        })
-                    });
-
-                    if (response.ok) {
-                        data = await response.json();
-                        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                            break;
+        for (const modelName of modelsToTry) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        systemInstruction: {
+                            parts: [{ text: SKS_SYSTEM_INSTRUCTION }]
+                        },
+                        contents: contentsPayload,
+                        generationConfig: {
+                            temperature: 0.4,
+                            maxOutputTokens: 600
                         }
+                    })
+                });
+
+                if (response.ok) {
+                    data = await response.json();
+                    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        break;
                     }
-                } catch (e) {
-                    // Continue to next model or local engine fallback
+                } else {
+                    console.warn(`Gemini (${modelName}) returned status:`, response.status);
                 }
+            } catch (e) {
+                console.warn(`Gemini fetch error on ${modelName}:`, e);
+            }
+        }
+
+        if (!data) return null;
+
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply) {
+            // Save to conversation history
+            state.conversationHistory.push({ role: 'user', parts: [{ text: userText }] });
+            state.conversationHistory.push({ role: 'model', parts: [{ text: reply }] });
+            if (state.conversationHistory.length > 16) {
+                state.conversationHistory = state.conversationHistory.slice(-16);
             }
 
-            if (!data) return null;
+            // Convert markdown into clean HTML
+            let formatted = reply
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/^\s*[\*\-]\s+(.*$)/gim, '<li>$1</li>')
+                .replace(/^\s*\d+\.\s+(.*$)/gim, '<li>$1</li>')
+                .replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gis, '<ul>$1</ul>')
+                .replace(/\n\n+/g, '</p><p>')
+                .replace(/\n/g, '<br>');
 
-            const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (reply) {
-                // Convert markdown into clean HTML
-                let formatted = reply
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/^\s*[\*\-]\s+(.*$)/gim, '<li>$1</li>')
-                    .replace(/^\s*\d+\.\s+(.*$)/gim, '<li>$1</li>')
-                    .replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gis, '<ul>$1</ul>')
-                    .replace(/\n\n+/g, '</p><p>')
-                    .replace(/\n/g, '<br>');
+            formatted = `<p>${formatted}</p>`;
 
-                formatted = `<p>${formatted}</p>`;
-
-                // Append quick contact action buttons
+            // Check if reply or user question is quote/lead related
+            const isLeadRelated = (userText + ' ' + reply).toLowerCase().match(/\b(quote|price|pricing|cost|order|callback|contact|phone|number|cad|drawing|inquiry)\b/);
+            
+            if (isLeadRelated) {
                 formatted += `
                 <div class="sks-card-actions" style="margin-top: 10px;">
-                    <button type="button" class="sks-action-btn primary" onclick="window.sksOpenLeadForm('${encodeURIComponent(userText.slice(0, 100))}')">📋 Send Query / Request Callback</button>
-                    <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20via%20AI%20Chat%3A%20${encodeURIComponent(userText)}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Message on WhatsApp (+91-8668742659)</a>
-                    <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">⚡ Calculate Guided Quote</button>
+                    <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(userText.slice(0, 80))}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 WhatsApp Us (+91-8668742659)</a>
+                    <button type="button" class="sks-action-btn secondary" onclick="window.sksOpenLeadForm('${encodeURIComponent(userText.slice(0, 80))}')">📋 Leave Details for Callback</button>
                 </div>`;
-                return formatted;
             }
-        } catch (err) {
-            console.warn('Gemini fetch failed, using local engine:', err);
+
+            return formatted;
         }
+
         return null;
     }
 
