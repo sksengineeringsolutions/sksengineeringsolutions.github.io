@@ -666,6 +666,72 @@
     border-color: #38BDF8;
 }
 
+/* Interactive Lead & Inquiry Form Card */
+.sks-lead-capture-card {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 8px 0 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.sks-lead-header {
+    margin-bottom: 8px;
+}
+
+.sks-lead-header strong {
+    color: #38BDF8;
+    font-size: 0.82rem;
+    display: block;
+}
+
+.sks-lead-form {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.sks-lead-input,
+.sks-lead-textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.18s ease;
+}
+
+.sks-lead-input:focus,
+.sks-lead-textarea:focus {
+    border-color: #38BDF8;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.sks-lead-textarea {
+    resize: none;
+    min-height: 50px;
+}
+
+.sks-lead-success-card {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 8px 0 4px;
+}
+
+.sks-lead-success-card strong {
+    color: #34D399;
+    display: block;
+    margin-bottom: 4px;
+}
+
 /* ==========================================================================
    8. Suggestion Chips Bar
    ========================================================================== */

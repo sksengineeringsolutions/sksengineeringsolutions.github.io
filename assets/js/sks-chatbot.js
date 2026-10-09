@@ -436,7 +436,8 @@ Clients and procurement teams are welcome to visit for plant audits, machine ins
 <p>At SKS Engineering Solutions (Talawade, Pune), we fabricate precision sheet metal enclosures tailored to your custom specifications (Modular cabinets, Wall-mount boxes, SS304/SS316 housings, and Outdoor feeder pillars).</p>
 <p>To help you fastest, would you like to:</p>
 <div class="sks-card-actions">
-  <button type="button" class="sks-action-btn primary" onclick="window.sksStartWizard()">⚡ Calculate an RFQ Quote</button>
+  <button type="button" class="sks-action-btn primary" onclick="window.sksOpenLeadForm('${encodeURIComponent(userText.slice(0, 100))}')">📋 Send Query / Request Callback</button>
+  <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">⚡ Calculate an RFQ Quote</button>
   <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(userText)}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire on WhatsApp (${SKS_INFO.phone})</a>
   <a href="products.html" class="sks-action-btn secondary">📂 Explore Products Catalog</a>
 </div>`;
@@ -513,7 +514,8 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
                 // Append quick contact action buttons
                 formatted += `
                 <div class="sks-card-actions" style="margin-top: 10px;">
-                    <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20via%20AI%20Chat" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Message on WhatsApp (+91-8668742659)</a>
+                    <button type="button" class="sks-action-btn primary" onclick="window.sksOpenLeadForm('${encodeURIComponent(userText.slice(0, 100))}')">📋 Send Query / Request Callback</button>
+                    <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20via%20AI%20Chat%3A%20${encodeURIComponent(userText)}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Message on WhatsApp (+91-8668742659)</a>
                     <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">⚡ Calculate Guided Quote</button>
                 </div>`;
                 return formatted;
@@ -643,6 +645,7 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
 
             <!-- Quick Suggestion Chips -->
             <div class="sks-chat-chips-container" id="sksChipsContainer">
+                <button type="button" class="sks-chip-btn" onclick="window.sksOpenLeadForm()" style="background: rgba(14, 165, 233, 0.22); border-color: #0284C7; color: #38BDF8; font-weight: 600;">📋 Send Query / Callback</button>
                 <button type="button" class="sks-chip-btn" data-query="⚡ Start Guided Quote Wizard">⚡ Get Instant Quote</button>
                 <button type="button" class="sks-chip-btn" data-query="Tell me about Modular Floor-Standing Cabinets">📐 Modular Cabinets</button>
                 <button type="button" class="sks-chip-btn" data-query="What Stainless Steel SS304/SS316 enclosures do you make?">🛡️ Stainless SS304</button>
@@ -989,6 +992,23 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
             return;
         }
 
+        // Check if user requested callback or lead submission
+        if (userText.toLowerCase().match(/\b(callback|call me|contact me|leave query|submit query|talk to sales|speak with human|reach out)\b/i)) {
+            window.sksOpenLeadForm(userText);
+            return;
+        }
+
+        // Auto-detect 10-digit mobile number in chat text to save lead in database immediately
+        const phoneMatch = userText.match(/(?:(?:\+|0{0,2})91[\s-]*)?([6789]\d{9})\b/);
+        if (phoneMatch) {
+            sksSaveLeadInquiry({
+                name: 'Website Visitor',
+                phone: phoneMatch[1],
+                message: userText,
+                product_interest: 'Direct Chat Inquiry'
+            });
+        }
+
         const typingIndicator = showTypingIndicator();
 
         // 1. Try Gemini API if key is configured
@@ -1008,6 +1028,143 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
         appendMessage('bot', botReply);
         playBeep('receive');
     }
+
+    // ==========================================================================
+    // 7.5 Lead Capture & Customer Query Submission Engine
+    // ==========================================================================
+    async function sksSaveLeadInquiry(inquiryData) {
+        const lead = {
+            id: 'inq-chat-' + Date.now(),
+            name: inquiryData.name || 'Website Visitor',
+            phone: inquiryData.phone || '',
+            email: inquiryData.email || '',
+            company: inquiryData.company || '',
+            industry: 'Enclosure Engineering / AI Chat',
+            product_interest: inquiryData.product_interest || inquiryData.product || 'Custom Enclosure Inquiry',
+            message: inquiryData.message || 'Customer query submitted via AI Chatbot',
+            status: 'new',
+            created_at: new Date().toISOString()
+        };
+
+        // 1. Try Supabase via SKS_DB if available
+        if (window.SKS_DB && typeof window.SKS_DB.submitInquiry === 'function') {
+            try {
+                await window.SKS_DB.submitInquiry(lead);
+            } catch (err) {
+                console.warn('SKS_DB submission error:', err);
+            }
+        }
+
+        // 2. Persistent Local Storage Backup (never lose a customer query)
+        try {
+            const stored = localStorage.getItem('sks_local_inquiries');
+            const list = stored ? JSON.parse(stored) : [];
+            list.unshift(lead);
+            localStorage.setItem('sks_local_inquiries', JSON.stringify(list));
+        } catch (e) {
+            console.warn('Error saving local lead:', e);
+        }
+
+        return lead;
+    }
+
+    window.sksOpenLeadForm = function (prefillQuery = '') {
+        let decodedQuery = '';
+        try {
+            decodedQuery = prefillQuery ? decodeURIComponent(prefillQuery) : '';
+        } catch (e) {
+            decodedQuery = prefillQuery || '';
+        }
+
+        const formId = 'sksLeadCard_' + Date.now();
+        const formHTML = `
+            <strong>📋 Send Your Query to SKS Engineering Sales Team:</strong>
+            <p style="font-size:0.76rem; color:#94A3B8; margin:3px 0 8px;">Leave your contact details and query below. Our Pune engineering sales team will review and contact you within 24 hours.</p>
+            <div class="sks-lead-capture-card" id="${formId}">
+                <div class="sks-lead-form">
+                    <input type="text" id="${formId}_name" placeholder="Your Name or Company Name *" class="sks-lead-input" required />
+                    <input type="tel" id="${formId}_phone" placeholder="Mobile / WhatsApp Number (10 Digits) *" class="sks-lead-input" required />
+                    <textarea id="${formId}_msg" placeholder="Your Query, Dimensions, or Requirements *" class="sks-lead-textarea" rows="2">${escapeHTML(decodedQuery)}</textarea>
+                    <button type="button" class="sks-action-btn primary" onclick="window.sksSubmitLeadQuery('${formId}')">
+                        🚀 Submit Query to SKS Team
+                    </button>
+                </div>
+            </div>
+        `;
+        appendMessage('bot', formHTML);
+        playBeep('receive');
+
+        setTimeout(() => {
+            const nameEl = document.getElementById(`${formId}_name`);
+            if (nameEl) nameEl.focus();
+        }, 150);
+    };
+
+    window.sksSubmitLeadQuery = async function (formId) {
+        const nameEl = document.getElementById(`${formId}_name`);
+        const phoneEl = document.getElementById(`${formId}_phone`);
+        const msgEl = document.getElementById(`${formId}_msg`);
+
+        const name = nameEl ? nameEl.value.trim() : '';
+        const phone = phoneEl ? phoneEl.value.trim() : '';
+        const msg = msgEl ? msgEl.value.trim() : '';
+
+        if (!name) {
+            alert('Please enter your name or company name.');
+            if (nameEl) nameEl.focus();
+            return;
+        }
+
+        if (!phone || phone.replace(/\D/g, '').length < 10) {
+            alert('Please enter a valid 10-digit mobile or WhatsApp number.');
+            if (phoneEl) phoneEl.focus();
+            return;
+        }
+
+        // Save lead immediately to database & localStorage
+        await sksSaveLeadInquiry({
+            name: name,
+            phone: phone,
+            message: msg || 'Customer callback requested via AI Assistant',
+            product_interest: 'Custom Enclosure Inquiry'
+        });
+
+        // Update form card with clean confirmation
+        const card = document.getElementById(formId);
+        if (card) {
+            card.innerHTML = `
+                <div class="sks-lead-success-card">
+                    <strong>✅ Query Received & Recorded!</strong>
+                    <p style="font-size:0.75rem; color:#A7F3D0; margin:0;">
+                        Thank you, <strong>${escapeHTML(name)}</strong>! Your query has been logged. Our engineering sales team in Talawade, Pune will contact you at <strong>${escapeHTML(phone)}</strong> within 24 hours (Working Hours: Fri–Wed 9:30 AM – 6:30 PM).
+                    </p>
+                </div>
+            `;
+        }
+
+        const waText = encodeURIComponent(
+            `Hello SKS Engineering Solutions,\n` +
+            `My Name: ${name}\n` +
+            `Contact: ${phone}\n` +
+            `Query: ${msg || 'Inquiry for custom sheet metal enclosures.'}\n` +
+            `Please share quote and review drawings.`
+        );
+
+        const confirmHTML = `
+            <strong>✅ SKS Engineering Team Has Been Notified!</strong>
+            <p>Your details have been saved in our system. For faster turnaround or to upload CAD engineering files right away, you can also connect directly on WhatsApp:</p>
+            <div class="sks-card-actions">
+                <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=${waText}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
+                    💬 Chat on WhatsApp Now (+91-8668742659)
+                </a>
+                <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">
+                    ⚡ Calculate Guided RFQ
+                </button>
+            </div>
+        `;
+        appendMessage('bot', confirmHTML);
+        playBeep('receive');
+    };
 
     // ==========================================================================
     // 8. Interactive RFQ Quote Wizard Engine
@@ -1119,6 +1276,15 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
 
         setTimeout(() => {
             const data = state.wizardData;
+
+            // Auto-save RFQ lead to inquiries database & local store
+            sksSaveLeadInquiry({
+                name: 'RFQ Wizard Visitor',
+                phone: '',
+                product_interest: data.type,
+                message: `Wizard RFQ: Type: ${data.type}, Dims: ${data.dimensions}, Material: ${data.material}, IP: ${data.ipRating}, Qty: ${data.quantity}`
+            });
+
             const waText = encodeURIComponent(
                 `Hello SKS Engineering Solutions,\n` +
                 `I would like to request an official RFQ quote:\n` +
@@ -1158,10 +1324,13 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
                         <li><strong>Est. CAD Review:</strong> 24–48 Hours</li>
                     </ul>
                     <div class="sks-card-actions">
+                        <button type="button" class="sks-action-btn primary" onclick="window.sksOpenLeadForm('RFQ: ${encodeURIComponent(data.type)} (${encodeURIComponent(data.dimensions)}, ${encodeURIComponent(data.quantity)})')">
+                            📋 Request SKS Sales Team Call / Quote Followup
+                        </button>
                         <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=${waText}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
                             💬 Send to WhatsApp for Instant Pricing (+91-8668742659)
                         </a>
-                        <a href="mailto:${SKS_INFO.email}?subject=${mailSubject}&body=${mailBody}" class="sks-action-btn primary">
+                        <a href="mailto:${SKS_INFO.email}?subject=${mailSubject}&body=${mailBody}" class="sks-action-btn secondary">
                             📧 Email RFQ to sales@sksengineeringsolutions.com
                         </a>
                         <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">
@@ -1222,6 +1391,7 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
             <p>How can I assist you right now?</p>
             <div class="sks-card-actions">
                 <button type="button" class="sks-action-btn primary" onclick="window.sksStartWizard()">⚡ Get Instant Enclosure Quote</button>
+                <button type="button" class="sks-action-btn secondary" onclick="window.sksOpenLeadForm()">📋 Send Query / Request Callback</button>
                 <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20via%20website%20AI%20Assistant" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Chat with Engineer on WhatsApp</a>
             </div>
         `;
