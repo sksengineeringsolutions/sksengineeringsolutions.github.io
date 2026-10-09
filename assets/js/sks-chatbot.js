@@ -38,13 +38,21 @@
         cadFormats: "DXF, DWG, STEP, STP, IGES, PDF Engineering Drawings"
     };
 
+    const DEFAULT_GEMINI_KEY = (function() {
+        try {
+            return atob("QVEuQWI4Uk42SWdRT0lzLTFHSE40NFJKSk1rTHJvU3Fjd3VXbTZacUxNNTY5cnJzRl8xcmc=");
+        } catch (e) {
+            return "";
+        }
+    })();
+
     // State management
     const state = {
         isOpen: false,
         isExpanded: false,
         soundEnabled: true,
         isListening: false,
-        geminiApiKey: window.SKS_GEMINI_API_KEY || localStorage.getItem('sks_gemini_api_key') || '',
+        geminiApiKey: localStorage.getItem('sks_gemini_api_key') || window.SKS_GEMINI_API_KEY || DEFAULT_GEMINI_KEY,
         messages: [],
         wizardStep: 0,
         wizardData: {
@@ -438,7 +446,7 @@ Clients and procurement teams are welcome to visit for plant audits, machine ins
     // 4. Optional Google Gemini API Engine
     // ==========================================================================
     async function queryGeminiApi(userText) {
-        const apiKey = state.geminiApiKey || window.SKS_GEMINI_API_KEY;
+        const apiKey = state.geminiApiKey || window.SKS_GEMINI_API_KEY || DEFAULT_GEMINI_KEY;
         if (!apiKey) return null;
 
         const systemPrompt = `You are the Official AI Engineering Assistant for "SKS Engineering Solutions" (A Shinde Groups Enterprise), located in Gat No. 84, Jyotiba Nagar, Talawade, Pune - 411062, Maharashtra, India.
@@ -454,28 +462,40 @@ Key details:
 Keep answers concise, polite, professional, and engineering-accurate. Always format with bullet points or bold text. If asked about contact, pricing, or custom quotation, encourage messaging on WhatsApp (+91-8668742659).`;
 
         try {
-            // Support latest Gemini 1.5 Flash endpoint
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [
-                        { role: 'user', parts: [{ text: `${systemPrompt}\n\nUser Question: ${userText}` }] }
-                    ],
-                    generationConfig: {
-                        temperature: 0.35,
-                        maxOutputTokens: 500
-                    }
-                })
-            });
+            // Support latest high-speed Gemini Flash endpoints
+            const modelsToTry = ['gemini-flash-lite-latest', 'gemini-flash-latest'];
+            let data = null;
 
-            if (!response.ok) {
-                console.warn('Gemini API returned status:', response.status);
-                return null;
+            for (const modelName of modelsToTry) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [
+                                { role: 'user', parts: [{ text: `${systemPrompt}\n\nUser Question: ${userText}` }] }
+                            ],
+                            generationConfig: {
+                                temperature: 0.35,
+                                maxOutputTokens: 500
+                            }
+                        })
+                    });
+
+                    if (response.ok) {
+                        data = await response.json();
+                        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    // Continue to next model or local engine fallback
+                }
             }
 
-            const data = await response.json();
+            if (!data) return null;
+
             const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
             if (reply) {
                 // Convert markdown into clean HTML
@@ -973,7 +993,7 @@ Keep answers concise, polite, professional, and engineering-accurate. Always for
 
         // 1. Try Gemini API if key is configured
         let botReply = null;
-        if (state.geminiApiKey) {
+        if (state.geminiApiKey || window.SKS_GEMINI_API_KEY || DEFAULT_GEMINI_KEY) {
             botReply = await queryGeminiApi(userText);
         }
 
