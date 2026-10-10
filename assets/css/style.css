@@ -584,11 +584,10 @@ header.scrolled .site-logo-img {
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, 
-        rgba(8, 14, 26, 0.94) 0%, 
-        rgba(8, 14, 26, 0.86) 42%, 
-        rgba(8, 14, 26, 0.55) 68%, 
-        rgba(8, 14, 26, 0.25) 88%, 
-        rgba(8, 14, 26, 0.12) 100%
+        rgba(8, 14, 26, 0.82) 0%, 
+        rgba(8, 14, 26, 0.68) 45%, 
+        rgba(8, 14, 26, 0.35) 75%, 
+        rgba(8, 14, 26, 0.15) 100%
     );
     z-index: 3;
     pointer-events: none;
@@ -772,6 +771,29 @@ header.scrolled .site-logo-img {
 
 .industry-dot:hover:not(.active) {
     background: rgba(255, 255, 255, 0.55);
+}
+
+.industry-nav-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #F8FAFC;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.industry-nav-arrow:hover {
+    background: var(--c-primary);
+    color: #FFFFFF;
+    border-color: var(--c-primary);
+    transform: scale(1.08);
 }
 
 

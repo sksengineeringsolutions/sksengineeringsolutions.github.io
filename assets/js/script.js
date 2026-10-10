@@ -148,11 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
+    // ==========================================================================
     // 3. Hero Background Slideshow with Industry Switcher
     // ==========================================================================
     const heroSlides = document.querySelectorAll('.hero-slide');
     const industryDots = document.querySelectorAll('.industry-dot');
     const currentIndustryLabel = document.getElementById('currentIndustryLabel');
+    const heroPrevBtn = document.getElementById('heroPrevBtn');
+    const heroNextBtn = document.getElementById('heroNextBtn');
     let currentSlideIndex = 0;
     let slideshowInterval = null;
 
@@ -179,8 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (currentIndustryLabel && heroSlides[currentSlideIndex]) {
-            const industry = heroSlides[currentSlideIndex].getAttribute('data-industry') || '';
-            currentIndustryLabel.textContent = 'Industry: ' + industry;
+            const title = heroSlides[currentSlideIndex].getAttribute('data-title') 
+                || heroSlides[currentSlideIndex].getAttribute('data-industry') 
+                || '';
+            currentIndustryLabel.innerHTML = title;
         }
     }
 
@@ -213,6 +218,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+
+        if (heroPrevBtn) {
+            heroPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showHeroSlide(currentSlideIndex - 1);
+                startHeroSlideshow();
+            });
+        }
+
+        if (heroNextBtn) {
+            heroNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showHeroSlide(currentSlideIndex + 1);
+                startHeroSlideshow();
+            });
+        }
 
         // Pause slideshow when page is in background to save battery / CPU
         document.addEventListener('visibilitychange', () => {
