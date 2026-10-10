@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 4,
             title: "Fabrication: CNC Laser Cutting & Bending",
             description: "High-precision CNC fiber laser profiling cutting intricate cutouts, gland openings, and louvers with tight tolerance accuracy, followed by multi-axis CNC hydraulic press brake bending for seamless corner joints.",
-            image: "assets/images/facility-laser.jpg",
+            image: "assets/images/facility-laser.jpg?v=20261010_new",
             checklist: [
                 "Fiber Laser Cutting with Nitrogen Assist",
                 "Burr-Free Edge Contouring (\u00B10.1mm)",
