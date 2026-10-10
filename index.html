@@ -40,7 +40,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Production Stylesheet -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20261010_v3">
+    <link rel="stylesheet" href="assets/css/style.css?v=20261010_clean">
     <!-- SKS AI Assistant Stylesheet -->
     <link rel="stylesheet" href="assets/css/sks-chatbot.css?v=20261009">
 
@@ -170,16 +170,12 @@
 
     <main>
         <!-- ==================================================================
-             Section 1: Hero Section with Live Background Slideshow
+             Section 1: Hero Section (Clean Architectural Engineering Grid - No Background Images)
              ================================================================== -->
-        <section id="hero" class="hero hero-slideshow-bg">
-            <div class="hero-slideshow-container" id="heroSlideshow">
-                <div class="hero-slide active" data-title="Customized Enclosures in Pune &bull; Assembly Line" style="background-image: url('assets/images/hero-enclosure-lineup.jpg?v=20261010c');"></div>
-                <div class="hero-slide" data-title="Precision Sheet Metal Fabrication &bull; Pune Plant" style="background-image: url('assets/images/hero-enclosure-fabrication.jpg?v=20261010c');"></div>
-                <div class="hero-slide" data-title="Precision CNC Fiber Laser &amp; Bending Plant" style="background-image: url('assets/images/facility-laser.jpg?v=20261010c');"></div>
-                <div class="hero-slide" data-title="Automated Powder Coating &amp; Enclosure Finishing" style="background-image: url('assets/images/facility-powder.jpg?v=20261010c');"></div>
-                <div class="hero-slideshow-overlay"></div>
-            </div>
+        <section id="hero" class="hero">
+            <div class="hero-bg-grid" aria-hidden="true"></div>
+            <div class="hero-glow-1" aria-hidden="true"></div>
+            <div class="hero-glow-2" aria-hidden="true"></div>
 
             <div class="container hero-grid">
                 <div class="hero-text-content reveal-left">
@@ -232,26 +228,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Plant Showcase Switcher & Indicators -->
-            <div class="hero-industry-bar">
-                <button type="button" class="industry-nav-arrow" id="heroPrevBtn" aria-label="Previous Plant Slide" title="Previous Slide">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
-                <div class="industry-badge">
-                    <span class="industry-pulse-dot"></span>
-                    <span class="industry-label" id="currentIndustryLabel">Customized Enclosures in Pune &bull; Assembly Line</span>
-                </div>
-                <div class="industry-dots" id="industryDots">
-                    <button type="button" class="industry-dot active" data-index="0" aria-label="Customized Enclosures in Pune" title="Customized Enclosures in Pune"></button>
-                    <button type="button" class="industry-dot" data-index="1" aria-label="Precision Sheet Metal Fabrication" title="Precision Sheet Metal Fabrication"></button>
-                    <button type="button" class="industry-dot" data-index="2" aria-label="Precision CNC Fiber Laser Plant" title="Precision CNC Fiber Laser Plant"></button>
-                    <button type="button" class="industry-dot" data-index="3" aria-label="Automated Powder Coating Finishing" title="Automated Powder Coating Finishing"></button>
-                </div>
-                <button type="button" class="industry-nav-arrow" id="heroNextBtn" aria-label="Next Plant Slide" title="Next Slide">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
             </div>
         </section>
 
@@ -1328,7 +1304,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-config.js?v=20261007"></script>
     <!-- Production Interactive Scripts -->
-    <script src="assets/js/script.js?v=20261010_v3"></script>
+    <script src="assets/js/script.js?v=20261010_clean"></script>
     <!-- Google Gemini AI Engine Configuration -->
     <script src="assets/js/gemini-config.js?v=20261009_v4"></script>
     <!-- SKS AI Assistant Engine -->

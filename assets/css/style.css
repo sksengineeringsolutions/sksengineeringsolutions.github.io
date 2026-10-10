@@ -537,60 +537,58 @@ header.scrolled .site-logo-img {
 }
 
 /* ==========================================================================
-   Full-Screen High-Definition Industrial Background Slideshow
+/* ==========================================================================
+   Hero Section - Clean Architectural Dark Grid (No Background Photos)
    ========================================================================== */
-.hero-slideshow-bg {
+.hero {
     position: relative;
-    min-height: 88vh;
+    min-height: 85vh;
     display: flex;
     align-items: center;
     overflow: hidden;
-    background: #0B1120;
+    background: #080E1A;
     color: #FFFFFF;
+    padding: calc(var(--header-height) + 3.5rem) 0 4.5rem;
 }
 
-.hero-slideshow-container {
+.hero-bg-grid {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    background-position: -1px -1px;
+    pointer-events: none;
+    z-index: 1;
+    mask-image: radial-gradient(circle at 60% 40%, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.3) 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at 60% 40%, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.3) 70%, transparent 100%);
+}
+
+.hero-glow-1 {
+    position: absolute;
+    top: 15%;
+    right: 8%;
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0.02) 55%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
     z-index: 1;
 }
 
-.hero-slide {
+.hero-glow-2 {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(1.06);
-    transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1), transform 7s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.4s;
-    will-change: opacity, transform;
-}
-
-.hero-slide.active {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1.0);
-    z-index: 2;
-}
-
-.hero-slideshow-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, 
-        rgba(8, 14, 26, 0.82) 0%, 
-        rgba(8, 14, 26, 0.68) 45%, 
-        rgba(8, 14, 26, 0.35) 75%, 
-        rgba(8, 14, 26, 0.15) 100%
-    );
-    z-index: 3;
+    bottom: 5%;
+    left: 25%;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(249, 115, 22, 0.11) 0%, rgba(249, 115, 22, 0.02) 55%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
     pointer-events: none;
+    z-index: 1;
 }
 
 .hero-grid {
@@ -3416,17 +3414,6 @@ img, video, iframe, embed, object {
         min-height: auto;
     }
 
-    .hero-slide {
-        background-position: 70% center !important;
-    }
-
-    .hero-slideshow-overlay {
-        background: linear-gradient(180deg, 
-            rgba(8, 14, 26, 0.72) 0%, 
-            rgba(8, 14, 26, 0.85) 50%, 
-            rgba(8, 14, 26, 0.95) 100%
-        ) !important;
-    }
 
     .hero-headline {
         font-size: clamp(1.75rem, 5.8vw, 2.2rem) !important;
