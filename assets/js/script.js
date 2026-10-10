@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 1,
             title: "Requirement Understanding & Consultation",
             description: "Detailed engineering review of client architectural schematics, electrical single-line diagrams (SLD), mechanical enclosure dimensions, busbar routes, thermal requirements, and ingress protection targets (IP55/IP65).",
-            image: "assets/images/facility-design-office.jpg",
+            image: "assets/images/facility-design-office.jpg?v=20261010_office",
             checklist: [
                 "BOM & Dimensional Drawing Review",
                 "Ingress Protection (IP55/IP65) Definition",
