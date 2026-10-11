@@ -1,13 +1,9 @@
 /**
- * SKS Engineering Solutions - AI Engineering Assistant Engine
+ * SKS Engineering Solutions - AI Engineering Assistant
  * A Shinde Groups Enterprise • Pune Plant
  * 
- * Features:
- * - Google Gemini AI Integration (Generative Intelligence with Auto-Fallback)
- * - Two-Way Voice: Text-to-Speech (Speaks Responses) & Speech-to-Text (Mic Input)
- * - Official SKS Logo Integration Across Widget
- * - Ultra-Simple, Attractive & Fast User Experience
- * - Direct 1-Click WhatsApp Instant RFQ Connection (+91-8668742659)
+ * Powered by Google Gemini Generative AI (Live Intelligence)
+ * Clean, Simple, Fast & Attractive. Pure AI - No Voice, No Settings.
  */
 
 'use strict';
@@ -17,7 +13,7 @@
     window.__SKS_CHATBOT_INITIALIZED__ = true;
 
     // ==========================================================================
-    // 1. Official SKS Knowledge Base
+    // 1. Company Information & System Prompt
     // ==========================================================================
     const SKS_INFO = {
         name: "SKS Engineering Solutions",
@@ -27,256 +23,164 @@
         email: "sales@sksengineeringsolutions.com",
         location: "Right side of Bridge, Beside shlok hospital, Khed-Shivapur Kondanpur road, Opposite Muktangan Hotel, Ramnagar, Pune - 412205, Maharashtra, India",
         mapsUrl: "https://maps.app.goo.gl/mNCYdPJJQLvxL5st7",
-        hours: "Friday – Wednesday: 9:30 AM – 6:30 PM",
-        weeklyOff: "Thursday: Closed (Weekly Off)",
-        leadTimeCAD: "24 – 48 Hours for Engineering CAD Review & Preliminary RFQ",
-        leadTimeFab: "7 – 15 Working Days for Standard Production",
-        cadFormats: "DXF, DWG, STEP, STP, IGES, PDF Engineering Drawings"
+        hours: "Friday – Wednesday: 9:30 AM – 6:30 PM (Thursday Closed)"
     };
+
+    const SYSTEM_PROMPT = `You are the official AI Engineering Assistant for SKS Engineering Solutions (A Shinde Groups Enterprise), located in Pune, Maharashtra, India.
+Plant Location: Ramnagar, Khed-Shivapur Kondanpur Road, Pune - 412205.
+Timings: Friday to Wednesday: 9:30 AM – 6:30 PM (Thursday: Closed / Weekly Off).
+Contact: WhatsApp & Phone: +91-8668742659 | Email: sales@sksengineeringsolutions.com.
+
+Our Core Manufacturing Capabilities & Products:
+1. Customized Industrial Electrical Enclosures:
+   - Modular Floor-Standing Cabinets: 9-fold profile, CRCA up to 2.0mm, IP55 / IP65 / IP66 protection, RAL 7035 powder coating, modular joining.
+   - Wall-Mount Enclosures: Weather-resistant IP65/IP66, gland plates, mounting brackets.
+   - Stainless Steel Enclosures: SS304 & SS316 food/pharma grade washdown cabinets.
+   - Operator Consoles & Junction Boxes: Custom dimensions per CAD specifications.
+2. Precision Sheet Metal Fabrication:
+   - CNC Laser Cutting: High-precision ±0.1mm tolerance on CRCA (up to 12mm), Stainless Steel (up to 6mm), Aluminium (up to 4mm).
+   - CNC Press Brake Multi-Axis Bending: Accurate repeat bending.
+   - Robotic Formed-in-Place PU Foam Gasketing: Continuous seamless sealing for IP protection.
+   - Surface Finishing: 9-tank chemical pretreatment, automated electrostatic powder coating.
+3. Engineering CAD & Lead Times:
+   - Formats Accepted: DXF, DWG, STEP, STP, IGES, PDF drawings.
+   - CAD Engineering Review: 24 to 48 Hours.
+   - Production Lead Time: 7 to 15 Working Days.
+
+IMPORTANT INSTRUCTIONS:
+- Answer naturally, politely, and concisely (2 to 4 sentences or a clean bullet list).
+- Keep replies easy to read, direct, and helpful.
+- Mention WhatsApp +91-8668742659 or CAD submission for instant engineering quotes whenever relevant.`;
 
     // State
     const state = {
         isOpen: false,
-        voiceSpeakingEnabled: localStorage.getItem('sks_voice_speaking_enabled') !== 'false', // Default ON
-        isListening: false,
-        isSpeakingNow: false
+        isThinking: false,
+        conversationHistory: [] // [{role: 'user'|'model', text: '...'}]
     };
 
     // ==========================================================================
-    // 2. Google Gemini API Engine
+    // 2. Google Gemini API Engine (Primary: 3.8-flash, Fallback: 3.5-flash)
     // ==========================================================================
     function getActiveGeminiKey() {
-        // 1. Check local storage
         const local = (localStorage.getItem('sks_gemini_api_key') || '').trim();
-        if (local && local.length > 20) return local;
+        if (local && local.length > 15) return local;
 
-        // 2. Check window config
         const winKey = (window.SKS_GEMINI_API_KEY || '').trim();
-        if (winKey && winKey.length > 20) return winKey;
+        if (winKey && winKey.length > 15) return winKey;
 
         return '';
     }
 
-    async function queryGeminiAI(userText) {
-        const apiKey = getActiveGeminiKey();
-        if (!apiKey) return null;
-
-        const systemPrompt = `You are the friendly, professional AI assistant for SKS Engineering Solutions (A Shinde Groups Enterprise) in Pune, Maharashtra.
-Specialties: Customized industrial electrical enclosures (modular floor-standing, wall-mount, junction boxes, operator console desks) and precision sheet metal fabrication (CNC laser cutting ±0.1mm, CNC bending, welding, formed PU foam gasketing).
-Location: Ramnagar, Khed-Shivapur Kondanpur road, Pune - 412205.
-Timings: Friday to Wednesday: 9:30 AM to 6:30 PM (Thursday Closed).
-Contact: Phone/WhatsApp: +91-8668742659, Email: sales@sksengineeringsolutions.com.
-CRITICAL RULES:
-1. Keep your reply VERY SIMPLE, polite, natural, and under 2-3 sentences.
-2. Never output long walls of text. Keep it easy to read.
-3. Always mention WhatsApp +91-8668742659 for instant quotes or CAD drawing submissions.`;
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    async function callGeminiEndpoint(modelName, apiKey, contents) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 7000); // 7s timeout
-
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 signal: controller.signal,
                 body: JSON.stringify({
-                    contents: [
-                        {
-                            role: "user",
-                            parts: [{ text: `${systemPrompt}\n\nCustomer Inquiry: ${userText}\nAssistant Response:` }]
-                        }
-                    ],
+                    contents: contents,
                     generationConfig: {
                         temperature: 0.7,
-                        maxOutputTokens: 140
+                        maxOutputTokens: 350
                     }
                 })
             });
             clearTimeout(timeoutId);
 
-            if (!response.ok) return null;
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                console.warn(`Gemini model ${modelName} returned status ${response.status}:`, errData);
+                return null;
+            }
 
             const data = await response.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            return text ? text.trim() : null;
-        } catch (e) {
-            console.warn('Gemini API call timed out or failed, using local engine:', e);
+            const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            return replyText ? replyText.trim() : null;
+        } catch (err) {
+            clearTimeout(timeoutId);
+            console.warn(`Gemini call to ${modelName} failed:`, err);
             return null;
         }
     }
 
-    // ==========================================================================
-    // 3. Speech Synthesis (Text-to-Speech Engine)
-    // ==========================================================================
-    function stopSpeaking() {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-        }
-        state.isSpeakingNow = false;
-        updateSoundWaveVisual(false);
-    }
-
-    function speakText(rawText) {
-        if (!state.voiceSpeakingEnabled) return;
-        if (!('speechSynthesis' in window)) return;
-
-        try {
-            stopSpeaking();
-
-            const cleanText = rawText
-                .replace(/<[^>]*>/g, ' ')
-                .replace(/[*_#`~\[\]\(\)]/g, ' ')
-                .replace(/https?:\/\/\S+/g, '')
-                .replace(/&bull;/g, ', ')
-                .replace(/&amp;/g, ' and ')
-                .replace(/&plusmn;/g, ' plus minus ')
-                .replace(/\s+/g, ' ')
-                .trim();
-
-            if (!cleanText) return;
-
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.rate = 1.02;
-            utterance.pitch = 1.0;
-            utterance.lang = 'en-IN';
-
-            const voices = window.speechSynthesis.getVoices();
-            const preferred = voices.find(v => v.lang.includes('en-IN')) || 
-                              voices.find(v => v.lang.includes('en-GB')) || 
-                              voices.find(v => v.lang.includes('en-US'));
-            if (preferred) utterance.voice = preferred;
-
-            utterance.onstart = () => {
-                state.isSpeakingNow = true;
-                updateSoundWaveVisual(true);
+    async function queryGeminiAI(userText) {
+        const apiKey = getActiveGeminiKey();
+        if (!apiKey) {
+            return {
+                ok: false,
+                error: "API key is not configured. Please contact SKS Engineering via WhatsApp (+91-8668742659)."
             };
-
-            utterance.onend = utterance.onerror = () => {
-                state.isSpeakingNow = false;
-                updateSoundWaveVisual(false);
-            };
-
-            window.speechSynthesis.speak(utterance);
-        } catch (e) {
-            console.warn('Speech synthesis warning:', e);
-        }
-    }
-
-    function updateSoundWaveVisual(isSpeaking) {
-        const wave = document.getElementById('sksSoundWave');
-        if (wave) {
-            if (isSpeaking) wave.classList.add('speaking');
-            else wave.classList.remove('speaking');
-        }
-    }
-
-    // ==========================================================================
-    // 4. Local SKS Knowledge Engine (Fast & Direct Fallback)
-    // ==========================================================================
-    function getLocalResponse(userText) {
-        const query = (userText || '').toLowerCase().trim();
-
-        // 1. Quote / Price
-        if (query.match(/\b(quote|quotation|rfq|price|cost|pricing|rate|rates|estimate|how much)\b/)) {
-            const spoken = "I would be happy to help you get a quick quotation! You can connect with our sales engineering team directly on WhatsApp for immediate pricing.";
-            const html = `
-<p>I'd be glad to help you get an <strong>instant engineering RFQ quote</strong>!</p>
-<ul>
-  <li><strong>CAD Review:</strong> 24–48 Hours (DXF, DWG, STEP, PDF)</li>
-  <li><strong>Fabrication:</strong> 7–15 Working Days</li>
-  <li><strong>Custom Sizes:</strong> Built to your exact millimeter dimensions</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20a%20quotation%20for%20customized%20enclosures." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
-    💬 Instant WhatsApp Quote
-  </a>
-  <a href="tel:${SKS_INFO.phoneRaw}" class="sks-action-btn orange">
-    📞 Call: ${SKS_INFO.phone}
-  </a>
-</div>`;
-            return { spoken, html };
         }
 
-        // 2. Enclosures & Products
-        if (query.match(/\b(product|products|cabinet|cabinets|enclosure|enclosures|box|boxes|modular|floor standing|wall mount|junction|console)\b/)) {
-            const spoken = "We manufacture modular floor-standing cabinets, IP65 wall-mount enclosures, custom junction boxes, and operator console desks in Pune.";
-            const html = `
-<p><strong>SKS Industrial Enclosure Lineup:</strong></p>
-<ul>
-  <li><strong>Modular Floor-Standing:</strong> 9-Fold profile, 2.0mm/1.6mm CRCA, RAL 7035, IP55/IP65.</li>
-  <li><strong>Wall-Mount Enclosures:</strong> IP65/IP66 weather-resistant boxes with mounting plates.</li>
-  <li><strong>Stainless Steel (SS304/SS316):</strong> Pharma, food & chemical washdown grade.</li>
-  <li><strong>Operator Consoles & Junction Boxes:</strong> Built to CAD specs.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="products.html" class="sks-action-btn primary">📦 View Products Catalog</a>
-  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20enclosures." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire on WhatsApp</a>
-</div>`;
-            return { spoken, html };
+        // Build messages payload with conversation history
+        const contents = [];
+
+        // First message injects the SKS system instruction
+        if (state.conversationHistory.length === 0) {
+            contents.push({
+                role: "user",
+                parts: [{ text: `${SYSTEM_PROMPT}\n\nCustomer Inquiry: ${userText}` }]
+            });
+        } else {
+            // Include recent turns (up to last 6 turns)
+            const recentHistory = state.conversationHistory.slice(-6);
+            recentHistory.forEach((turn, idx) => {
+                if (idx === 0) {
+                    contents.push({
+                        role: turn.role,
+                        parts: [{ text: `${SYSTEM_PROMPT}\n\nCustomer Inquiry: ${turn.text}` }]
+                    });
+                } else {
+                    contents.push({
+                        role: turn.role,
+                        parts: [{ text: turn.text }]
+                    });
+                }
+            });
+            contents.push({
+                role: "user",
+                parts: [{ text: userText }]
+            });
         }
 
-        // 3. Capabilities / Laser / Bending
-        if (query.match(/\b(capability|capabilities|laser|cutting|bend|bending|punch|punching|weld|welding|tolerance|cnc)\b/)) {
-            const spoken = "Our plant features high precision CNC laser cutting with plus minus 0.1 millimeter tolerance, CNC press brakes, welding, and in-house PU foam gasketing.";
-            const html = `
-<p><strong>Manufacturing Capabilities at SKS Pune:</strong></p>
-<ul>
-  <li><strong>CNC Laser Cutting:</strong> High precision ±0.1mm tolerance on CRCA, SS304 & Aluminium.</li>
-  <li><strong>CNC Press Brake Bending:</strong> Multi-axis bending for rigid profiles.</li>
-  <li><strong>Formed PU Foam Gasket:</strong> Continuous robotic seal ensuring IP55/IP65/IP66.</li>
-  <li><strong>Powder Coating & Welding:</strong> 9-tank pretreatment & durable RAL finish.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="capabilities.html" class="sks-action-btn primary">⚙️ View Capabilities</a>
-  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20laser%20cutting%20inquiry." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Job Work Inquiry</a>
-</div>`;
-            return { spoken, html };
+        // Try primary model (gemini-3.8-flash)
+        let reply = await callGeminiEndpoint('gemini-3.8-flash', apiKey, contents);
+
+        // Fallback to gemini-3.5-flash if needed
+        if (!reply) {
+            reply = await callGeminiEndpoint('gemini-3.5-flash', apiKey, contents);
         }
 
-        // 4. Plant Location & Timings
-        if (query.match(/\b(address|location|where|plant|factory|place|pune|map|maps|visit|time|timing|hours|open|close)\b/)) {
-            const spoken = "Our factory is in Ramnagar, Khed-Shivapur Kondanpur Road, Pune. Open Friday to Wednesday from 9:30 AM to 6:30 PM. Thursdays are closed.";
-            const html = `
-<p><strong>Factory Location & Timings:</strong></p>
-<p>📍 <strong>${SKS_INFO.location}</strong></p>
-<ul>
-  <li><strong>Hours:</strong> Friday – Wednesday: 9:30 AM – 6:30 PM</li>
-  <li><strong>Weekly Off:</strong> Thursday (Closed)</li>
-  <li><strong>Phone:</strong> <a href="tel:${SKS_INFO.phoneRaw}" style="color:#60A5FA;">${SKS_INFO.phone}</a></li>
-</ul>
-<div class="sks-card-actions">
-  <a href="${SKS_INFO.mapsUrl}" target="_blank" rel="noopener noreferrer" class="sks-action-btn primary">📍 Open in Google Maps</a>
-  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20factory%20visit." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 WhatsApp Us</a>
-</div>`;
-            return { spoken, html };
+        if (reply) {
+            // Update history
+            state.conversationHistory.push({ role: 'user', text: userText });
+            state.conversationHistory.push({ role: 'model', text: reply });
+            // Cap history
+            if (state.conversationHistory.length > 10) {
+                state.conversationHistory = state.conversationHistory.slice(-10);
+            }
+            return { ok: true, text: reply };
         }
 
-        // 5. Default Fallback
-        const spoken = "SKS Engineering Solutions specializes in precision sheet metal fabrication and customized electrical enclosures in Pune. Would you like a quote or to chat on WhatsApp?";
-        const html = `
-<p>Welcome to <strong>SKS Engineering Solutions</strong> (A Shinde Groups Enterprise). We specialize in precision sheet metal and custom industrial enclosures in Pune.</p>
-<p>How can I help you today?</p>
-<div class="sks-card-actions">
-  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(userText.slice(0, 80))}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
-    💬 Talk on WhatsApp (+91-8668742659)
-  </a>
-  <a href="tel:${SKS_INFO.phoneRaw}" class="sks-action-btn orange">
-    📞 Call: ${SKS_INFO.phone}
-  </a>
-</div>`;
-        return { spoken, html };
+        return {
+            ok: false,
+            error: "Unable to reach Gemini AI at this moment. Please reach out directly on WhatsApp (+91-8668742659) or call +91-8668742659."
+        };
     }
 
     // ==========================================================================
-    // 5. DOM Initialization & SKS Logo
+    // 3. UI Construction & SKS Logo
     // ==========================================================================
     function initChatbotDOM() {
         if (!document.querySelector('link[href*="sks-chatbot.css"]')) {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = 'assets/css/sks-chatbot.css?v=20261011_gemini';
+            link.href = 'assets/css/sks-chatbot.css?v=20261011_pure_gemini';
             document.head.appendChild(link);
         }
 
@@ -300,25 +204,7 @@ CRITICAL RULES:
             document.body.appendChild(teaser);
         }
 
-        // 2. Dock Launcher Integration
-        const floatingDock = document.getElementById('floatingRightDock') || document.querySelector('.floating-right-dock');
-        if (floatingDock) {
-            let dockItem = document.querySelector('.dock-item.dock-chatbot');
-            if (!dockItem) {
-                dockItem = document.createElement('div');
-                dockItem.className = 'dock-item dock-chatbot';
-                floatingDock.insertBefore(dockItem, floatingDock.firstChild);
-            }
-            dockItem.innerHTML = `
-                <button type="button" class="dock-btn dock-btn-chatbot" id="sksChatbotDockBtn" aria-label="Open SKS AI Assistant" title="SKS AI Assistant (Voice & Chat)">
-                    <img src="assets/images/logo.png" alt="SKS Engineering Logo" class="dock-sks-logo-img">
-                    <span class="dock-badge-pulse green" title="AI Assistant Online 24/7"></span>
-                    <span class="dock-tooltip">Ask SKS AI Assistant (24/7)</span>
-                </button>
-            `;
-        }
-
-        // 3. Main Chat Widget Window (Simple, Attractive, Official SKS Logo)
+        // 2. Chat Widget Window
         let widget = document.getElementById('sksChatWidget');
         if (!widget) {
             widget = document.createElement('div');
@@ -341,20 +227,13 @@ CRITICAL RULES:
                             </div>
                             <div class="sks-brand-status">
                                 <span class="sks-status-dot"></span>
-                                <span>Voice &amp; Chat &bull; Pune Plant</span>
+                                <span>Live AI Engine &bull; Pune Plant</span>
                             </div>
                         </div>
                     </div>
                     <div class="sks-chat-controls">
-                        <!-- Voice Toggle Button -->
-                        <button type="button" class="sks-ctrl-btn ${state.voiceSpeakingEnabled ? 'voice-active' : ''}" id="sksVoiceToggle" title="Toggle Voice Speaking Aloud">
-                            <span id="sksVoiceIcon">${state.voiceSpeakingEnabled ? '🔊' : '🔇'}</span>
-                            <div class="sks-sound-wave" id="sksSoundWave" title="Speaking aloud...">
-                                <span></span><span></span><span></span>
-                            </div>
-                        </button>
-                        <!-- Close Window -->
-                        <button type="button" class="sks-ctrl-btn" id="sksCloseBtn" title="Close Chat">
+                        <!-- Single Clean Close Button -->
+                        <button type="button" class="sks-ctrl-btn" id="sksCloseBtn" title="Close Chat" aria-label="Close Chat">
                             ✕
                         </button>
                     </div>
@@ -363,27 +242,20 @@ CRITICAL RULES:
                 <!-- Messages Body -->
                 <div class="sks-chat-body" id="sksChatBody"></div>
 
-                <!-- 3 Simple Quick Buttons -->
+                <!-- Simple Quick Prompt Chips -->
                 <div class="sks-chat-chips-container" id="sksChipsContainer">
-                    <button type="button" class="sks-chip-btn highlight" data-query="quote">💬 WhatsApp Quote</button>
-                    <button type="button" class="sks-chip-btn" data-query="products">📦 Enclosure Products</button>
-                    <button type="button" class="sks-chip-btn" data-query="location">📍 Plant Location</button>
+                    <button type="button" class="sks-chip-btn highlight" data-prompt="What is your quotation process and lead time for custom electrical enclosures?">⚡ Enclosure Quote</button>
+                    <button type="button" class="sks-chip-btn" data-prompt="What are your CNC laser cutting and bending machine tolerances?">📐 CNC Laser Specs</button>
+                    <button type="button" class="sks-chip-btn" data-prompt="Where is your Pune factory located and what are your working hours?">📍 Plant Location</button>
+                    <button type="button" class="sks-chip-btn" data-prompt="Which CAD file formats do you accept for engineering drawings?">📁 CAD Formats</button>
                 </div>
 
-                <!-- Input Footer with Microphone (Voice Input) -->
+                <!-- Clean Input Footer (No Mic, No Voice, Just AI Chat) -->
                 <form class="sks-chat-footer" id="sksChatForm" onsubmit="return false;">
                     <div class="sks-input-wrap">
-                        <input type="text" class="sks-chat-input" id="sksChatInput" placeholder="Ask anything or click 🎙️ to speak..." autocomplete="off">
-                        <button type="button" class="sks-mic-btn" id="sksMicBtn" title="Speak into microphone" aria-label="Voice input">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                                <line x1="12" y1="19" x2="12" y2="23"/>
-                                <line x1="8" y1="23" x2="16" y2="23"/>
-                            </svg>
-                        </button>
+                        <input type="text" class="sks-chat-input" id="sksChatInput" placeholder="Ask SKS AI anything about enclosures, CAD, specs..." autocomplete="off">
                     </div>
-                    <button type="submit" class="sks-send-btn" id="sksSendBtn" aria-label="Send Message">
+                    <button type="submit" class="sks-send-btn" id="sksSendBtn" aria-label="Send Message" title="Send Message">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                         </svg>
@@ -398,9 +270,56 @@ CRITICAL RULES:
     }
 
     // ==========================================================================
-    // 6. Messaging & Rendering
+    // 4. Messaging & Formatting
     // ==========================================================================
-    function appendMessage(sender, htmlContent, spokenText = '') {
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
+    }
+
+    function formatMarkdown(text) {
+        if (!text) return '';
+        let formatted = escapeHtml(text)
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.1);padding:2px 4px;border-radius:4px;">$1</code>');
+
+        // Handle bullet points
+        const lines = formatted.split('\n');
+        let inList = false;
+        let result = [];
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                if (!inList) {
+                    result.push('<ul style="margin:6px 0 8px 18px;padding:0;">');
+                    inList = true;
+                }
+                result.push(`<li style="margin-bottom:4px;">${trimmed.substring(2)}</li>`);
+            } else if (trimmed.match(/^\d+\.\s/)) {
+                if (!inList) {
+                    result.push('<ol style="margin:6px 0 8px 18px;padding:0;">');
+                    inList = true;
+                }
+                result.push(`<li style="margin-bottom:4px;">${trimmed.replace(/^\d+\.\s/, '')}</li>`);
+            } else {
+                if (inList) {
+                    result.push('</ul>');
+                    inList = false;
+                }
+                if (trimmed) {
+                    result.push(`<p style="margin-bottom:6px;">${trimmed}</p>`);
+                }
+            }
+        });
+
+        if (inList) result.push('</ul>');
+        return result.join('');
+    }
+
+    function appendMessage(sender, htmlContent, rawText = '') {
         const body = document.getElementById('sksChatBody');
         if (!body) return;
 
@@ -408,17 +327,17 @@ CRITICAL RULES:
         row.className = `sks-msg-row ${sender}`;
 
         if (sender === 'bot') {
-            const safeSpeak = encodeURIComponent(spokenText || htmlContent.replace(/<[^>]*>/g, ''));
+            const whatsAppQuery = encodeURIComponent(rawText ? rawText.slice(0, 70) : "Customer inquiry via SKS AI Assistant");
             row.innerHTML = `
                 <div class="sks-msg-avatar">
                     <img src="assets/images/logo.png" alt="SKS" class="sks-msg-logo-img">
                 </div>
                 <div class="sks-msg-content">
                     ${htmlContent}
-                    <div class="sks-msg-actions-bar">
-                        <button type="button" class="sks-speak-msg-btn" onclick="window.sksSpeakMessage('${safeSpeak}')" title="Listen to this response">
-                            🔊 Read Aloud
-                        </button>
+                    <div class="sks-card-actions">
+                        <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${whatsAppQuery}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
+                            💬 Chat on WhatsApp (+91-8668742659)
+                        </a>
                     </div>
                 </div>
             `;
@@ -433,10 +352,6 @@ CRITICAL RULES:
 
         body.appendChild(row);
         body.scrollTop = body.scrollHeight;
-
-        if (sender === 'bot' && spokenText) {
-            speakText(spokenText);
-        }
     }
 
     function showTypingIndicator() {
@@ -466,39 +381,22 @@ CRITICAL RULES:
 
         const greetingHtml = `
 <p>Hello! 👋 Welcome to <strong>SKS Engineering Solutions</strong>.</p>
-<p>How can I help you today? You can ask anything about our <strong>customized enclosures</strong>, <strong>laser cutting &amp; bending</strong>, or tap below!</p>`;
+<p>I am your <strong>Gemini AI Engineering Assistant</strong>. Ask me anything about our <strong>customized electrical enclosures</strong>, <strong>CNC laser cutting &amp; bending tolerances</strong>, <strong>CAD drawings review</strong>, or plant visit!</p>`;
 
-        const spoken = "Hello! Welcome to SKS Engineering Solutions. How can I help you with enclosures or sheet metal fabrication today?";
-        appendMessage('bot', greetingHtml, spoken);
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function formatGeminiText(text) {
-        return escapeHtml(text)
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/\n/g, '<br>');
+        appendMessage('bot', greetingHtml, "Welcome to SKS Engineering Solutions Pune");
     }
 
     // ==========================================================================
-    // 7. Interactive Event Bindings & Speech Recognition
+    // 5. User Interaction & Event Handlers
     // ==========================================================================
     function bindEvents() {
         const widget = document.getElementById('sksChatWidget');
         const teaser = document.getElementById('sksChatTeaser');
         const dockBtn = document.getElementById('sksChatbotDockBtn');
         const closeBtn = document.getElementById('sksCloseBtn');
-        const voiceToggle = document.getElementById('sksVoiceToggle');
-        const voiceIcon = document.getElementById('sksVoiceIcon');
         const form = document.getElementById('sksChatForm');
         const input = document.getElementById('sksChatInput');
-        const micBtn = document.getElementById('sksMicBtn');
+        const chipsContainer = document.getElementById('sksChipsContainer');
 
         function openChat() {
             if (widget) widget.classList.add('active');
@@ -510,7 +408,6 @@ CRITICAL RULES:
         function closeChat() {
             if (widget) widget.classList.remove('active');
             state.isOpen = false;
-            stopSpeaking();
         }
 
         window.sksOpenChat = openChat;
@@ -539,127 +436,55 @@ CRITICAL RULES:
 
         if (closeBtn) closeBtn.addEventListener('click', closeChat);
 
-        // Voice Speaking Toggle
-        if (voiceToggle) {
-            voiceToggle.addEventListener('click', () => {
-                state.voiceSpeakingEnabled = !state.voiceSpeakingEnabled;
-                localStorage.setItem('sks_voice_speaking_enabled', state.voiceSpeakingEnabled ? 'true' : 'false');
-                if (voiceIcon) voiceIcon.textContent = state.voiceSpeakingEnabled ? '🔊' : '🔇';
-                voiceToggle.classList.toggle('voice-active', state.voiceSpeakingEnabled);
-                if (!state.voiceSpeakingEnabled) {
-                    stopSpeaking();
-                } else {
-                    speakText("Voice speech is now enabled.");
-                }
-            });
-        }
+        // Core Send Message Logic via Gemini AI
+        async function sendMessage(text) {
+            const query = (text || '').trim();
+            if (!query || state.isThinking) return;
 
-        // Submit message (Gemini AI -> Local Fallback)
-        async function handleSend() {
-            if (!input) return;
-            const text = input.value.trim();
-            if (!text) return;
+            appendMessage('user', query);
+            if (input) input.value = '';
 
-            appendMessage('user', text);
-            input.value = '';
+            state.isThinking = true;
             showTypingIndicator();
 
             try {
-                // 1. Try Gemini Generative AI
-                const geminiReply = await queryGeminiAI(text);
+                const response = await queryGeminiAI(query);
                 removeTypingIndicator();
+                state.isThinking = false;
 
-                if (geminiReply) {
-                    const html = `
-<p>${formatGeminiText(geminiReply)}</p>
-<div class="sks-card-actions">
-  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(text.slice(0, 60))}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
-    💬 Instant WhatsApp (+91-8668742659)
-  </a>
-</div>`;
-                    appendMessage('bot', html, geminiReply);
-                    return;
+                if (response.ok) {
+                    appendMessage('bot', formatMarkdown(response.text), response.text);
+                } else {
+                    const errorHtml = `
+<p>⚠️ ${escapeHtml(response.error)}</p>
+<p>You can also call us directly at <a href="tel:${SKS_INFO.phoneRaw}" style="color:#60A5FA;font-weight:600;">${SKS_INFO.phone}</a> or email <a href="mailto:${SKS_INFO.email}" style="color:#60A5FA;">${SKS_INFO.email}</a>.</p>`;
+                    appendMessage('bot', errorHtml, query);
                 }
             } catch (err) {
-                console.warn(err);
+                console.error('Chat error:', err);
                 removeTypingIndicator();
+                state.isThinking = false;
+                appendMessage('bot', `<p>⚠️ Connection interrupted. Please send your inquiry on WhatsApp (+91-8668742659).</p>`, query);
             }
-
-            // 2. Fast Local Fallback if Gemini unavailable
-            removeTypingIndicator();
-            const fallback = getLocalResponse(text);
-            appendMessage('bot', fallback.html, fallback.spoken);
         }
 
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                handleSend();
+                if (input) sendMessage(input.value);
             });
         }
 
-        // Quick suggestion chips
-        const chipsContainer = document.getElementById('sksChipsContainer');
+        // Quick Suggestion Chips (Prompt Gemini Directly)
         if (chipsContainer) {
             chipsContainer.addEventListener('click', (e) => {
                 const btn = e.target.closest('.sks-chip-btn');
                 if (!btn) return;
-                const query = btn.getAttribute('data-query');
-                if (query) {
-                    appendMessage('user', btn.textContent.trim());
-                    showTypingIndicator();
-                    setTimeout(() => {
-                        removeTypingIndicator();
-                        const response = getLocalResponse(query);
-                        appendMessage('bot', response.html, response.spoken);
-                    }, 250);
+                const prompt = btn.getAttribute('data-prompt');
+                if (prompt) {
+                    sendMessage(prompt);
                 }
             });
-        }
-
-        // Speech-to-Text Microphone
-        if (micBtn && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognizer = new SpeechRec();
-            recognizer.continuous = false;
-            recognizer.interimResults = false;
-            recognizer.lang = 'en-IN';
-
-            recognizer.onstart = () => {
-                state.isListening = true;
-                micBtn.classList.add('listening');
-                if (input) input.placeholder = "🎙️ Listening... please speak now!";
-            };
-
-            recognizer.onresult = (evt) => {
-                const transcript = evt.results[0][0].transcript;
-                if (input && transcript) {
-                    input.value = transcript;
-                    handleSend();
-                }
-            };
-
-            recognizer.onerror = recognizer.onend = () => {
-                state.isListening = false;
-                micBtn.classList.remove('listening');
-                if (input) input.placeholder = "Ask anything or click 🎙️ to speak...";
-            };
-
-            micBtn.addEventListener('click', () => {
-                if (state.isListening) {
-                    recognizer.stop();
-                } else {
-                    stopSpeaking();
-                    try {
-                        recognizer.start();
-                    } catch (e) {
-                        console.warn('Recognition start warning:', e);
-                    }
-                }
-            });
-        } else if (micBtn) {
-            micBtn.title = "Voice recognition not supported in this browser";
-            micBtn.style.opacity = "0.4";
         }
 
         // Auto open if URL has #chat or query
@@ -670,23 +495,13 @@ CRITICAL RULES:
             if (window.location.hash === '#chat') openChat();
         });
 
-        // Show teaser after 4 seconds
+        // Show teaser after 4 seconds if not open
         setTimeout(() => {
             if (!state.isOpen && teaser) {
                 teaser.classList.add('visible');
             }
         }, 4000);
     }
-
-    // Global audio helper
-    window.sksSpeakMessage = function (encodedText) {
-        try {
-            const decoded = decodeURIComponent(encodedText);
-            speakText(decoded);
-        } catch (e) {
-            console.warn(e);
-        }
-    };
 
     // Auto initialize on DOM ready
     if (document.readyState === 'loading') {
