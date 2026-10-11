@@ -1,11 +1,11 @@
 /**
  * SKS Engineering Solutions - AI Engineering Assistant Stylesheet
- * Brand-Integrated Voice-Enabled Design System
+ * Brand-Integrated Voice-Enabled Design System with Gemini Intelligence
  * Features:
  * - Official SKS Logo Integration (Dock, Header, Messages, Teaser)
- * - Live Speech Synthesis (Text-to-Speech) with Animated Voice Waves
- * - Voice Recognition (Speech-to-Text) with Pulsing Microphone Visual
- * - Ultra-Clean, Non-Confusing Modern B2B Engineering UI
+ * - Two-Way Voice: Speech Synthesis (Text-to-Speech) & Recognition (Mic)
+ * - Powered by Google Gemini AI with Instant Local Fallback
+ * - Ultra-Simple, Attractive & Friendly Conversation Interface
  */
 
 /* ==========================================================================
@@ -155,9 +155,9 @@
     position: fixed;
     right: 22px;
     bottom: 86px;
-    width: 400px;
+    width: 395px;
     max-width: calc(100vw - 28px);
-    height: 610px;
+    height: 590px;
     max-height: calc(100vh - 110px);
     background: #0B1120;
     border: 1px solid rgba(255, 255, 255, 0.14);
@@ -182,7 +182,7 @@
 }
 
 /* ==========================================================================
-   4. Chat Header (Official SKS Logo & Voice Status)
+   4. Chat Header (Official SKS Logo & Controls)
    ========================================================================== */
 .sks-chat-header {
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
@@ -472,6 +472,44 @@
     margin-bottom: 4px;
 }
 
+/* Typing Indicator (Gemini Thinking) */
+.sks-typing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #131D31;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    border-top-left-radius: 2px;
+    color: #94A3B8;
+    font-size: 0.8rem;
+    align-self: flex-start;
+    animation: sksMsgIn 0.2s ease;
+}
+
+.sks-typing-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.sks-typing-dots span {
+    width: 5px;
+    height: 5px;
+    background: #38BDF8;
+    border-radius: 50%;
+    animation: typingDots 1.4s infinite ease-in-out both;
+}
+
+.sks-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.sks-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingDots {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
 /* Speak aloud button on each bot message */
 .sks-msg-actions-bar {
     display: flex;
@@ -705,41 +743,8 @@
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.55);
 }
 
-.sks-send-btn:active {
-    transform: translateY(1px);
-}
-
 /* ==========================================================================
-   8. Simple Quick Lead Modal Form
-   ========================================================================== */
-.sks-quick-lead-box {
-    background: #131E33;
-    border: 1px solid rgba(37, 99, 235, 0.4);
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 8px;
-}
-
-.sks-quick-lead-input {
-    width: 100%;
-    background: #0B1120;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: #FFFFFF;
-    padding: 7px 10px;
-    font-size: 0.8rem;
-    margin-bottom: 8px;
-    font-family: inherit;
-    box-sizing: border-box;
-}
-
-.sks-quick-lead-input:focus {
-    border-color: #38BDF8;
-    outline: none;
-}
-
-/* ==========================================================================
-   9. Mobile Responsiveness
+   8. Mobile Screen Responsiveness
    ========================================================================== */
 @media (max-width: 640px) {
     .sks-chat-widget {
