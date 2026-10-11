@@ -42,7 +42,7 @@
     <!-- Production Stylesheet -->
     <link rel="stylesheet" href="assets/css/style.css?v=20261011_revert">
     <!-- SKS AI Assistant Stylesheet -->
-    <link rel="stylesheet" href="assets/css/sks-chatbot.css?v=20261009">
+    <link rel="stylesheet" href="assets/css/sks-chatbot.css?v=20261011_voice">
 
         <!-- Structured Data (JSON-LD) for LocalBusiness, WebSite & Organization -->
     <script type="application/ld+json">
@@ -1246,20 +1246,12 @@
          Channels: WhatsApp, Instagram, YouTube, LinkedIn (NO Email Logo)
          ====================================================================== -->
     <aside class="floating-right-dock" id="floatingRightDock" aria-label="Social and Quick Contact Channels">
-        <!-- 0. SKS AI Assistant Tab -->
+        <!-- 0. SKS AI Assistant Tab (With SKS Logo) -->
         <div class="dock-item dock-chatbot">
-            <button type="button" class="dock-btn dock-btn-chatbot" id="sksChatbotDockBtn" aria-label="Open SKS AI Engineering Assistant" title="AI Engineering Assistant">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
-                    <rect x="4" y="8" width="16" height="12" rx="4"/>
-                    <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
-                    <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
-                    <path d="M9 17h6"/>
-                    <line x1="2" y1="14" x2="4" y2="14"/>
-                    <line x1="20" y1="14" x2="22" y2="14"/>
-                </svg>
+            <button type="button" class="dock-btn dock-btn-chatbot" id="sksChatbotDockBtn" aria-label="Open SKS AI Engineering Assistant" title="AI Engineering Assistant (Voice & Chat)">
+                <img src="assets/images/logo.png" alt="SKS Logo" class="dock-sks-logo-img">
                 <span class="dock-badge-pulse green" title="AI Assistant Online 24/7"></span>
-                <span class="dock-tooltip">Ask SKS AI Assistant (24/7)</span>
+                <span class="dock-tooltip">Ask SKS AI (Voice &amp; Chat 24/7)</span>
             </button>
         </div>
 
@@ -1332,6 +1324,6 @@
     <!-- Google Gemini AI Engine Configuration -->
     <script src="assets/js/gemini-config.js?v=20261009_v4"></script>
     <!-- SKS AI Assistant Engine -->
-    <script src="assets/js/sks-chatbot.js?v=20261009_v4"></script>
+    <script src="assets/js/sks-chatbot.js?v=20261011_voice"></script>
 </body>
 </html>

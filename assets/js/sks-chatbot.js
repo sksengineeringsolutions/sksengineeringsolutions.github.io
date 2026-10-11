@@ -1,27 +1,25 @@
 /**
  * SKS Engineering Solutions - AI Engineering Assistant Engine
- * A Shinde Groups Enterprise
+ * A Shinde Groups Enterprise • Pune Plant
  * 
  * Features:
- * - 100% Client-Side Domain Expert NLP Engine (0ms latency, zero API costs/failures)
- * - Optional Google Gemini API integration (bring-your-own key) with auto fallback
- * - Interactive RFQ Wizard with 1-Click WhatsApp quote composer
- * - Accurate operational schedule (Fri-Wed 9:30 AM - 6:30 PM, Thursday Closed Weekly Off)
- * - Web Audio API synthesizer for clean sound feedback (0 external assets)
- * - Web Speech API voice input (speech-to-text)
- * - Session persistence across multi-page site navigation
- * - Responsive glassmorphic UI matching SKS Engineering design system
+ * - Official SKS Logo Integration (Header, Launcher, Teaser, Messages)
+ * - Two-Way Voice:
+ *     1. Text-to-Speech (Bot Speaks Responses Out Loud via Web Speech API)
+ *     2. Speech-to-Text (User Speaks Questions via Microphone Recognition)
+ * - Ultra-Simple, Attractive & Friendly Conversation Interface
+ * - 1-Click WhatsApp Instant Quote Connection (+91-8668742659)
+ * - 100% Client-Side Domain Knowledge Engine (0ms Latency, 100% Reliable)
  */
 
 'use strict';
 
 (function () {
-    // Prevent duplicate initialization
-    if (window.__SKS_CHATBOT_LOADED__) return;
-    window.__SKS_CHATBOT_LOADED__ = true;
+    if (window.__SKS_CHATBOT_INITIALIZED__) return;
+    window.__SKS_CHATBOT_INITIALIZED__ = true;
 
     // ==========================================================================
-    // 1. Core Domain Knowledge Base
+    // 1. Official SKS Corporate Knowledge Base
     // ==========================================================================
     const SKS_INFO = {
         name: "SKS Engineering Solutions",
@@ -29,8 +27,8 @@
         phone: "+91-8668742659",
         phoneRaw: "918668742659",
         email: "sales@sksengineeringsolutions.com",
-        location: "Gat No. 84, Jyotiba Nagar, Talawade, Pune - 411062, Maharashtra, India",
-        mapsUrl: "https://maps.google.com/?q=Gat+No+84+Jyotiba+Nagar+Talawade+Pune+411062",
+        location: "Right side of Bridge, Beside shlok hospital, Khed-Shivapur Kondanpur road, Opposite Muktangan Hotel, Ramnagar, Pune - 412205, Maharashtra, India",
+        mapsUrl: "https://maps.app.goo.gl/mNCYdPJJQLvxL5st7",
         hours: "Friday – Wednesday: 9:30 AM – 6:30 PM",
         weeklyOff: "Thursday: Closed (Weekly Off)",
         leadTimeCAD: "24 – 48 Hours for Engineering CAD Review & Preliminary RFQ",
@@ -38,1422 +36,691 @@
         cadFormats: "DXF, DWG, STEP, STP, IGES, PDF Engineering Drawings"
     };
 
-    const DEFAULT_GEMINI_KEY = (function() {
-        try {
-            return atob("QVEuQWI4Uk42SWdRT0lzLTFHSE40NFJKSk1rTHJvU3Fjd3VXbTZacUxNNTY5cnJzRl8xcmc=");
-        } catch (e) {
-            return "";
-        }
-    })();
-
-    function getActiveApiKey() {
-        const local = (localStorage.getItem('sks_gemini_api_key') || '').trim();
-        if (local && local.length > 25 && local !== 'null' && local !== 'undefined') {
-            return local;
-        }
-        const winKey = (window.SKS_GEMINI_API_KEY || '').trim();
-        if (winKey && winKey.length > 25 && winKey !== 'null' && winKey !== 'undefined') {
-            return winKey;
-        }
-        return DEFAULT_GEMINI_KEY;
-    }
-
-    // State management
+    // State
     const state = {
         isOpen: false,
-        isExpanded: false,
-        soundEnabled: true,
+        voiceSpeakingEnabled: localStorage.getItem('sks_voice_speaking_enabled') !== 'false', // Default ON
         isListening: false,
-        geminiApiKey: getActiveApiKey(),
-        conversationHistory: [],
-        messages: [],
-        wizardStep: 0,
-        wizardData: {
-            type: '',
-            dimensions: '',
-            material: 'CRCA 2.0mm / 1.6mm',
-            ipRating: 'IP65',
-            quantity: '1'
-        }
+        isSpeakingNow: false,
+        messages: []
     };
 
-    // Audio synthesizer using Web Audio API (Zero external MP3 files needed)
-    let audioCtx = null;
-    function playBeep(type = 'receive') {
-        if (!state.soundEnabled) return;
-        try {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+    // ==========================================================================
+    // 2. Speech Synthesis (Text-to-Speech Engine)
+    // ==========================================================================
+    function stopSpeaking() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        state.isSpeakingNow = false;
+        updateSoundWaveVisual(false);
+    }
 
-            const now = audioCtx.currentTime;
-            if (type === 'send') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(540, now);
-                osc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
-                osc.start(now);
-                osc.stop(now + 0.09);
-            } else {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(1050, now + 0.1);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-                osc.start(now);
-                osc.stop(now + 0.12);
-            }
+    function speakText(rawText) {
+        if (!state.voiceSpeakingEnabled) return;
+        if (!('speechSynthesis' in window)) return;
+
+        try {
+            stopSpeaking();
+
+            // Clean HTML tags and markdown for clean spoken voice
+            const cleanText = rawText
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/[*_#`~\[\]\(\)]/g, ' ')
+                .replace(/https?:\/\/\S+/g, '')
+                .replace(/&bull;/g, ', ')
+                .replace(/&amp;/g, ' and ')
+                .replace(/&plusmn;/g, ' plus minus ')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (!cleanText) return;
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.rate = 1.02;
+            utterance.pitch = 1.0;
+            utterance.lang = 'en-IN';
+
+            // Find best available English voice
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v => v.lang.includes('en-IN')) || 
+                              voices.find(v => v.lang.includes('en-GB')) || 
+                              voices.find(v => v.lang.includes('en-US'));
+            if (preferred) utterance.voice = preferred;
+
+            utterance.onstart = () => {
+                state.isSpeakingNow = true;
+                updateSoundWaveVisual(true);
+            };
+
+            utterance.onend = utterance.onerror = () => {
+                state.isSpeakingNow = false;
+                updateSoundWaveVisual(false);
+            };
+
+            window.speechSynthesis.speak(utterance);
         } catch (e) {
-            // Audio context not allowed or unsupported
+            console.warn('Speech synthesis warning:', e);
+        }
+    }
+
+    function updateSoundWaveVisual(isSpeaking) {
+        const wave = document.getElementById('sksSoundWave');
+        if (wave) {
+            if (isSpeaking) {
+                wave.classList.add('speaking');
+            } else {
+                wave.classList.remove('speaking');
+            }
         }
     }
 
     // ==========================================================================
-    // 2. Operational Hours Intelligence
+    // 3. Operational Schedule Calculator
     // ==========================================================================
     function getOperationalStatus() {
         const now = new Date();
-        const day = now.getDay(); // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
-        const hour = now.getHours();
-        const minute = now.getMinutes();
-        const totalMinutes = hour * 60 + minute;
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const ist = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
+        const day = ist.getDay(); // 0=Sun, 4=Thu
+        const hour = ist.getHours() + (ist.getMinutes() / 60);
 
-        // Thursday (day 4) is weekly off
-        if (day === 4) {
-            return {
-                isOpen: false,
-                isThursdayOff: true,
-                message: "Thursday: Closed (Weekly Off)",
-                bannerNotice: "⚠️ Thursday Weekly Off: Factory closed today. Submit your inquiry below, and our engineering team will respond first thing on Friday morning at 9:30 AM!"
-            };
-        }
+        const isThursday = (day === 4);
+        const isWorkingHours = (!isThursday && hour >= 9.5 && hour < 18.5);
 
-        // Operational: 9:30 AM (570 min) to 6:30 PM (1110 min)
-        const openTime = 9 * 60 + 30; // 570
-        const closeTime = 18 * 60 + 30; // 1110
-
-        if (totalMinutes >= openTime && totalMinutes <= closeTime) {
-            return {
-                isOpen: true,
-                isThursdayOff: false,
-                message: "Open Today: 9:30 AM – 6:30 PM",
-                bannerNotice: "🟢 Factory Open Now (9:30 AM – 6:30 PM) • Instant CAD & Enclosure Estimates Active"
-            };
-        } else {
-            return {
-                isOpen: false,
-                isThursdayOff: false,
-                message: "Currently Closed (Opens 9:30 AM)",
-                bannerNotice: "🌙 After-Hours: Factory reopens at 9:30 AM. Leave your RFQ specs below, and our team will quote on the next working morning!"
-            };
-        }
+        return {
+            isOpen: isWorkingHours,
+            isThursday: isThursday,
+            notice: isThursday 
+                ? "⚠️ Thursday: Weekly Off • WhatsApp Open 24/7"
+                : (isWorkingHours ? "🟢 Plant Open Now • 9:30 AM – 6:30 PM" : "🌙 After-Hours • Leave Inquiry for Morning Review")
+        };
     }
 
     // ==========================================================================
-    // 3. Domain Knowledge Engine & Response Logic
+    // 4. SKS Domain Knowledge Engine (Friendly & Direct)
     // ==========================================================================
-    function processQueryLocally(userText) {
-        const query = userText.toLowerCase().trim();
-        const status = getOperationalStatus();
+    function getBotResponse(userText) {
+        const query = (userText || '').toLowerCase().trim();
 
-        // 1. Operational hours, office timings & weekly off
-        if (query.match(/\b(time|timing|timings|hour|hours|open|close|closed|thursday|weekly off|sunday|working|schedule)\b/)) {
-            let note = status.isThursdayOff 
-                ? `<div class="sks-card-badge-row"><span class="sks-spec-pill orange">⚠️ Today is Thursday (Weekly Off)</span></div>`
-                : (status.isOpen 
-                    ? `<div class="sks-card-badge-row"><span class="sks-spec-pill">🟢 Factory Open Now</span></div>` 
-                    : `<div class="sks-card-badge-row"><span class="sks-spec-pill blue">🌙 Reopens 9:30 AM</span></div>`);
+        // 1. RFQ / Quote / Price / Cost
+        if (query.match(/\b(quote|quotation|rfq|price|cost|pricing|rate|rates|estimate|estimation|how much)\b/)) {
+            const spoken = "I would be happy to help you get a quick quotation! You can connect with our sales engineering team directly on WhatsApp or phone for immediate pricing.";
+            const html = `
+<p>I'd be glad to help you get an <strong>instant engineering RFQ quote</strong>!</p>
+<ul>
+  <li><strong>CAD Review:</strong> 24–48 Hours (DXF, DWG, STEP, PDF)</li>
+  <li><strong>Production Turnaround:</strong> 7–15 Working Days</li>
+  <li><strong>Custom Sizes:</strong> Built to your exact millimeter dimensions</li>
+</ul>
+<p>Choose the fastest option below to submit your requirements:</p>
+<div class="sks-card-actions">
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20a%20quotation%20for%20customized%20enclosures." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
+    💬 Instant WhatsApp Quote
+  </a>
+  <button type="button" class="sks-action-btn primary" onclick="window.sksShowQuickForm()">
+    📋 Request a Callback
+  </button>
+  <a href="tel:${SKS_INFO.phoneRaw}" class="sks-action-btn orange">
+    📞 Call: ${SKS_INFO.phone}
+  </a>
+</div>`;
+            return { spoken, html };
+        }
 
-            return `Here are the operational hours for <strong>SKS Engineering Solutions</strong> (Talawade, Pune):
-${note}
+        // 2. Enclosure Products / Types
+        if (query.match(/\b(product|products|cabinet|cabinets|enclosure|enclosures|box|boxes|modular|floor standing|wall mount|junction|console|pcc|mcc)\b/)) {
+            const spoken = "We manufacture modular floor-standing cabinets, IP65 wall-mount enclosures, custom junction boxes, and operator console desks in Pune.";
+            const html = `
+<p><strong>SKS Industrial Enclosure Lineup:</strong></p>
+<ul>
+  <li><strong>Modular Floor-Standing Enclosures:</strong> 9-Fold profile, 2.0mm/1.6mm CRCA, RAL 7035 textured, IP55/IP65 for PCC/MCC automation panels.</li>
+  <li><strong>Wall-Mount Enclosures:</strong> Compact IP65/IP66 weather-resistant boxes with gland plates & mounting brackets.</li>
+  <li><strong>Stainless Steel (SS304/SS316):</strong> Food, pharma & marine washdown grade IP66/IP69K.</li>
+  <li><strong>Operator Console Desks & Junction Boxes:</strong> Customized push-button stations & desks.</li>
+</ul>
+<div class="sks-card-actions">
+  <a href="products.html" class="sks-action-btn primary">📦 View Full Products Catalog</a>
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20enclosure%20products." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire on WhatsApp</a>
+</div>`;
+            return { spoken, html };
+        }
+
+        // 3. Capabilities / Machinery / Laser Cutting / Bending
+        if (query.match(/\b(capability|capabilities|laser|cutting|bend|bending|punch|punching|weld|welding|powder|coating|tolerance|machine|machinery|cnc)\b/)) {
+            const spoken = "Our Pune manufacturing plant is equipped with high-precision CNC laser cutting with plus minus 0.1 millimeter precision, CNC press brakes, welding, and in-house PU foam gasketing.";
+            const html = `
+<p><strong>In-House Manufacturing Capabilities:</strong></p>
+<ul>
+  <li><strong>CNC Fiber Laser Cutting:</strong> High-precision ±0.1mm tolerance on CRCA, SS304, & Aluminium sheets.</li>
+  <li><strong>CNC Multi-Axis Bending:</strong> Multi-bend profiles without distortion or crack lines.</li>
+  <li><strong>Formed PU Foam Gasketing:</strong> Continuous robotic seal ensuring true IP55/IP65/IP66 ingress protection.</li>
+  <li><strong>Powder Coating & Welding:</strong> 9-tank chemical pretreatment, conveyorized oven, and clean TIG/MIG welding.</li>
+</ul>
+<div class="sks-card-actions">
+  <a href="capabilities.html" class="sks-action-btn primary">⚙️ Explore Capabilities</a>
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20laser%20cutting%20and%20fabrication%20job%20work." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Job Work Inquiry</a>
+</div>`;
+            return { spoken, html };
+        }
+
+        // 4. Plant Address / Location
+        if (query.match(/\b(address|location|where|plant|factory|place|pune|map|maps|visit|directions|khed|ramnagar)\b/)) {
+            const spoken = "Our manufacturing facility is located in Ramnagar, Khed-Shivapur Kondanpur Road, Pune, Maharashtra. Clients and engineers are welcome to visit!";
+            const html = `
+<p><strong>SKS Engineering Solutions Plant Location:</strong></p>
+<p>📍 <strong>${SKS_INFO.location}</strong></p>
+<ul>
+  <li><strong>Working Hours:</strong> Friday – Wednesday: 9:30 AM – 6:30 PM (Thursday Closed)</li>
+  <li><strong>Direct Contact:</strong> <a href="tel:${SKS_INFO.phoneRaw}" style="color:#60A5FA;">${SKS_INFO.phone}</a></li>
+</ul>
+<div class="sks-card-actions">
+  <a href="${SKS_INFO.mapsUrl}" target="_blank" rel="noopener noreferrer" class="sks-action-btn primary">📍 Open in Google Maps</a>
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20to%20visit%20your%20factory." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">🗓️ Schedule Visit on WhatsApp</a>
+</div>`;
+            return { spoken, html };
+        }
+
+        // 5. Timings / Hours / Working Days
+        if (query.match(/\b(time|timing|timings|hour|hours|open|close|closed|thursday|sunday|weekly off|schedule)\b/)) {
+            const status = getOperationalStatus();
+            const spoken = `Our plant operates Friday to Wednesday from 9:30 AM to 6:30 PM. Thursdays are our weekly off, but our WhatsApp is always available for inquiries.`;
+            const html = `
+<p><strong>Factory & Office Operational Timings:</strong></p>
 <ul>
   <li><strong>Friday – Wednesday:</strong> 9:30 AM – 6:30 PM</li>
   <li><strong>Thursday:</strong> Closed (Weekly Off)</li>
 </ul>
-Our engineering office and manufacturing lines operate on this schedule. For urgent weekend or after-hours inquiries, our WhatsApp channel remains open for CAD submissions!
+<p style="color:#94A3B8; font-size:0.8rem;">Status: ${status.notice}</p>
 <div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20factory%20timings%20and%20enclosures" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Message on WhatsApp (${SKS_INFO.phone})</a>
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20plant%20timings." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Message on WhatsApp</a>
 </div>`;
+            return { spoken, html };
         }
 
-        // 2. Factory location, address, directions
-        if (query.match(/\b(address|location|where|place|pune|talawade|map|maps|visit|plant|factory|directions|route)\b/)) {
-            return `<strong>SKS Engineering Solutions Plant Location:</strong>
-<p>📍 <strong>${SKS_INFO.location}</strong><br>
-<em>Landmark: Talawade Industrial Area / Chakan Corridor, PCMC, Pune.</em></p>
+        // 6. Contact / Phone / Email
+        if (query.match(/\b(contact|phone|call|mobile|number|email|whatsapp|talk|sales)\b/)) {
+            const spoken = "You can reach SKS Engineering directly at plus 91, 8668742659 or email sales at sksengineeringsolutions.com.";
+            const html = `
+<p><strong>Connect with SKS Engineering Solutions:</strong></p>
 <ul>
-  <li><strong>Factory Hours:</strong> Fri–Wed: 9:30 AM – 6:30 PM (Thu Closed)</li>
-  <li><strong>Phone / WhatsApp:</strong> <a href="tel:${SKS_INFO.phoneRaw}" style="color:#38BDF8;">${SKS_INFO.phone}</a></li>
-  <li><strong>Direct Email:</strong> <a href="mailto:${SKS_INFO.email}" style="color:#38BDF8;">${SKS_INFO.email}</a></li>
-</ul>
-Clients and procurement teams are welcome to visit for plant audits, machine inspections, and prototype sign-offs!
-<div class="sks-card-actions">
-  <a href="${SKS_INFO.mapsUrl}" target="_blank" rel="noopener noreferrer" class="sks-action-btn primary">📍 Open in Google Maps</a>
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20to%20schedule%20a%20factory%20visit" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">🗓️ Schedule Factory Visit on WhatsApp</a>
-</div>`;
-        }
-
-        // 3. RFQ, Quote, Price, Cost, Estimation
-        if (query.match(/\b(quote|quotation|rfq|cost|price|pricing|estimate|estimation|rate|rates|inquiry|enquiry)\b/)) {
-            return `I can help you get an <strong>instant engineering RFQ quote</strong> for your custom enclosures!
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">⚡ 24–48h CAD Review</span>
-  <span class="sks-spec-pill blue">📐 Custom Fabrication</span>
-  <span class="sks-spec-pill orange">🛡️ IP55 / IP65 / IP66</span>
-</div>
-<p>You can either use our <strong>Guided Quote Assistant</strong> right here in this chat, or send your 2D/3D CAD drawings directly to our sales engineering team:</p>
-<ul>
-  <li><strong>Accepted CAD Formats:</strong> ${SKS_INFO.cadFormats}</li>
-  <li><strong>Standard Lead Time:</strong> ${SKS_INFO.leadTimeFab}</li>
+  <li><strong>Sales Hotline / WhatsApp:</strong> <a href="tel:${SKS_INFO.phoneRaw}" style="color:#60A5FA;">${SKS_INFO.phone}</a></li>
+  <li><strong>Official Email:</strong> <a href="mailto:${SKS_INFO.email}" style="color:#60A5FA;">${SKS_INFO.email}</a></li>
+  <li><strong>Parent Enterprise:</strong> Shinde Groups Pune</li>
 </ul>
 <div class="sks-card-actions">
-  <button type="button" class="sks-action-btn primary" onclick="window.sksStartWizard()">⚡ Launch Guided Quote Calculator</button>
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20I%20have%20an%20RFQ%20drawing%20ready%20for%20quotation" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">📱 Send CAD on WhatsApp (+91-8668742659)</a>
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20to%20connect%20with%20sales." target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Chat on WhatsApp</a>
+  <a href="tel:${SKS_INFO.phoneRaw}" class="sks-action-btn orange">📞 Call Directly</a>
 </div>`;
+            return { spoken, html };
         }
 
-        // 4. Modular Enclosure / Floor Standing Cabinet
-        if (query.match(/\b(modular|floor standing|cabinet|pcc|mcc|suite|9-fold|nine fold|automation panel|rittal style)\b/)) {
-            return `<strong>Modular Floor-Standing Enclosures (CRCA 9-Fold Profile):</strong>
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">IP55 / IP65 Rated</span>
-  <span class="sks-spec-pill blue">2.0mm Frame / 1.6mm Doors</span>
-  <span class="sks-spec-pill orange">RAL 7035 Textured</span>
-</div>
-<p>Engineered for high-density power distribution (PCC, MCC) and industrial automation systems:</p>
-<ul>
-  <li><strong>Structure:</strong> 9-fold roll-formed vertical profiles with multi-point welded base frame for maximum rigidity.</li>
-  <li><strong>Standard Heights:</strong> 1800mm, 2000mm, 2200mm</li>
-  <li><strong>Standard Widths:</strong> 600mm, 800mm, 1000mm, 1200mm</li>
-  <li><strong>Standard Depths:</strong> 400mm, 600mm, 800mm, 1000mm</li>
-  <li><strong>Features:</strong> Continuous CNC foam-in-place PU gasketing, 3-point espagnolette locking system, 4-piece split gland plates, internal 25mm pitch mounting pattern.</li>
-</ul>
+        // 7. General Friendly Fallback
+        const spoken = "Thank you for asking! SKS Engineering Solutions specializes in precision sheet metal fabrication and customized electrical enclosures in Pune. Would you like to get a quote, explore products, or talk on WhatsApp?";
+        const html = `
+<p>Thank you for reaching out! <strong>SKS Engineering Solutions</strong> (A Shinde Groups Enterprise) specializes in precision sheet metal and custom industrial enclosures in Pune.</p>
+<p>How can I best help you right now?</p>
 <div class="sks-card-actions">
-  <a href="products.html" class="sks-action-btn secondary">📄 View Product Specs in Catalog</a>
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20Modular%20Floor-Standing%20Enclosures" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire Modular Enclosures on WhatsApp</a>
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(userText.slice(0, 80))}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
+    💬 Talk on WhatsApp (+91-8668742659)
+  </a>
+  <button type="button" class="sks-action-btn primary" onclick="window.sksShowQuickForm()">
+    📋 Request a Callback
+  </button>
+  <a href="products.html" class="sks-action-btn orange">
+    📦 View Products Catalog
+  </a>
 </div>`;
-        }
-
-        // 5. Stainless Steel Enclosure (SS304 / SS316)
-        if (query.match(/\b(stainless|ss304|ss316|ss|inox|pharma|food|dairy|marine|chemical|corrosion|washdown)\b/)) {
-            return `<strong>Stainless Steel Enclosures (SS304 & SS316L):</strong>
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">IP66 / IP69K</span>
-  <span class="sks-spec-pill blue">SS304 / SS316L</span>
-  <span class="sks-spec-pill orange">Scotch-Brite Satin Ra &lt; 0.5µm</span>
-</div>
-<p>Purpose-built for hygienic, sterile, and aggressively corrosive industrial environments:</p>
-<ul>
-  <li><strong>Applications:</strong> Pharmaceuticals, Food & Dairy processing, Chemical plants, Offshore Marine & Coastal installations.</li>
-  <li><strong>Sheet Thickness:</strong> 1.5mm to 2.5mm Grade 304 or 316L.</li>
-  <li><strong>Welding & Finish:</strong> Clean Argon TIG welding with fully passivated and pickling treated seams; Scotch-Brite hairline brushed finish.</li>
-  <li><strong>Hygiene Details:</strong> Sloped roof sanitary options, crevice-free seamless gaskets, stainless quarter-turn quarter-turn latches.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20for%20Stainless%20Steel%20(SS304%2FSS316)%20Enclosures" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Request SS304/SS316 Quote on WhatsApp</a>
-</div>`;
-        }
-
-        // 6. Wall-Mount Enclosures
-        if (query.match(/\b(wall mount|wall-mount|wallmounted|small enclosure|distribution box|lighting box|compact enclosure)\b/)) {
-            return `<strong>Precision Wall-Mounted Industrial Enclosures:</strong>
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">IP65 / IP66 Certified</span>
-  <span class="sks-spec-pill blue">CRCA 1.2–1.6mm / SS304</span>
-  <span class="sks-spec-pill orange">RAL 7035 / RAL 7032</span>
-</div>
-<p>Compact, rigid, and dust-tight housings for electrical controls and field instrumentation:</p>
-<ul>
-  <li><strong>Sizes Available:</strong> From 300×200×150 mm up to 1200×800×300 mm (custom sizes fabricated on demand).</li>
-  <li><strong>Mounting:</strong> External heavy-duty wall-mounting brackets or direct rear fixings.</li>
-  <li><strong>Features:</strong> Top/Bottom removable gland plates with neoprene or PU gaskets, 120° concealed hinges, quarter-turn cam locks, galvanized or orange RAL 2000 chassis plate.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20for%20Wall-Mounted%20Enclosures" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire Wall-Mount Enclosure Sizes</a>
-</div>`;
-        }
-
-        // 7. Outdoor Feeder Pillars / Weatherproof Enclosures
-        if (query.match(/\b(feeder pillar|feeder|outdoor|canopy|rain|weatherproof|sun roof|street light|solar|double door)\b/)) {
-            return `<strong>Outdoor Weatherproof Feeder Pillars:</strong>
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">IP55 / IP65 Weatherproof</span>
-  <span class="sks-spec-pill blue">CRCA 2.0mm / GI Sheet</span>
-  <span class="sks-spec-pill orange">UV-Resistant Powder Coat</span>
-</div>
-<p>Engineered to resist direct sun radiation, driving rain, and outdoor environmental hazards:</p>
-<ul>
-  <li><strong>Canopy Roof:</strong> Sloping overhang canopy with drip channels for rainwater shed.</li>
-  <li><strong>Ventilation:</strong> Louvers fitted with internal stainless steel insect mesh wire to allow thermal convection while barring dust & vermin.</li>
-  <li><strong>Base / Plinth:</strong> Sturdy 100mm to 200mm detachable plinth with bottom cable entry gland plates.</li>
-  <li><strong>Locking:</strong> Padlockable 3-point handle mechanism for outdoor security.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20for%20Outdoor%20Feeder%20Pillars" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire Feeder Pillars on WhatsApp</a>
-</div>`;
-        }
-
-        // 8. Console Desks / Operator Stations
-        if (query.match(/\b(console|desk|operator|hmi|workstation|control desk|scada|sloping)\b/)) {
-            return `<strong>Ergonomic Industrial Control Desks & Operator Consoles:</strong>
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">IP54 / IP55</span>
-  <span class="sks-spec-pill blue">CRCA 1.6mm / 2.0mm</span>
-  <span class="sks-spec-pill orange">Gas Strut Assisted Lid</span>
-</div>
-<p>Designed for human-machine interface (HMI) control rooms, automation lines, and SCADA monitoring:</p>
-<ul>
-  <li><strong>Sloping Top Section:</strong> Precision angled lid fitted with pneumatic gas shock struts for effortless opening and maintenance access.</li>
-  <li><strong>Cutouts:</strong> Laser-cut apertures for HMI touchscreens, push buttons, joysticks, and pilot lamps.</li>
-  <li><strong>Lower Cabinet:</strong> Front and rear access doors with internal 19-inch rack mounting rails or DIN mounting plates.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20for%20Operator%20Control%20Desks" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire Control Desks on WhatsApp</a>
-</div>`;
-        }
-
-        // 9. Junction Boxes & Terminal Boxes
-        if (query.match(/\b(junction|junction box|terminal|terminal box|j-box|din rail|knockout)\b/)) {
-            return `<strong>Industrial Junction & Terminal Boxes:</strong>
-<div class="sks-card-badge-row">
-  <span class="sks-spec-pill">IP66 / IP67</span>
-  <span class="sks-spec-pill blue">CRCA 1.2–1.6mm / SS304</span>
-  <span class="sks-spec-pill orange">High Seal Integrity</span>
-</div>
-<p>Robust small-footprint enclosures for field cable termination and instrumentation:</p>
-<ul>
-  <li><strong>Standard Sizes:</strong> 150×150×100mm, 200×200×120mm, 300×300×150mm, 400×300×150mm, up to custom dimensions.</li>
-  <li><strong>Internals:</strong> Pre-drilled DIN rail brackets, grounding copper studs, and brass terminal mounting studs.</li>
-  <li><strong>Lids:</strong> Screw-down cover with captive stainless screws or hinged door with quick-release latches.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20for%20Junction%20Boxes" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire Junction Boxes on WhatsApp</a>
-</div>`;
-        }
-
-        // 10. IP Ratings Explained (IP54, IP55, IP65, IP66, IP67)
-        if (query.match(/\b(ip|ip rating|ingress|ip54|ip55|ip65|ip66|ip67|ip68|waterproof|dustproof)\b/)) {
-            return `<strong>Ingress Protection (IP) Ratings Guide:</strong>
-<p>The IP code defines enclosure sealing effectiveness against solids (1st digit) and liquids (2nd digit):</p>
-<ul>
-  <li><strong>IP55:</strong> Dust-protected + Low-pressure water jet resistance from any direction. Standard for indoor factory distribution panels and shaded outdoor feeder pillars.</li>
-  <li><strong>IP65:</strong> <em>Dust-tight</em> (zero dust ingress) + Protected against water jets. Recommended for industrial automation, wash stations, and open-air panels.</li>
-  <li><strong>IP66:</strong> <em>Dust-tight</em> + Protected against powerful high-pressure sea waves & heavy water jets. Best for heavy washdown food/pharma and coastal setups.</li>
-  <li><strong>IP67:</strong> <em>Dust-tight</em> + Withstands temporary submersion in water up to 1 meter depth.</li>
-</ul>
-<p><em>SKS Enclosures achieve high IP ratings using automated continuous polyurethane foam gaskets (FIPFG) and precision CNC bent knife-edge seals.</em></p>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20I%20need%20guidance%20on%20choosing%20the%20right%20IP%20rating%20for%20my%20enclosure" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Discuss IP Rating with SKS Engineer</a>
-</div>`;
-        }
-
-        // 11. Machinery, CNC Laser, Bending, Powder Coating & Factory Capabilities
-        if (query.match(/\b(machine|machinery|laser|cnc|bending|press brake|welding|powder coat|powder coating|7-tank|pretreatment|phosphating|gasket|fipfg|capacity|capability|capabilities)\b/)) {
-            return `<strong>SKS Engineering Fabrication & Plant Capabilities (Pune):</strong>
-<ul>
-  <li><strong>CNC Fiber Laser Cutting:</strong> High-precision ±0.05mm tolerance. Cuts MS up to 12mm, SS up to 6mm, Aluminum up to 4mm with burr-free edge finish.</li>
-  <li><strong>CNC Multi-Axis Hydraulic Press Brakes:</strong> Multi-bend synchronized folding up to 3.2m bed length.</li>
-  <li><strong>Certified Welding:</strong> MIG, TIG, Argon, Stud, and Projection welding with seamless grinding.</li>
-  <li><strong>7-Tank Chemical Pre-Treatment:</strong> Hot alkaline degrease, acid derust, zinc phosphating, and passivation for superior paint adhesion.</li>
-  <li><strong>Powder Coating Booth:</strong> Pure polyester thermosetting powder (60–80 microns DFT, 500+ hrs salt spray resistance) in RAL 7035, RAL 7032, and custom shades.</li>
-  <li><strong>Automated Continuous PU Foam Gasketing:</strong> CNC form-in-place foamed gasket (FIPFG) for IP65/IP66 seal integrity.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="capabilities.html" class="sks-action-btn secondary">⚙️ View Plant Capabilities Page</a>
-</div>`;
-        }
-
-        // 12. Materials & Sheet Thickness
-        if (query.match(/\b(material|materials|sheet|thickness|gauge|crca|cr|gi|aluminum|galvanized|swg|mm)\b/)) {
-            return `<strong>Materials & Gauge Specifications Fabricated at SKS:</strong>
-<ul>
-  <li><strong>CRCA (IS 513):</strong> Cold Rolled Close Annealed steel in 1.2mm, 1.6mm, 2.0mm, and 2.5mm for indoor & modular panels.</li>
-  <li><strong>Stainless Steel (SS304 / SS316L):</strong> 1.5mm to 3.0mm with 240/320 grit Scotch-Brite satin hairline brushed finish.</li>
-  <li><strong>Galvanized Iron (GI - IS 277):</strong> 1.6mm and 2.0mm with heavy zinc coating for outdoor feeder pillars.</li>
-  <li><strong>Aluminum (6061 / 5052):</strong> 2.0mm to 4.0mm lightweight, corrosion-resistant housings.</li>
-  <li><strong>Mounting Plates:</strong> 2.0mm to 3.0mm Galvanized Iron or Orange RAL 2000 for heavy switchgear support.</li>
-</ul>
-<p>Need custom thickness or material grade? We can customize based on your engineering drawings!</p>`;
-        }
-
-        // 13. Turnaround time, delivery, shipping, lead time
-        if (query.match(/\b(turnaround|lead time|delivery|deliver|dispatch|shipping|timeline|how long|days|fast)\b/)) {
-            return `<strong>SKS Production & Delivery Turnaround:</strong>
-<ul>
-  <li><strong>CAD Drawing & RFQ Estimate:</strong> Delivered within <strong>24 to 48 Hours</strong> upon receipt of drawings.</li>
-  <li><strong>Prototype / Sample Fabrication:</strong> 5 to 7 working days.</li>
-  <li><strong>Batch Production:</strong> <strong>7 to 15 Working Days</strong> depending on batch size and coating requirements.</li>
-  <li><strong>Dispatch:</strong> Secure bubble-wrapped and palletized freight dispatch across Pune, Maharashtra, Gujarat, and all industrial corridors across India.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20regarding%20urgent%20fabrication%20turnaround" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">⚡ Inquire Urgent Turnaround on WhatsApp</a>
-</div>`;
-        }
-
-        // 14. Contact numbers, email, phone, WhatsApp
-        if (query.match(/\b(contact|phone|call|mobile|number|email|whatsapp|talk|human|sales)\b/)) {
-            return `<strong>Connect Directly with SKS Engineering Solutions:</strong>
-<ul>
-  <li><strong>Direct WhatsApp:</strong> <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}" target="_blank" style="color:#22C55E; font-weight:600;">+91-8668742659</a></li>
-  <li><strong>Phone Line:</strong> <a href="tel:${SKS_INFO.phoneRaw}" style="color:#38BDF8; font-weight:600;">${SKS_INFO.phone}</a></li>
-  <li><strong>Sales Email:</strong> <a href="mailto:${SKS_INFO.email}" style="color:#38BDF8; font-weight:600;">${SKS_INFO.email}</a></li>
-  <li><strong>Working Hours:</strong> Friday – Wednesday (9:30 AM – 6:30 PM) • Thursday Closed</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20I%20would%20like%20to%20speak%20with%20a%20sales%20engineer" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Open WhatsApp Chat (+91-8668742659)</a>
-  <a href="contact-us.html" class="sks-action-btn secondary">📄 Go to Contact Us Page</a>
-</div>`;
-        }
-
-        // 15. About Shinde Groups / SKS Heritage
-        if (query.match(/\b(about|who are you|shinde|shinde groups|heritage|company|experience|history)\b/)) {
-            return `<strong>About SKS Engineering Solutions:</strong>
-<p>SKS Engineering Solutions is <strong>A Shinde Groups Enterprise</strong> based in Talawade, Pune. With extensive industrial manufacturing heritage, we specialize in high-precision sheet metal fabrication, customized electrical panel enclosures, modular switchgear cabinets, and turnkey OEM engineering solutions.</p>
-<ul>
-  <li>50,000+ sq.ft plant infrastructure in Pune</li>
-  <li>In-house CNC Fiber Laser, CNC Bending, 7-Tank Pretreatment, Powder Coating & Gasketing</li>
-  <li>Trusted by panel builders, switchgear OEMs, solar contractors, and automation integrators nationwide.</li>
-</ul>
-<div class="sks-card-actions">
-  <a href="about-us.html" class="sks-action-btn secondary">🏢 Learn More About Us</a>
-</div>`;
-        }
-
-        // 16. Greetings & Welcome
-        if (query.match(/\b(hi|hello|hey|namaste|good morning|good afternoon|good evening|greetings|start|help)\b/)) {
-            const timeGreeting = new Date().getHours() < 12 ? 'Good morning' : (new Date().getHours() < 17 ? 'Good afternoon' : 'Good evening');
-            return `${timeGreeting}! Welcome to <strong>SKS Engineering Solutions</strong> (A Shinde Groups Enterprise, Pune).
-<p>I am your <strong>AI Engineering Assistant</strong>. How can I help you today?</p>
-<ul>
-  <li>⚡ <strong>Get an Instant Quote / RFQ</strong> for custom enclosures</li>
-  <li>📐 <strong>Technical Specs</strong> (Modular, Wall-Mount, SS304, Feeder Pillars, Desks)</li>
-  <li>🛡️ <strong>IP Ratings Guide</strong> (IP55, IP65, IP66, IP67)</li>
-  <li>🕒 <strong>Plant Timings & Location</strong> (Talawade, Pune)</li>
-</ul>
-<p>Feel free to select a quick topic below or type your dimensions/specifications directly!</p>
-<div class="sks-card-actions">
-  <button type="button" class="sks-action-btn primary" onclick="window.sksStartWizard()">⚡ Start Guided Quote Wizard</button>
-</div>`;
-        }
-
-        // Fallback intelligent answer
-        return `I understand you are inquiring about <strong>"${userText}"</strong>.
-<p>At SKS Engineering Solutions (Talawade, Pune), we fabricate precision sheet metal enclosures tailored to your custom specifications (Modular cabinets, Wall-mount boxes, SS304/SS316 housings, and Outdoor feeder pillars).</p>
-<p>To help you fastest, would you like to:</p>
-<div class="sks-card-actions">
-  <button type="button" class="sks-action-btn primary" onclick="window.sksOpenLeadForm('${encodeURIComponent(userText.slice(0, 100))}')">📋 Send Query / Request Callback</button>
-  <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">⚡ Calculate an RFQ Quote</button>
-  <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(userText)}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Inquire on WhatsApp (${SKS_INFO.phone})</a>
-  <a href="products.html" class="sks-action-btn secondary">📂 Explore Products Catalog</a>
-</div>`;
+        return { spoken, html };
     }
 
     // ==========================================================================
-    // 4. Live Google Gemini Conversational Intelligence Engine
+    // 5. DOM Construction & SKS Logo Injection
     // ==========================================================================
-    const SKS_SYSTEM_INSTRUCTION = `You are the Official AI Engineering Consultant for "SKS Engineering Solutions" (A Shinde Groups Enterprise), located at Gat No. 84, Jyotiba Nagar, Talawade, Pune - 411062, Maharashtra, India.
-Contact: Phone/WhatsApp: +91-8668742659 | Email: sales@sksengineeringsolutions.com.
-Operational Hours: Friday – Wednesday: 9:30 AM – 6:30 PM (Thursday is completely CLOSED for Weekly Off).
-
-About SKS & Manufacturing Capabilities:
-- Specialization: Custom sheet metal fabrication, industrial & electrical panel enclosures:
-  1. Modular Floor-Standing 9-Fold Profile Cabinets (PCC, MCC, LT/HT switchgear, automation suites)
-  2. Wall-Mounted Enclosures (IP65, CRCA 1.6mm / SS304)
-  3. Stainless Steel SS304 & SS316L Washdown Enclosures (IP66, Scotch-Brite hairline finish for pharma, food, dairy, chemical)
-  4. Outdoor Weatherproof Feeder Pillars with canopy roofs and ventilation louvers
-  5. Operator Control Desks & HMI Workstations
-  6. Custom Sheet Metal Junction Boxes (IP65, terminal boxes, solar combiner boxes)
-- In-house Plant Facilities in Pune:
-  - CNC Fiber Laser Cutting (±0.05mm precision)
-  - CNC Hydraulic Multi-Axis Bending Press Brakes
-  - 7-Tank Chemical Pre-Treatment Plant (Degreasing, Derusting, Phosphating, Passivation)
-  - Automated Powder Coating Booth (Pure Polyester, RAL 7035 / RAL 7032 / custom shades, 500+ hrs salt spray resistance)
-  - Continuous CNC PU Foam Formed-In-Place Gasketing (FIPFG for IP55 / IP65 / IP66 seamless seal)
-- Accepted CAD formats: DXF, DWG, STEP, STP, IGES, PDF drawings.
-- Turnaround: 24–48 hours for CAD quotation review; 7–15 working days for production batch fabrication.
-
-Conversational Rules:
-1. Always be conversational, polite, helpful, and engineering-accurate. Never give generic boilerplate answers. Answer the user's specific question directly and thoroughly.
-2. Collecting User Details: When users ask about pricing, custom orders, quotations, fabrication lead times, or have specific enclosure dimensions, politely answer their technical questions and warmly ask for their Name, Phone / WhatsApp number, and Company name so that our Pune engineering sales team can send them a formal quote.
-3. If the user shares their name, phone number, or company, warmly thank them, acknowledge their details, and confirm that the SKS engineering team will review their requirement and contact them directly.
-4. Keep answers readable with clean bullet points or bold text where helpful. Avoid overly long walls of text.`;
-
-    async function queryGeminiApi(userText) {
-        const apiKey = getActiveApiKey();
-        if (!apiKey) return null;
-
-        // Build multi-turn context
-        const contentsPayload = [];
-        if (state.conversationHistory && state.conversationHistory.length > 0) {
-            // Keep recent turns for rich context
-            const recent = state.conversationHistory.slice(-8);
-            recent.forEach(msg => contentsPayload.push(msg));
-        }
-        contentsPayload.push({
-            role: 'user',
-            parts: [{ text: userText }]
-        });
-
-        const modelsToTry = ['gemini-flash-lite-latest', 'gemini-flash-latest'];
-        let data = null;
-
-        for (const modelName of modelsToTry) {
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        systemInstruction: {
-                            parts: [{ text: SKS_SYSTEM_INSTRUCTION }]
-                        },
-                        contents: contentsPayload,
-                        generationConfig: {
-                            temperature: 0.4,
-                            maxOutputTokens: 600
-                        }
-                    })
-                });
-
-                if (response.ok) {
-                    data = await response.json();
-                    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                        break;
-                    }
-                } else {
-                    console.warn(`Gemini (${modelName}) returned status:`, response.status);
-                }
-            } catch (e) {
-                console.warn(`Gemini fetch error on ${modelName}:`, e);
-            }
-        }
-
-        if (!data) return null;
-
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (reply) {
-            // Save to conversation history
-            state.conversationHistory.push({ role: 'user', parts: [{ text: userText }] });
-            state.conversationHistory.push({ role: 'model', parts: [{ text: reply }] });
-            if (state.conversationHistory.length > 16) {
-                state.conversationHistory = state.conversationHistory.slice(-16);
-            }
-
-            // Convert markdown into clean HTML
-            let formatted = reply
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/^\s*[\*\-]\s+(.*$)/gim, '<li>$1</li>')
-                .replace(/^\s*\d+\.\s+(.*$)/gim, '<li>$1</li>')
-                .replace(/(<li>.*?<\/li>(\s*<li>.*?<\/li>)*)/gis, '<ul>$1</ul>')
-                .replace(/\n\n+/g, '</p><p>')
-                .replace(/\n/g, '<br>');
-
-            formatted = `<p>${formatted}</p>`;
-
-            // Check if reply or user question is quote/lead related
-            const isLeadRelated = (userText + ' ' + reply).toLowerCase().match(/\b(quote|price|pricing|cost|order|callback|contact|phone|number|cad|drawing|inquiry)\b/);
-            
-            if (isLeadRelated) {
-                formatted += `
-                <div class="sks-card-actions" style="margin-top: 10px;">
-                    <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%3A%20${encodeURIComponent(userText.slice(0, 80))}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 WhatsApp Us (+91-8668742659)</a>
-                    <button type="button" class="sks-action-btn secondary" onclick="window.sksOpenLeadForm('${encodeURIComponent(userText.slice(0, 80))}')">📋 Leave Details for Callback</button>
-                </div>`;
-            }
-
-            return formatted;
-        }
-
-        return null;
-    }
-
-    // ==========================================================================
-    // 5. DOM Injection & UI Construction
-    // ==========================================================================
-    function createWidgetDOM() {
+    function initChatbotDOM() {
         // 1. Inject or verify CSS
         if (!document.querySelector('link[href*="sks-chatbot.css"]')) {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = 'assets/css/sks-chatbot.css?v=20261009';
+            link.href = 'assets/css/sks-chatbot.css?v=20261011_voice';
             document.head.appendChild(link);
         }
 
-        // 2. Teaser Greeting Pill
-        const teaser = document.createElement('div');
-        teaser.className = 'sks-chat-teaser';
-        teaser.id = 'sksChatTeaser';
-        teaser.setAttribute('role', 'button');
-        teaser.setAttribute('aria-label', 'Open SKS AI Assistant');
-        teaser.innerHTML = `
-            <div class="sks-teaser-avatar">🤖</div>
-            <div class="sks-teaser-text">
-                Need an <strong>Enclosure Quote</strong>? Ask SKS AI!
-            </div>
-            <button type="button" class="sks-teaser-close" id="sksTeaserClose" aria-label="Close message">&times;</button>
-        `;
-        document.body.appendChild(teaser);
+        // 2. Greeting Teaser Bubble (with SKS Logo)
+        let teaser = document.getElementById('sksChatTeaser');
+        if (!teaser) {
+            teaser = document.createElement('div');
+            teaser.className = 'sks-chat-teaser';
+            teaser.id = 'sksChatTeaser';
+            teaser.setAttribute('role', 'button');
+            teaser.setAttribute('aria-label', 'Open SKS AI Assistant');
+            teaser.innerHTML = `
+                <div class="sks-teaser-avatar">
+                    <img src="assets/images/logo.png" alt="SKS Logo">
+                </div>
+                <div class="sks-teaser-text">
+                    Need an <strong>Enclosure Quote</strong>? Ask SKS AI!
+                </div>
+                <button type="button" class="sks-teaser-close" id="sksTeaserClose" aria-label="Close message">&times;</button>
+            `;
+            document.body.appendChild(teaser);
+        }
 
-        // 3. Floating Dock Integration or Dedicated Trigger
+        // 3. Floating Right Dock Launcher (Inject or update with SKS Logo)
         const floatingDock = document.getElementById('floatingRightDock') || document.querySelector('.floating-right-dock');
         if (floatingDock) {
-            // Check if already injected
-            if (!document.getElementById('sksChatbotDockBtn')) {
-                const dockItem = document.createElement('div');
+            let dockItem = document.querySelector('.dock-item.dock-chatbot');
+            if (!dockItem) {
+                dockItem = document.createElement('div');
                 dockItem.className = 'dock-item dock-chatbot';
-                dockItem.innerHTML = `
-                    <button type="button" class="dock-btn dock-btn-chatbot" id="sksChatbotDockBtn" aria-label="Open SKS AI Engineering Assistant" title="AI Engineering Assistant">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
-                            <rect x="4" y="8" width="16" height="12" rx="4"/>
-                            <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
-                            <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
-                            <path d="M9 17h6"/>
-                            <line x1="2" y1="14" x2="4" y2="14"/>
-                            <line x1="20" y1="14" x2="22" y2="14"/>
-                        </svg>
-                        <span class="dock-badge-pulse green" title="AI Assistant Online 24/7"></span>
-                        <span class="dock-tooltip">Ask SKS AI Assistant (24/7)</span>
-                    </button>
-                `;
-                // Place at top of dock
                 floatingDock.insertBefore(dockItem, floatingDock.firstChild);
             }
-        }
-
-        // 4. Main Chat Widget Window
-        const status = getOperationalStatus();
-        const widget = document.createElement('div');
-        widget.className = 'sks-chat-widget';
-        widget.id = 'sksChatWidget';
-        widget.setAttribute('role', 'dialog');
-        widget.setAttribute('aria-label', 'SKS AI Assistant Chat Window');
-        widget.innerHTML = `
-            <!-- Header -->
-            <div class="sks-chat-header">
-                <div class="sks-chat-brand">
-                    <div class="sks-bot-avatar">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="4" y="8" width="16" height="12" rx="4"/>
-                            <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
-                            <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
-                            <path d="M9 17h6"/>
-                            <line x1="12" y1="2" x2="12" y2="8"/>
-                        </svg>
-                        <span class="sks-avatar-status"></span>
-                    </div>
-                    <div class="sks-brand-info">
-                        <div class="sks-brand-title">
-                            SKS AI Assistant
-                            <span class="sks-brand-badge">Official</span>
-                        </div>
-                        <div class="sks-brand-status">
-                            <span class="sks-status-dot"></span>
-                            <span>Enclosure Specialist &bull; Pune Plant</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="sks-chat-controls">
-                    <button type="button" class="sks-ctrl-btn active" id="sksSoundToggle" title="Toggle Sound (Mute/Unmute)" aria-label="Toggle Sound">
-                        🔊
-                    </button>
-                    <button type="button" class="sks-ctrl-btn" id="sksSettingsToggle" title="Custom AI Settings (Gemini Key)" aria-label="Settings">
-                        ⚙️
-                    </button>
-                    <button type="button" class="sks-ctrl-btn" id="sksClearChat" title="Reset Conversation" aria-label="Clear Chat">
-                        🗑️
-                    </button>
-                    <button type="button" class="sks-ctrl-btn" id="sksExpandToggle" title="Expand / Contract Window" aria-label="Expand Window">
-                        ⤢
-                    </button>
-                    <button type="button" class="sks-ctrl-btn" id="sksCloseBtn" title="Close Chat" aria-label="Close Chat">
-                        ✕
-                    </button>
-                </div>
-            </div>
-
-            <!-- Smart Operational Notice Bar -->
-            <div class="sks-chat-notice-bar ${status.isThursdayOff ? 'thursday-off' : ''}" id="sksNoticeBar">
-                <span class="sks-notice-text">
-                    ${status.bannerNotice}
-                </span>
-            </div>
-
-            <!-- Messages Scroll Body -->
-            <div class="sks-chat-body" id="sksChatBody">
-                <!-- Messages populated via JS -->
-            </div>
-
-            <!-- Quick Suggestion Chips -->
-            <div class="sks-chat-chips-container" id="sksChipsContainer">
-                <button type="button" class="sks-chip-btn" onclick="window.sksOpenLeadForm()" style="background: rgba(14, 165, 233, 0.22); border-color: #0284C7; color: #38BDF8; font-weight: 600;">📋 Send Query / Callback</button>
-                <button type="button" class="sks-chip-btn" data-query="⚡ Start Guided Quote Wizard">⚡ Get Instant Quote</button>
-                <button type="button" class="sks-chip-btn" data-query="Tell me about Modular Floor-Standing Cabinets">📐 Modular Cabinets</button>
-                <button type="button" class="sks-chip-btn" data-query="What Stainless Steel SS304/SS316 enclosures do you make?">🛡️ Stainless SS304</button>
-                <button type="button" class="sks-chip-btn" data-query="Explain IP ratings IP55, IP65, IP66">💧 IP Ratings</button>
-                <button type="button" class="sks-chip-btn" data-query="What are your factory hours and weekly off?">🕒 Working Hours</button>
-                <button type="button" class="sks-chip-btn" data-query="Where is your plant located in Pune?">📍 Factory Location</button>
-                <button type="button" class="sks-chip-btn" data-query="What CAD file formats and lead times do you support?">⚙️ CAD & Turnaround</button>
-                <button type="button" class="sks-chip-btn" data-query="Connect me with sales on WhatsApp">💬 Talk on WhatsApp</button>
-            </div>
-
-            <!-- Footer / Input Form -->
-            <form class="sks-chat-footer" id="sksChatForm" onsubmit="return false;">
-                <div class="sks-input-wrap">
-                    <input type="text" class="sks-chat-input" id="sksChatInput" placeholder="Ask about enclosures, specs, CAD, or quotes..." autocomplete="off">
-                    <button type="button" class="sks-mic-btn" id="sksMicBtn" title="Speak message (Voice Recognition)" aria-label="Voice input">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                            <line x1="12" y1="19" x2="12" y2="23"/>
-                            <line x1="8" y1="23" x2="16" y2="23"/>
-                        </svg>
-                    </button>
-                </div>
-                <button type="submit" class="sks-send-btn" id="sksSendBtn" aria-label="Send Message">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
+            dockItem.innerHTML = `
+                <button type="button" class="dock-btn dock-btn-chatbot" id="sksChatbotDockBtn" aria-label="Open SKS AI Engineering Assistant" title="AI Assistant (Voice & Chat)">
+                    <img src="assets/images/logo.png" alt="SKS Engineering Logo" class="dock-sks-logo-img">
+                    <span class="dock-badge-pulse green" title="AI Assistant Online 24/7"></span>
+                    <span class="dock-tooltip">Ask SKS AI (Voice & Chat 24/7)</span>
                 </button>
-            </form>
+            `;
+        }
 
-            <!-- Optional Gemini API Key Settings Overlay -->
-            <div class="sks-settings-overlay" id="sksSettingsOverlay">
-                <div class="sks-settings-box">
-                    <div class="sks-settings-title">
-                        ⚙️ Live AI Settings (Optional)
+        // 4. Main Chat Widget Window (Clean, Attractive, Official SKS Logo & Voice)
+        let widget = document.getElementById('sksChatWidget');
+        if (!widget) {
+            const status = getOperationalStatus();
+            widget = document.createElement('div');
+            widget.className = 'sks-chat-widget';
+            widget.id = 'sksChatWidget';
+            widget.setAttribute('role', 'dialog');
+            widget.setAttribute('aria-label', 'SKS AI Assistant Chat Window');
+            widget.innerHTML = `
+                <!-- Header with Official SKS Logo & Controls -->
+                <div class="sks-chat-header">
+                    <div class="sks-chat-brand">
+                        <div class="sks-bot-avatar">
+                            <img src="assets/images/logo.png" alt="SKS Engineering Solutions" class="sks-bot-avatar-img">
+                            <span class="sks-avatar-status"></span>
+                        </div>
+                        <div class="sks-brand-info">
+                            <div class="sks-brand-title">
+                                SKS AI Assistant
+                                <span class="sks-brand-badge">Official</span>
+                            </div>
+                            <div class="sks-brand-status">
+                                <span class="sks-status-dot"></span>
+                                <span>Voice &amp; Chat &bull; Pune Plant</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="sks-settings-desc">
-                        By default, SKS Assistant runs our offline high-precision sheet metal engineering engine (0ms latency, 100% reliable).<br><br>
-                        If you'd like free-form conversational AI, paste your personal <strong>Google Gemini API Key</strong> below:
-                    </div>
-                    <input type="password" class="sks-settings-input" id="sksGeminiKeyInput" placeholder="AIzaSy..." value="${state.geminiApiKey}">
-                    <div class="sks-settings-btns">
-                        <button type="button" class="sks-settings-btn cancel" id="sksSettingsCancel">Cancel</button>
-                        <button type="button" class="sks-settings-btn save" id="sksSettingsSave">Save Settings</button>
+                    <div class="sks-chat-controls">
+                        <!-- Voice Toggle Button (with speaking sound waves) -->
+                        <button type="button" class="sks-ctrl-btn ${state.voiceSpeakingEnabled ? 'voice-active' : ''}" id="sksVoiceToggle" title="Toggle Voice Speaking Aloud">
+                            <span id="sksVoiceIcon">${state.voiceSpeakingEnabled ? '🔊' : '🔇'}</span>
+                            <div class="sks-sound-wave" id="sksSoundWave" title="Speaking aloud...">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </button>
+                        <!-- Reset Conversation -->
+                        <button type="button" class="sks-ctrl-btn" id="sksClearBtn" title="Reset Chat">
+                            🗑️
+                        </button>
+                        <!-- Close Window -->
+                        <button type="button" class="sks-ctrl-btn" id="sksCloseBtn" title="Close Chat">
+                            ✕
+                        </button>
                     </div>
                 </div>
-            </div>
-        `;
-        document.body.appendChild(widget);
 
-        // Bind interactive event listeners
+                <!-- Messages Body -->
+                <div class="sks-chat-body" id="sksChatBody"></div>
+
+                <!-- 4 Simple, Attractive Suggestion Chips -->
+                <div class="sks-chat-chips-container" id="sksChipsContainer">
+                    <button type="button" class="sks-chip-btn highlight" data-query="quote">⚡ Get Instant Quote</button>
+                    <button type="button" class="sks-chip-btn" data-query="products">📦 Enclosure Products</button>
+                    <button type="button" class="sks-chip-btn" data-query="capabilities">⚙️ Laser &amp; Bending</button>
+                    <button type="button" class="sks-chip-btn" data-query="location">📍 Plant Location &amp; Contact</button>
+                </div>
+
+                <!-- Input Footer with Microphone (Voice Input) -->
+                <form class="sks-chat-footer" id="sksChatForm" onsubmit="return false;">
+                    <div class="sks-input-wrap">
+                        <input type="text" class="sks-chat-input" id="sksChatInput" placeholder="Type or click 🎙️ to speak your question..." autocomplete="off">
+                        <button type="button" class="sks-mic-btn" id="sksMicBtn" title="Speak into microphone" aria-label="Voice input">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <button type="submit" class="sks-send-btn" id="sksSendBtn" aria-label="Send Message">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </form>
+            `;
+            document.body.appendChild(widget);
+        }
+
         bindEvents();
-
-        // Restore past messages from sessionStorage or initialize welcome
-        initConversation();
-
-        // Show teaser after 2.5 seconds if not opened
-        setTimeout(() => {
-            if (!state.isOpen && !sessionStorage.getItem('sks_teaser_dismissed')) {
-                teaser.classList.add('visible');
-            }
-        }, 2500);
+        renderInitialGreeting();
     }
 
     // ==========================================================================
-    // 6. Event Listeners & Interactions
+    // 6. Messaging & Rendering
     // ==========================================================================
-    function bindEvents() {
-        const widget = document.getElementById('sksChatWidget');
-        const teaser = document.getElementById('sksChatTeaser');
-        const teaserClose = document.getElementById('sksTeaserClose');
-        const dockBtn = document.getElementById('sksChatbotDockBtn');
-        const closeBtn = document.getElementById('sksCloseBtn');
-        const expandBtn = document.getElementById('sksExpandToggle');
-        const soundBtn = document.getElementById('sksSoundToggle');
-        const clearBtn = document.getElementById('sksClearChat');
-        const settingsBtn = document.getElementById('sksSettingsToggle');
-        const settingsOverlay = document.getElementById('sksSettingsOverlay');
-        const settingsSave = document.getElementById('sksSettingsSave');
-        const settingsCancel = document.getElementById('sksSettingsCancel');
-        const geminiInput = document.getElementById('sksGeminiKeyInput');
-        const form = document.getElementById('sksChatForm');
-        const input = document.getElementById('sksChatInput');
-        const micBtn = document.getElementById('sksMicBtn');
-        const chips = document.querySelectorAll('.sks-chip-btn');
-
-        // Toggle open/close
-        function openChat() {
-            state.isOpen = true;
-            widget.classList.add('active');
-            teaser.classList.remove('visible');
-            sessionStorage.setItem('sks_teaser_dismissed', '1');
-            input.focus();
-            scrollToBottom();
-        }
-
-        function closeChat() {
-            state.isOpen = false;
-            widget.classList.remove('active');
-        }
-
-        if (dockBtn) dockBtn.addEventListener('click', () => {
-            state.isOpen ? closeChat() : openChat();
-        });
-
-        teaser.addEventListener('click', (e) => {
-            if (e.target !== teaserClose) {
-                openChat();
-            }
-        });
-
-        teaserClose.addEventListener('click', (e) => {
-            e.stopPropagation();
-            teaser.classList.remove('visible');
-            sessionStorage.setItem('sks_teaser_dismissed', '1');
-        });
-
-        if (closeBtn) closeBtn.addEventListener('click', closeChat);
-
-        // Expand / Contract
-        if (expandBtn) {
-            expandBtn.addEventListener('click', () => {
-                state.isExpanded = !state.isExpanded;
-                widget.classList.toggle('expanded', state.isExpanded);
-                expandBtn.textContent = state.isExpanded ? '⤡' : '⤢';
-            });
-        }
-
-        // Sound toggle
-        if (soundBtn) {
-            soundBtn.addEventListener('click', () => {
-                state.soundEnabled = !state.soundEnabled;
-                soundBtn.textContent = state.soundEnabled ? '🔊' : '🔇';
-                soundBtn.classList.toggle('active', state.soundEnabled);
-            });
-        }
-
-        // Clear chat
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => {
-                if (confirm('Clear chat history and restart conversation?')) {
-                    sessionStorage.removeItem('sks_chat_history');
-                    state.messages = [];
-                    const body = document.getElementById('sksChatBody');
-                    if (body) body.innerHTML = '';
-                    initConversation();
-                }
-            });
-        }
-
-        // Settings modal
-        if (settingsBtn) {
-            settingsBtn.addEventListener('click', () => {
-                settingsOverlay.classList.add('active');
-            });
-        }
-        if (settingsCancel) {
-            settingsCancel.addEventListener('click', () => {
-                settingsOverlay.classList.remove('active');
-            });
-        }
-        if (settingsSave) {
-            settingsSave.addEventListener('click', () => {
-                const key = geminiInput.value.trim();
-                state.geminiApiKey = key;
-                if (key) {
-                    localStorage.setItem('sks_gemini_api_key', key);
-                    alert('Google Gemini API Key saved successfully!');
-                } else {
-                    localStorage.removeItem('sks_gemini_api_key');
-                    alert('Using built-in local engineering engine.');
-                }
-                settingsOverlay.classList.remove('active');
-            });
-        }
-
-        // Form submit
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const text = input.value.trim();
-                if (!text) return;
-                input.value = '';
-                handleUserMessage(text);
-            });
-        }
-
-        // Chips click
-        chips.forEach(chip => {
-            chip.addEventListener('click', () => {
-                const query = chip.getAttribute('data-query');
-                if (query === '⚡ Start Guided Quote Wizard') {
-                    window.sksStartWizard();
-                } else {
-                    handleUserMessage(query);
-                }
-            });
-        });
-
-        // Speech-to-Text via Web Speech API
-        if (micBtn) {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRec) {
-                const recognition = new SpeechRec();
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.lang = 'en-IN';
-
-                recognition.onstart = () => {
-                    state.isListening = true;
-                    micBtn.classList.add('listening');
-                };
-                recognition.onend = () => {
-                    state.isListening = false;
-                    micBtn.classList.remove('listening');
-                };
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    if (transcript) {
-                        input.value = transcript;
-                        handleUserMessage(transcript);
-                    }
-                };
-                recognition.onerror = () => {
-                    micBtn.classList.remove('listening');
-                };
-
-                micBtn.addEventListener('click', () => {
-                    if (state.isListening) {
-                        recognition.stop();
-                    } else {
-                        recognition.start();
-                    }
-                });
-            } else {
-                micBtn.style.display = 'none'; // Not supported on current browser
-            }
-        }
-
-        // Global triggers: any button with data-open-chatbot or .open-sks-chat
-        document.querySelectorAll('[data-open-chatbot], .open-sks-chat').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                openChat();
-            });
-        });
-    }
-
-    // ==========================================================================
-    // 7. Message Handling & Rendering
-    // ==========================================================================
-    function appendMessage(sender, text, skipSave = false) {
+    function appendMessage(sender, htmlContent, spokenText = '') {
         const body = document.getElementById('sksChatBody');
         if (!body) return;
 
         const row = document.createElement('div');
         row.className = `sks-msg-row ${sender}`;
 
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
         if (sender === 'bot') {
+            const safeSpeak = encodeURIComponent(spokenText || htmlContent.replace(/<[^>]*>/g, ''));
             row.innerHTML = `
-                <div class="sks-msg-avatar">🤖</div>
-                <div class="sks-msg-bubble">
-                    ${text}
-                    <span class="sks-msg-time">${timeStr}</span>
+                <div class="sks-msg-avatar">
+                    <img src="assets/images/logo.png" alt="SKS" class="sks-msg-logo-img">
+                </div>
+                <div class="sks-msg-content">
+                    ${htmlContent}
+                    <div class="sks-msg-actions-bar">
+                        <button type="button" class="sks-speak-msg-btn" onclick="window.sksSpeakMessage('${safeSpeak}')" title="Listen to this message">
+                            🔊 Read Aloud
+                        </button>
+                    </div>
                 </div>
             `;
         } else {
             row.innerHTML = `
-                <div class="sks-msg-bubble">
-                    <p>${escapeHTML(text)}</p>
-                    <span class="sks-msg-time">${timeStr}</span>
+                <div class="sks-msg-avatar user-avatar">You</div>
+                <div class="sks-msg-content">
+                    <p>${escapeHtml(htmlContent)}</p>
                 </div>
             `;
         }
 
         body.appendChild(row);
-        scrollToBottom();
+        body.scrollTop = body.scrollHeight;
 
-        if (!skipSave) {
-            state.messages.push({ sender, text, time: timeStr });
-            try {
-                sessionStorage.setItem('sks_chat_history', JSON.stringify(state.messages));
-            } catch (e) {}
+        // Auto speak if from bot
+        if (sender === 'bot' && spokenText) {
+            speakText(spokenText);
         }
     }
 
-    function showTypingIndicator() {
+    function renderInitialGreeting() {
         const body = document.getElementById('sksChatBody');
-        if (!body) return null;
+        if (!body || body.children.length > 0) return;
 
-        const row = document.createElement('div');
-        row.className = 'sks-msg-row bot';
-        row.id = 'sksTypingRow';
-        row.innerHTML = `
-            <div class="sks-msg-avatar">🤖</div>
-            <div class="sks-typing-indicator">
-                <span class="sks-typing-dot"></span>
-                <span class="sks-typing-dot"></span>
-                <span class="sks-typing-dot"></span>
-            </div>
-        `;
-        body.appendChild(row);
-        scrollToBottom();
-        return row;
+        const greetingHtml = `
+<p>Hello! 👋 Welcome to <strong>SKS Engineering Solutions</strong> (A Shinde Groups Enterprise).</p>
+<p>I'm your AI assistant for <strong>customized electrical enclosures</strong> and <strong>precision sheet metal fabrication</strong> in Pune.</p>
+<p>How can I help you today? You can type, speak using the 🎙️ mic, or choose a quick option below!</p>`;
+
+        const spoken = "Hello! Welcome to SKS Engineering Solutions Pune. I can help you with enclosure quotes, sheet metal fabrication, and product specifications. How can I assist you today?";
+
+        appendMessage('bot', greetingHtml, spoken);
     }
 
-    function removeTypingIndicator() {
-        const row = document.getElementById('sksTypingRow');
-        if (row) row.remove();
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
-    function scrollToBottom() {
-        const body = document.getElementById('sksChatBody');
-        if (body) {
-            body.scrollTop = body.scrollHeight;
-        }
-    }
+    // ==========================================================================
+    // 7. Interactive Event Bindings & Speech Recognition
+    // ==========================================================================
+    function bindEvents() {
+        const widget = document.getElementById('sksChatWidget');
+        const teaser = document.getElementById('sksChatTeaser');
+        const dockBtn = document.getElementById('sksChatbotDockBtn');
+        const closeBtn = document.getElementById('sksCloseBtn');
+        const clearBtn = document.getElementById('sksClearBtn');
+        const voiceToggle = document.getElementById('sksVoiceToggle');
+        const voiceIcon = document.getElementById('sksVoiceIcon');
+        const form = document.getElementById('sksChatForm');
+        const input = document.getElementById('sksChatInput');
+        const micBtn = document.getElementById('sksMicBtn');
 
-    function escapeHTML(str) {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    async function handleUserMessage(userText) {
-        appendMessage('user', userText);
-        playBeep('send');
-
-        // Check if currently inside RFQ Wizard
-        if (state.wizardStep > 0) {
-            handleWizardInput(userText);
-            return;
+        // Toggle open/close
+        function openChat() {
+            if (widget) widget.classList.add('active');
+            if (teaser) teaser.classList.remove('visible');
+            state.isOpen = true;
+            if (input) setTimeout(() => input.focus(), 250);
         }
 
-        // Check if user requested wizard via text
-        if (userText.toLowerCase().match(/\b(start wizard|rfq wizard|calculate quote|guided quote)\b/)) {
-            window.sksStartWizard();
-            return;
+        function closeChat() {
+            if (widget) widget.classList.remove('active');
+            state.isOpen = false;
+            stopSpeaking();
         }
 
-        // Check if user requested callback or lead submission
-        if (userText.toLowerCase().match(/\b(callback|call me|contact me|leave query|submit query|talk to sales|speak with human|reach out)\b/i)) {
-            window.sksOpenLeadForm(userText);
-            return;
-        }
+        window.sksOpenChat = openChat;
+        window.sksCloseChat = closeChat;
+        window.sksToggleChat = () => {
+            if (state.isOpen) closeChat();
+            else openChat();
+        };
 
-        // Auto-detect 10-digit mobile number in chat text to save lead in database immediately
-        const phoneMatch = userText.match(/(?:(?:\+|0{0,2})91[\s-]*)?([6789]\d{9})\b/);
-        if (phoneMatch) {
-            sksSaveLeadInquiry({
-                name: 'Website Visitor',
-                phone: phoneMatch[1],
-                message: userText,
-                product_interest: 'Direct Chat Inquiry'
+        if (dockBtn) {
+            dockBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.sksToggleChat();
             });
         }
 
-        const typingIndicator = showTypingIndicator();
-
-        // 1. Try Gemini API if key is configured
-        let botReply = null;
-        if (state.geminiApiKey || window.SKS_GEMINI_API_KEY || DEFAULT_GEMINI_KEY) {
-            botReply = await queryGeminiApi(userText);
+        if (teaser) {
+            teaser.addEventListener('click', (e) => {
+                if (e.target.id === 'sksTeaserClose') {
+                    teaser.classList.remove('visible');
+                    return;
+                }
+                openChat();
+            });
         }
 
-        // 2. If Gemini not configured or failed, use local engine
-        if (!botReply) {
-            // Simulate brief human-like AI thinking delay (250-450ms)
-            await new Promise(r => setTimeout(r, 320));
-            botReply = processQueryLocally(userText);
+        if (closeBtn) closeBtn.addEventListener('click', closeChat);
+
+        // Reset conversation
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                stopSpeaking();
+                const body = document.getElementById('sksChatBody');
+                if (body) body.innerHTML = '';
+                renderInitialGreeting();
+            });
         }
 
-        removeTypingIndicator();
-        appendMessage('bot', botReply);
-        playBeep('receive');
-    }
+        // Voice Speaking Toggle
+        if (voiceToggle) {
+            voiceToggle.addEventListener('click', () => {
+                state.voiceSpeakingEnabled = !state.voiceSpeakingEnabled;
+                localStorage.setItem('sks_voice_speaking_enabled', state.voiceSpeakingEnabled ? 'true' : 'false');
+                if (voiceIcon) voiceIcon.textContent = state.voiceSpeakingEnabled ? '🔊' : '🔇';
+                voiceToggle.classList.toggle('voice-active', state.voiceSpeakingEnabled);
+                if (!state.voiceSpeakingEnabled) {
+                    stopSpeaking();
+                } else {
+                    speakText("Voice speech is now enabled.");
+                }
+            });
+        }
 
-    // ==========================================================================
-    // 7.5 Lead Capture & Customer Query Submission Engine
-    // ==========================================================================
-    async function sksSaveLeadInquiry(inquiryData) {
-        const lead = {
-            id: 'inq-chat-' + Date.now(),
-            name: inquiryData.name || 'Website Visitor',
-            phone: inquiryData.phone || '',
-            email: inquiryData.email || '',
-            company: inquiryData.company || '',
-            industry: 'Enclosure Engineering / AI Chat',
-            product_interest: inquiryData.product_interest || inquiryData.product || 'Custom Enclosure Inquiry',
-            message: inquiryData.message || 'Customer query submitted via AI Chatbot',
-            status: 'new',
-            created_at: new Date().toISOString()
-        };
+        // Submit message
+        function handleSend() {
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
 
-        // 1. Try Supabase via SKS_DB if available
-        if (window.SKS_DB && typeof window.SKS_DB.submitInquiry === 'function') {
-            try {
-                await window.SKS_DB.submitInquiry(lead);
-            } catch (err) {
-                console.warn('SKS_DB submission error:', err);
+            appendMessage('user', text);
+            input.value = '';
+
+            // Generate bot answer
+            setTimeout(() => {
+                const response = getBotResponse(text);
+                appendMessage('bot', response.html, response.spoken);
+            }, 300);
+        }
+
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleSend();
+            });
+        }
+
+        // Quick suggestion chips
+        const chipsContainer = document.getElementById('sksChipsContainer');
+        if (chipsContainer) {
+            chipsContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.sks-chip-btn');
+                if (!btn) return;
+                const query = btn.getAttribute('data-query');
+                if (query) {
+                    appendMessage('user', btn.textContent.trim());
+                    setTimeout(() => {
+                        const response = getBotResponse(query);
+                        appendMessage('bot', response.html, response.spoken);
+                    }, 250);
+                }
+            });
+        }
+
+        // Speech-to-Text Microphone
+        if (micBtn && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognizer = new SpeechRec();
+            recognizer.continuous = false;
+            recognizer.interimResults = false;
+            recognizer.lang = 'en-IN';
+
+            recognizer.onstart = () => {
+                state.isListening = true;
+                micBtn.classList.add('listening');
+                if (input) input.placeholder = "🎙️ Listening... speak now!";
+            };
+
+            recognizer.onresult = (evt) => {
+                const transcript = evt.results[0][0].transcript;
+                if (input && transcript) {
+                    input.value = transcript;
+                    handleSend();
+                }
+            };
+
+            recognizer.onerror = recognizer.onend = () => {
+                state.isListening = false;
+                micBtn.classList.remove('listening');
+                if (input) input.placeholder = "Type or click 🎙️ to speak your question...";
+            };
+
+            micBtn.addEventListener('click', () => {
+                if (state.isListening) {
+                    recognizer.stop();
+                } else {
+                    stopSpeaking();
+                    try {
+                        recognizer.start();
+                    } catch (e) {
+                        console.warn('Recognition start warning:', e);
+                    }
+                }
+            });
+        } else if (micBtn) {
+            micBtn.title = "Voice recognition not supported in this browser";
+            micBtn.style.opacity = "0.4";
+        }
+
+        // Auto open if URL has #chat or query
+        if (window.location.hash === '#chat' || window.location.search.includes('chat=open')) {
+            setTimeout(openChat, 400);
+        }
+
+        // Show teaser after 4 seconds
+        setTimeout(() => {
+            if (!state.isOpen && teaser) {
+                teaser.classList.add('visible');
             }
-        }
-
-        // 2. Persistent Local Storage Backup (never lose a customer query)
-        try {
-            const stored = localStorage.getItem('sks_local_inquiries');
-            const list = stored ? JSON.parse(stored) : [];
-            list.unshift(lead);
-            localStorage.setItem('sks_local_inquiries', JSON.stringify(list));
-        } catch (e) {
-            console.warn('Error saving local lead:', e);
-        }
-
-        return lead;
-    }
-
-    window.sksOpenLeadForm = function (prefillQuery = '') {
-        let decodedQuery = '';
-        try {
-            decodedQuery = prefillQuery ? decodeURIComponent(prefillQuery) : '';
-        } catch (e) {
-            decodedQuery = prefillQuery || '';
-        }
-
-        const formId = 'sksLeadCard_' + Date.now();
-        const formHTML = `
-            <strong>📋 Send Your Query to SKS Engineering Sales Team:</strong>
-            <p style="font-size:0.76rem; color:#94A3B8; margin:3px 0 8px;">Leave your contact details and query below. Our Pune engineering sales team will review and contact you within 24 hours.</p>
-            <div class="sks-lead-capture-card" id="${formId}">
-                <div class="sks-lead-form">
-                    <input type="text" id="${formId}_name" placeholder="Your Name or Company Name *" class="sks-lead-input" required />
-                    <input type="tel" id="${formId}_phone" placeholder="Mobile / WhatsApp Number (10 Digits) *" class="sks-lead-input" required />
-                    <textarea id="${formId}_msg" placeholder="Your Query, Dimensions, or Requirements *" class="sks-lead-textarea" rows="2">${escapeHTML(decodedQuery)}</textarea>
-                    <button type="button" class="sks-action-btn primary" onclick="window.sksSubmitLeadQuery('${formId}')">
-                        🚀 Submit Query to SKS Team
-                    </button>
-                </div>
-            </div>
-        `;
-        appendMessage('bot', formHTML);
-        playBeep('receive');
-
-        setTimeout(() => {
-            const nameEl = document.getElementById(`${formId}_name`);
-            if (nameEl) nameEl.focus();
-        }, 150);
-    };
-
-    window.sksSubmitLeadQuery = async function (formId) {
-        const nameEl = document.getElementById(`${formId}_name`);
-        const phoneEl = document.getElementById(`${formId}_phone`);
-        const msgEl = document.getElementById(`${formId}_msg`);
-
-        const name = nameEl ? nameEl.value.trim() : '';
-        const phone = phoneEl ? phoneEl.value.trim() : '';
-        const msg = msgEl ? msgEl.value.trim() : '';
-
-        if (!name) {
-            alert('Please enter your name or company name.');
-            if (nameEl) nameEl.focus();
-            return;
-        }
-
-        if (!phone || phone.replace(/\D/g, '').length < 10) {
-            alert('Please enter a valid 10-digit mobile or WhatsApp number.');
-            if (phoneEl) phoneEl.focus();
-            return;
-        }
-
-        // Save lead immediately to database & localStorage
-        await sksSaveLeadInquiry({
-            name: name,
-            phone: phone,
-            message: msg || 'Customer callback requested via AI Assistant',
-            product_interest: 'Custom Enclosure Inquiry'
-        });
-
-        // Update form card with clean confirmation
-        const card = document.getElementById(formId);
-        if (card) {
-            card.innerHTML = `
-                <div class="sks-lead-success-card">
-                    <strong>✅ Query Received & Recorded!</strong>
-                    <p style="font-size:0.75rem; color:#A7F3D0; margin:0;">
-                        Thank you, <strong>${escapeHTML(name)}</strong>! Your query has been logged. Our engineering sales team in Talawade, Pune will contact you at <strong>${escapeHTML(phone)}</strong> within 24 hours (Working Hours: Fri–Wed 9:30 AM – 6:30 PM).
-                    </p>
-                </div>
-            `;
-        }
-
-        const waText = encodeURIComponent(
-            `Hello SKS Engineering Solutions,\n` +
-            `My Name: ${name}\n` +
-            `Contact: ${phone}\n` +
-            `Query: ${msg || 'Inquiry for custom sheet metal enclosures.'}\n` +
-            `Please share quote and review drawings.`
-        );
-
-        const confirmHTML = `
-            <strong>✅ SKS Engineering Team Has Been Notified!</strong>
-            <p>Your details have been saved in our system. For faster turnaround or to upload CAD engineering files right away, you can also connect directly on WhatsApp:</p>
-            <div class="sks-card-actions">
-                <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=${waText}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
-                    💬 Chat on WhatsApp Now (+91-8668742659)
-                </a>
-                <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">
-                    ⚡ Calculate Guided RFQ
-                </button>
-            </div>
-        `;
-        appendMessage('bot', confirmHTML);
-        playBeep('receive');
-    };
-
-    // ==========================================================================
-    // 8. Interactive RFQ Quote Wizard Engine
-    // ==========================================================================
-    window.sksStartWizard = function () {
-        state.wizardStep = 1;
-        state.wizardData = {
-            type: '',
-            dimensions: '',
-            material: 'CRCA 2.0mm Frame / 1.6mm Door',
-            ipRating: 'IP65',
-            quantity: '1'
-        };
-
-        const wizardHTML = `
-            <strong>⚡ SKS Enclosure Quote Wizard (Step 1 of 4):</strong>
-            <p>Please select the primary <strong>Enclosure Type</strong> for your project:</p>
-            <div class="sks-wizard-options-grid">
-                <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectType('Modular Floor-Standing Cabinet')">🏢 Modular Cabinet</button>
-                <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectType('Wall-Mount Enclosure')">🧱 Wall-Mount Box</button>
-                <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectType('Stainless Steel SS304 Enclosure')">🛡️ Stainless SS304/316</button>
-                <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectType('Outdoor Feeder Pillar')">☀️ Feeder Pillar (Canopy)</button>
-                <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectType('Operator Control Desk')">🖥️ Control Desk / Console</button>
-                <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectType('Custom Sheet Metal Enclosure')">⚙️ Custom Enclosure</button>
-            </div>
-        `;
-        appendMessage('bot', wizardHTML);
-        playBeep('receive');
-    };
-
-    window.sksWizardSelectType = function (typeName) {
-        state.wizardData.type = typeName;
-        state.wizardStep = 2;
-
-        appendMessage('user', `Selected: ${typeName}`);
-        playBeep('send');
-
-        setTimeout(() => {
-            const step2HTML = `
-                <strong>⚡ Dimensions & Sizing (Step 2 of 4):</strong>
-                <p>Selected: <strong>${typeName}</strong>.</p>
-                <p>Select a standard dimension or type your custom <em>Height × Width × Depth (mm)</em> below:</p>
-                <div class="sks-wizard-options-grid">
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectDim('2000H x 800W x 600D mm')">2000×800×600 mm</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectDim('1800H x 600W x 400D mm')">1800×600×400 mm</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectDim('800H x 600W x 250D mm')">800×600×250 mm</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectDim('500H x 400W x 200D mm')">500×400×200 mm</button>
-                </div>
-                <p style="margin-top:6px; font-size:0.75rem; color:#94A3B8;">Or type your custom dimensions in the chat box (e.g., <em>"1200x800x300 mm"</em>):</p>
-            `;
-            appendMessage('bot', step2HTML);
-            playBeep('receive');
-        }, 300);
-    };
-
-    window.sksWizardSelectDim = function (dimStr) {
-        state.wizardData.dimensions = dimStr;
-        state.wizardStep = 3;
-
-        appendMessage('user', `Dimensions: ${dimStr}`);
-        playBeep('send');
-
-        setTimeout(() => {
-            const step3HTML = `
-                <strong>⚡ Material & IP Protection (Step 3 of 4):</strong>
-                <p>Select your required <strong>Sheet Material & Ingress Rating</strong>:</p>
-                <div class="sks-wizard-options-grid">
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectMat('CRCA 2.0mm', 'IP55')">CRCA + IP55 (Standard)</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectMat('CRCA 2.0mm', 'IP65')">CRCA + IP65 (Dust/Water Jet)</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectMat('SS304 Satin', 'IP66')">SS304 + IP66 (Washdown)</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardSelectMat('GI Sheet 2.0mm', 'IP55')">GI Sheet + IP55 (Outdoor)</button>
-                </div>
-            `;
-            appendMessage('bot', step3HTML);
-            playBeep('receive');
-        }, 300);
-    };
-
-    window.sksWizardSelectMat = function (material, ipRating) {
-        state.wizardData.material = material;
-        state.wizardData.ipRating = ipRating;
-        state.wizardStep = 4;
-
-        appendMessage('user', `Material: ${material} | Ingress: ${ipRating}`);
-        playBeep('send');
-
-        setTimeout(() => {
-            const step4HTML = `
-                <strong>⚡ Quantity (Step 4 of 4):</strong>
-                <p>How many units do you need quoted?</p>
-                <div class="sks-wizard-options-grid">
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardFinish('1 Unit (Prototype)')">1 Unit (Prototype)</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardFinish('2 to 5 Units')">2 – 5 Units</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardFinish('10 to 25 Units')">10 – 25 Units</button>
-                    <button type="button" class="sks-wizard-option-btn" onclick="window.sksWizardFinish('50+ Units (Batch)')">50+ Units (Volume)</button>
-                </div>
-            `;
-            appendMessage('bot', step4HTML);
-            playBeep('receive');
-        }, 300);
-    };
-
-    window.sksWizardFinish = function (quantity) {
-        state.wizardData.quantity = quantity;
-        state.wizardStep = 0; // complete
-
-        appendMessage('user', `Quantity: ${quantity}`);
-        playBeep('send');
-
-        setTimeout(() => {
-            const data = state.wizardData;
-
-            // Auto-save RFQ lead to inquiries database & local store
-            sksSaveLeadInquiry({
-                name: 'RFQ Wizard Visitor',
-                phone: '',
-                product_interest: data.type,
-                message: `Wizard RFQ: Type: ${data.type}, Dims: ${data.dimensions}, Material: ${data.material}, IP: ${data.ipRating}, Qty: ${data.quantity}`
-            });
-
-            const waText = encodeURIComponent(
-                `Hello SKS Engineering Solutions,\n` +
-                `I would like to request an official RFQ quote:\n` +
-                `• Enclosure Type: ${data.type}\n` +
-                `• Dimensions: ${data.dimensions}\n` +
-                `• Material: ${data.material}\n` +
-                `• IP Rating: ${data.ipRating}\n` +
-                `• Quantity: ${data.quantity}\n` +
-                `Plant Location: Talawade, Pune.\n` +
-                `Please review and share the CAD estimate and commercial proposal.`
-            );
-
-            const mailSubject = encodeURIComponent(`RFQ Quote Request - ${data.type}`);
-            const mailBody = encodeURIComponent(
-                `Dear SKS Engineering Sales Team,\n\n` +
-                `Please provide a quotation for the following specification:\n` +
-                `Enclosure Type: ${data.type}\n` +
-                `Dimensions: ${data.dimensions}\n` +
-                `Material: ${data.material}\n` +
-                `IP Rating: ${data.ipRating}\n` +
-                `Quantity: ${data.quantity}\n\n` +
-                `Please share your pricing and standard lead time.\n\nThank you!`
-            );
-
-            const summaryHTML = `
-                <strong>✅ RFQ Specification Summary Compiled!</strong>
-                <div class="sks-rfq-wizard-card">
-                    <div class="sks-rfq-wizard-title">
-                        📐 Custom Enclosure Specification
-                    </div>
-                    <ul>
-                        <li><strong>Type:</strong> ${data.type}</li>
-                        <li><strong>Dimensions:</strong> ${data.dimensions}</li>
-                        <li><strong>Material:</strong> ${data.material}</li>
-                        <li><strong>Protection:</strong> ${data.ipRating}</li>
-                        <li><strong>Batch Size:</strong> ${data.quantity}</li>
-                        <li><strong>Est. CAD Review:</strong> 24–48 Hours</li>
-                    </ul>
-                    <div class="sks-card-actions">
-                        <button type="button" class="sks-action-btn primary" onclick="window.sksOpenLeadForm('RFQ: ${encodeURIComponent(data.type)} (${encodeURIComponent(data.dimensions)}, ${encodeURIComponent(data.quantity)})')">
-                            📋 Request SKS Sales Team Call / Quote Followup
-                        </button>
-                        <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=${waText}" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
-                            💬 Send to WhatsApp for Instant Pricing (+91-8668742659)
-                        </a>
-                        <a href="mailto:${SKS_INFO.email}?subject=${mailSubject}&body=${mailBody}" class="sks-action-btn secondary">
-                            📧 Email RFQ to sales@sksengineeringsolutions.com
-                        </a>
-                        <button type="button" class="sks-action-btn secondary" onclick="window.sksStartWizard()">
-                            🔄 Recalculate / New Quote
-                        </button>
-                    </div>
-                </div>
-            `;
-            appendMessage('bot', summaryHTML);
-            playBeep('receive');
-        }, 350);
-    };
-
-    function handleWizardInput(userText) {
-        if (state.wizardStep === 2) {
-            window.sksWizardSelectDim(userText);
-        } else if (state.wizardStep === 3) {
-            window.sksWizardSelectMat(userText, 'IP65');
-        } else if (state.wizardStep === 4) {
-            window.sksWizardFinish(userText);
-        } else {
-            state.wizardStep = 0;
-            handleUserMessage(userText);
-        }
+        }, 4000);
     }
 
     // ==========================================================================
-    // 9. Initial Conversation Initialization
+    // 8. Global Helper APIs
     // ==========================================================================
-    function initConversation() {
+    window.sksSpeakMessage = function (encodedText) {
+        try {
+            const decoded = decodeURIComponent(encodedText);
+            speakText(decoded);
+        } catch (e) {
+            console.warn(e);
+        }
+    };
+
+    window.sksShowQuickForm = function () {
         const body = document.getElementById('sksChatBody');
         if (!body) return;
 
-        try {
-            const saved = sessionStorage.getItem('sks_chat_history');
-            if (saved) {
-                const list = JSON.parse(saved);
-                if (Array.isArray(list) && list.length > 0) {
-                    state.messages = list;
-                    list.forEach(item => appendMessage(item.sender, item.text, true));
-                    return;
-                }
-            }
-        } catch (e) {}
+        const formId = 'sksQuickForm_' + Date.now();
+        const html = `
+<div class="sks-quick-lead-box" id="${formId}">
+  <p style="margin-bottom:8px; font-weight:600; color:#38BDF8;">📋 Quick Callback & Quote Request:</p>
+  <input type="text" class="sks-quick-lead-input" id="${formId}_name" placeholder="Your Name or Company" autocomplete="name">
+  <input type="tel" class="sks-quick-lead-input" id="${formId}_phone" placeholder="Mobile Number (e.g. 9876543210)" autocomplete="tel">
+  <input type="text" class="sks-quick-lead-input" id="${formId}_req" placeholder="Requirement (e.g. 2000x800x600 Modular Panel)">
+  <div style="display:flex; gap:6px; margin-top:4px;">
+    <button type="button" class="sks-action-btn primary" style="flex:1;" onclick="window.sksSubmitQuickForm('${formId}')">
+      ✅ Submit Request
+    </button>
+  </div>
+</div>`;
 
-        // Default Welcome Message
-        const status = getOperationalStatus();
-        let noticePill = status.isThursdayOff
-            ? `<div class="sks-card-badge-row"><span class="sks-spec-pill orange">⚠️ Thursday Weekly Off (Responses queued for Friday 9:30 AM)</span></div>`
-            : (status.isOpen 
-                ? `<div class="sks-card-badge-row"><span class="sks-spec-pill">🟢 Factory Open (9:30 AM – 6:30 PM)</span></div>` 
-                : `<div class="sks-card-badge-row"><span class="sks-spec-pill blue">🌙 Reopens Friday/Tomorrow at 9:30 AM</span></div>`);
+        appendMessage('bot', html, "Please enter your name and phone number, and our sales team will contact you promptly.");
+    };
 
-        const welcomeHTML = `
-            <strong>Welcome to SKS Engineering Solutions!</strong>
-            ${noticePill}
-            <p>I am your <strong>AI Engineering Assistant</strong> (A Shinde Groups Enterprise, Pune). I specialize in precision sheet metal fabrication, custom enclosures, and fast RFQ turnaround.</p>
-            <p>How can I assist you right now?</p>
-            <div class="sks-card-actions">
-                <button type="button" class="sks-action-btn primary" onclick="window.sksStartWizard()">⚡ Get Instant Enclosure Quote</button>
-                <button type="button" class="sks-action-btn secondary" onclick="window.sksOpenLeadForm()">📋 Send Query / Request Callback</button>
-                <a href="https://api.whatsapp.com/send?phone=${SKS_INFO.phoneRaw}&text=Hello%20SKS%20Engineering%2C%20inquiry%20via%20website%20AI%20Assistant" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">💬 Chat with Engineer on WhatsApp</a>
-            </div>
-        `;
-        appendMessage('bot', welcomeHTML);
-    }
+    window.sksSubmitQuickForm = function (formId) {
+        const nameInput = document.getElementById(formId + '_name');
+        const phoneInput = document.getElementById(formId + '_phone');
+        const reqInput = document.getElementById(formId + '_req');
 
-    // ==========================================================================
-    // 10. Bootstrap on Page Load
-    // ==========================================================================
+        const name = (nameInput ? nameInput.value : '').trim();
+        const phone = (phoneInput ? phoneInput.value : '').trim();
+        const req = (reqInput ? reqInput.value : '').trim();
+
+        if (!phone || phone.length < 8) {
+            alert("Please enter a valid mobile number so our engineering team can contact you.");
+            if (phoneInput) phoneInput.focus();
+            return;
+        }
+
+        const box = document.getElementById(formId);
+        if (box) {
+            box.innerHTML = `
+<div style="color:#10B981; font-weight:600; padding:4px 0;">
+  ✅ Request Received!
+</div>
+<p style="font-size:0.82rem; color:#E2E8F0; margin-top:4px;">
+  Thank you, <strong>${escapeHtml(name || 'Sir/Madam')}</strong>. Our engineering specialist will call you on <strong>${escapeHtml(phone)}</strong> shortly.
+</p>
+<div style="margin-top:8px;">
+  <a href="https://wa.me/${SKS_INFO.phoneRaw}?text=Hello%20SKS%20Engineering%2C%20I%20requested%20a%20callback%20for%3A%20${encodeURIComponent(req || 'Enclosure Quote')}%20(Name%3A%20${encodeURIComponent(name)}%2C%20Phone%3A%20${encodeURIComponent(phone)})" target="_blank" rel="noopener noreferrer" class="sks-action-btn whatsapp">
+    📱 Also Open WhatsApp Directly
+  </a>
+</div>`;
+        }
+
+        speakText(`Thank you ${name || ''}! Your inquiry has been received. Our sales engineer will call you shortly.`);
+    };
+
+    // Auto initialize on DOM ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', createWidgetDOM);
+        document.addEventListener('DOMContentLoaded', initChatbotDOM);
     } else {
-        createWidgetDOM();
+        initChatbotDOM();
     }
 })();
