@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTopBtn = document.getElementById('backToTopBtn');
 
     let isScrolling = false;
+    let cachedScrollHeight = 0;
+
+    function updateScrollMetrics() {
+        if (scrollProgressBar) {
+            cachedScrollHeight = Math.max(1, document.documentElement.scrollHeight - document.documentElement.clientHeight);
+        }
+    }
 
     function handleScroll() {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -41,13 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Reading Progress Bar
-        if (scrollProgressBar) {
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            if (scrollHeight > 0) {
-                const progress = (scrollTop / scrollHeight) * 100;
-                scrollProgressBar.style.width = `${progress}%`;
-            }
+        // Reading Progress Bar (cached scroll height eliminates forced layout recalculation)
+        if (scrollProgressBar && cachedScrollHeight > 0) {
+            const progress = Math.min(100, Math.max(0, (scrollTop / cachedScrollHeight) * 100));
+            scrollProgressBar.style.width = `${progress}%`;
         }
 
         // Back to Top Visibility
@@ -69,7 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, { passive: true });
 
+    window.addEventListener('resize', () => {
+        updateScrollMetrics();
+        handleScroll();
+    }, { passive: true });
+
     // Initial check on page load
+    updateScrollMetrics();
     handleScroll();
 
     if (backToTopBtn) {
@@ -117,11 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu(false);
         });
 
-        // Close when clicking any nav link
-        navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
+        // Close when clicking any nav link via event delegation
+        navMenu.addEventListener('click', (e) => {
+            if (e.target.closest('a')) {
                 toggleMenu(false);
-            });
+            }
         });
 
         // Close on clicking outside the drawer
@@ -191,26 +201,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================================================
     // 4. Scroll Reveal Animations (Hardware Accelerated)
     // ==========================================================================
-    const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-stagger');
+    let revealObserver = null;
 
-    if (reveals.length && 'IntersectionObserver' in window) {
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    revealObserver.unobserve(entry.target);
+    function observeReveals(scope = document) {
+        const reveals = scope.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-stagger');
+        if (!reveals.length) return;
+
+        if ('IntersectionObserver' in window) {
+            if (!revealObserver) {
+                revealObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.08,
+                    rootMargin: '0px 0px -40px 0px'
+                });
+            }
+            reveals.forEach(el => {
+                if (!el.classList.contains('active')) {
+                    revealObserver.observe(el);
                 }
             });
-        }, {
-            threshold: 0.08,
-            rootMargin: '0px 0px -40px 0px'
-        });
-
-        reveals.forEach(el => revealObserver.observe(el));
-    } else {
-        // Fallback: make all immediately visible
-        reveals.forEach(el => el.classList.add('active'));
+        } else {
+            // Fallback: make all immediately visible
+            reveals.forEach(el => el.classList.add('active'));
+        }
     }
+
+    observeReveals(document);
 
     // ==========================================================================
     // 5. Interactive 7-Stage Manufacturing Process
@@ -220,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 1,
             title: "Requirement Understanding & Consultation",
             description: "Detailed engineering review of client architectural schematics, electrical single-line diagrams (SLD), mechanical enclosure dimensions, busbar routes, thermal requirements, and ingress protection targets (IP55/IP65).",
-            image: "assets/images/facility-design-office.jpg?v=20261010_office",
+            image: "assets/images/facility-design-office.jpg",
             checklist: [
                 "BOM & Dimensional Drawing Review",
                 "Ingress Protection (IP55/IP65) Definition",
@@ -256,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
             step: 4,
             title: "Fabrication: CNC Laser Cutting & Bending",
             description: "High-precision CNC fiber laser profiling cutting intricate cutouts, gland openings, and louvers with tight tolerance accuracy, followed by multi-axis CNC hydraulic press brake bending for seamless corner joints.",
-            image: "assets/images/facility-laser.jpg?v=20261010_new",
+            image: "assets/images/facility-laser.jpg",
             checklist: [
                 "Fiber Laser Cutting with Nitrogen Assist",
                 "Burr-Free Edge Contouring (\u00B10.1mm)",
@@ -982,6 +1004,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>`;
                     }).join('');
 
+                    observeReveals(productsCatalog);
+                    updateScrollMetrics();
                     updateCartUI();
                     filterAndRenderStoreCards();
                 }
@@ -1026,9 +1050,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Connect Homepage Product RFQ Buttons to the Contact Form
-    document.querySelectorAll('#homeProductsGrid .product-card a[href="#contact"]').forEach(link => {
-        link.addEventListener('click', () => {
+    // Connect Homepage Product RFQ Buttons to the Contact Form via Delegation
+    const homeProductsGrid = document.getElementById('homeProductsGrid');
+    if (homeProductsGrid) {
+        homeProductsGrid.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href="#contact"]');
+            if (!link) return;
             const card = link.closest('.product-card');
             const title = card ? card.querySelector('h3')?.textContent?.trim() : '';
             if (title) {
@@ -1043,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-    });
+    }
 
 
     // ==========================================================================
@@ -1122,7 +1149,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         </div>`;
                     }).join('');
+                    observeReveals(galleryGrid);
                 });
+                updateScrollMetrics();
                 bindGalleryLightboxItems();
             }
         } catch (err) {
