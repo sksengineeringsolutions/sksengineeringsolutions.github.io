@@ -5,7 +5,6 @@
  * Features:
  * - High-performance throttled header scroll dynamics & progress indicator
  * - Accessible mobile navigation drawer with touch gesture support
- * - Hero background slideshow with industry switcher and tab-visibility pause
  * - Multi-page active route detection & in-page section intersection tracking
  * - Smooth scroll-triggered reveal animations
  * - Interactive 7-stage manufacturing process navigator with crossfade previews
@@ -148,11 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 3. Hero Section (Clean Architectural Grid Background - No Image Slideshow)
-    // ==========================================================================
-
-    // ==========================================================================
-    // 4. Multi-Page Active Route & In-Page Section Tracking
+    // 3. Multi-Page Active Route & In-Page Section Tracking
     // ==========================================================================
     const currentPath = window.location.pathname.split('/').pop() || 'index.html';
     const allNavLinks = document.querySelectorAll('.nav-menu a');
@@ -194,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 5. Scroll Reveal Animations (Hardware Accelerated)
+    // 4. Scroll Reveal Animations (Hardware Accelerated)
     // ==========================================================================
     const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-stagger');
 
@@ -218,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 6. Interactive 7-Stage Manufacturing Process
+    // 5. Interactive 7-Stage Manufacturing Process
     // ==========================================================================
     const processStepsData = [
         {
@@ -382,7 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
-    // 7. Blinkit-Style Interactive Product Store & RFQ Basket System
+    // 6. Blinkit-Style Interactive Product Store & RFQ Basket System
     // ==========================================================================
     const productsCatalog = document.getElementById('productsCatalog');
 
@@ -881,14 +876,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Category Navigation (Desktop Rail & Mobile Chips)
-        const catButtons = document.querySelectorAll('#desktopCatNav .rail-btn, #mobileCatRail .b-cat-chip, #productFilterBar .filter-btn');
+        const catButtons = document.querySelectorAll('#desktopCatNav .rail-btn, #mobileCatRail .b-cat-chip');
         catButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const targetCat = btn.getAttribute('data-filter') || 'all';
                 activeCategory = targetCat;
 
                 // Sync all button active states
-                document.querySelectorAll('#desktopCatNav .rail-btn, #mobileCatRail .b-cat-chip, #productFilterBar .filter-btn').forEach(b => {
+                document.querySelectorAll('#desktopCatNav .rail-btn, #mobileCatRail .b-cat-chip').forEach(b => {
                     if (b.getAttribute('data-filter') === targetCat) {
                         b.classList.add('active');
                     } else {
@@ -1000,7 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDynamicProducts();
 
     // ==========================================================================
-    // 7b. Homepage Dynamic Product Categories Filter & RFQ Pre-fill
+    // 7. Homepage Dynamic Product Categories Filter & RFQ Pre-fill
     // ==========================================================================
     const homeProductFilters = document.querySelectorAll('#productFilterBar .filter-btn');
     const homeProductCards = document.querySelectorAll('#homeProductsGrid .product-card');
@@ -1383,15 +1378,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 800);
         });
-    }
-
-    // ==========================================================================
-    // 16. Site-Wide SKS AI Engineering Assistant Loader Fallback
-    // ==========================================================================
-    if (!window.__SKS_CHATBOT_LOADED__ && !document.querySelector('script[src*="sks-chatbot.js"]')) {
-        const chatScript = document.createElement('script');
-        chatScript.src = 'assets/js/sks-chatbot.js?v=20261009';
-        chatScript.async = true;
-        document.body.appendChild(chatScript);
     }
 });
