@@ -29,6 +29,32 @@
     --c-navy-dark: #0B1120;
     --c-navy-deep: #050811;
 
+    /* Google Signature Vibrant Palette Tokens */
+    --google-blue: #4285F4;
+    --google-blue-deep: #1A73E8;
+    --google-blue-surface: #E8F0FE;
+    --google-blue-subtle: #F0F6FF;
+    
+    --google-green: #34A853;
+    --google-green-deep: #1E8E3E;
+    --google-green-surface: #E6F4EA;
+    --google-green-subtle: #F0FDF4;
+    
+    --google-yellow: #FBBC04;
+    --google-amber-deep: #F9AB00;
+    --google-yellow-surface: #FEF7E0;
+    --google-yellow-subtle: #FFFBEB;
+    
+    --google-red: #EA4335;
+    --google-red-deep: #D93025;
+    --google-red-surface: #FCE8E6;
+    --google-red-subtle: #FEF2F2;
+    
+    --google-purple: #A142F4;
+    --google-purple-deep: #9334E6;
+    --google-purple-surface: #F3E8FD;
+    --google-purple-subtle: #FAF5FF;
+
     /* Neutrals & Surfaces - Clean Modern White Theme */
     --bg-light: #FFFFFF;             /* Pure White Canvas */
     --bg-subtle: #F8FAFC;            /* Clean Slate 50 Surface */
@@ -155,8 +181,17 @@ svg {
    Geometric Patterns & Visual Accents
    -------------------------------------------------------------------------- */
 .bg-grid-pattern {
-    background-image: radial-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+    position: relative;
+}
+
+.bg-grid-pattern::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(66, 133, 244, 0.08) 1.2px, transparent 1.2px);
     background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .tech-tag {
@@ -184,7 +219,7 @@ svg {
 .section-header {
     text-align: center;
     max-width: 780px;
-    margin: 0 auto 3.5rem;
+    margin: 0 auto 2rem;
 }
 
 .section-title {
@@ -523,34 +558,24 @@ header.scrolled .site-logo-img {
     box-shadow: var(--shadow-lg);
 }
 
-/* --------------------------------------------------------------------------
-   Hero Section - Laser Cutting Video Background & Architectural Theme
-   -------------------------------------------------------------------------- */
-.hero {
-    position: relative;
-    padding-top: 7rem;
-    padding-bottom: 5.5rem;
-    background: #0B1120;
-    color: #FFFFFF;
-    overflow: hidden;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ==========================================================================
 /* ==========================================================================
    Hero Section - Full Enclosure Lineup Facility Photography
-   (Authentic SKS Modular Panel Lineup Background with Well-Aligned Content)
+   (Authentic SKS Modular Panel Lineup Background with Google Tech Ambient Glows)
    ========================================================================== */
 .hero {
     position: relative;
-    min-height: 94vh;
+    min-height: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    background: #060B16;
+    background: 
+        radial-gradient(circle 700px at 15% 25%, rgba(66, 133, 244, 0.22), transparent 70%),
+        radial-gradient(circle 600px at 85% 75%, rgba(249, 115, 22, 0.18), transparent 70%),
+        #060B16;
     color: #FFFFFF;
-    padding: calc(var(--header-height) + 1.25rem) 0 2rem;
+    padding: calc(var(--header-height) + 0.85rem) 0 1rem;
+    border-bottom: 1px solid rgba(66, 133, 244, 0.22);
 }
 
 .hero-bg-image {
@@ -659,8 +684,8 @@ header.scrolled .site-logo-img {
     position: relative;
     z-index: 4;
     width: 100%;
-    margin-top: auto;
-    padding-top: 1.5rem;
+    margin-top: 1.25rem;
+    padding-top: 0.5rem;
 }
 
 .hero-kpis {
@@ -680,13 +705,61 @@ header.scrolled .site-logo-img {
     border-radius: var(--radius-md);
     transition: var(--transition);
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+}
+
+.kpi-item:nth-child(1)::before {
+    background: linear-gradient(90deg, #4285F4, #1A73E8);
+}
+
+.kpi-item:nth-child(2)::before {
+    background: linear-gradient(90deg, #34A853, #1E8E3E);
+}
+
+.kpi-item:nth-child(3)::before {
+    background: linear-gradient(90deg, #FBBC04, #F9AB00);
+}
+
+.kpi-item:nth-child(4)::before {
+    background: linear-gradient(90deg, #EA4335, #D93025);
 }
 
 .kpi-item:hover {
     background: rgba(15, 23, 42, 0.94);
-    border-color: var(--c-primary-bright);
     transform: translateY(-2px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+.kpi-item:nth-child(1):hover {
+    border-color: #4285F4;
+    box-shadow: 0 12px 32px rgba(66, 133, 244, 0.35);
+}
+
+.kpi-item:nth-child(2):hover {
+    border-color: #34A853;
+    box-shadow: 0 12px 32px rgba(52, 168, 83, 0.35);
+}
+
+.kpi-item:nth-child(3):hover {
+    border-color: #FBBC04;
+    box-shadow: 0 12px 32px rgba(251, 188, 4, 0.35);
+}
+
+.kpi-item:nth-child(4):hover {
+    border-color: #EA4335;
+    box-shadow: 0 12px 32px rgba(234, 67, 53, 0.35);
 }
 
 .kpi-item h3 {
@@ -713,19 +786,25 @@ header.scrolled .site-logo-img {
 
 
 /* --------------------------------------------------------------------------
-   Company Profile / Overview & Why Choose Us
+   Company Profile / Overview & Why Choose Us (Google Tech Blue & Mint Atmosphere)
    -------------------------------------------------------------------------- */
 .overview-section {
-    padding: 6.5rem 0;
-    background: var(--bg-light);
+    padding: 2.75rem 0 3.25rem;
+    background: 
+        radial-gradient(circle 800px at 0% 10%, rgba(66, 133, 244, 0.12), transparent 60%),
+        radial-gradient(circle 600px at 100% 90%, rgba(52, 168, 83, 0.10), transparent 60%),
+        radial-gradient(circle 400px at 50% 50%, rgba(251, 188, 4, 0.05), transparent 70%),
+        linear-gradient(180deg, #F0F6FF 0%, #FFFFFF 40%, #EFF6FF 100%);
+    position: relative;
+    border-bottom: 1px solid rgba(66, 133, 244, 0.14);
 }
 
 .overview-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    gap: 3.5rem;
     align-items: center;
-    margin-bottom: 5rem;
+    margin-bottom: 2rem;
 }
 
 .overview-media {
@@ -828,15 +907,66 @@ header.scrolled .site-logo-img {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, var(--c-primary), var(--c-orange));
+    background: linear-gradient(90deg, #4285F4, #1A73E8);
     transition: var(--transition);
+}
+
+.pillar-card:nth-child(1)::before {
+    background: linear-gradient(90deg, #4285F4, #1A73E8);
+}
+.pillar-card:nth-child(1) .pillar-icon-box {
+    background: rgba(66, 133, 244, 0.10);
+    color: #1A73E8;
+    border-color: rgba(66, 133, 244, 0.25);
+}
+.pillar-card:nth-child(1):hover {
+    border-color: rgba(66, 133, 244, 0.45);
+    box-shadow: 0 14px 32px rgba(66, 133, 244, 0.14);
+}
+
+.pillar-card:nth-child(2)::before {
+    background: linear-gradient(90deg, #34A853, #1E8E3E);
+}
+.pillar-card:nth-child(2) .pillar-icon-box {
+    background: rgba(52, 168, 83, 0.10);
+    color: #1E8E3E;
+    border-color: rgba(52, 168, 83, 0.25);
+}
+.pillar-card:nth-child(2):hover {
+    border-color: rgba(52, 168, 83, 0.45);
+    box-shadow: 0 14px 32px rgba(52, 168, 83, 0.14);
+}
+
+.pillar-card:nth-child(3)::before {
+    background: linear-gradient(90deg, #FBBC04, #F9AB00);
+}
+.pillar-card:nth-child(3) .pillar-icon-box {
+    background: rgba(251, 188, 4, 0.14);
+    color: #D97706;
+    border-color: rgba(251, 188, 4, 0.35);
+}
+.pillar-card:nth-child(3):hover {
+    border-color: rgba(251, 188, 4, 0.5);
+    box-shadow: 0 14px 32px rgba(245, 158, 11, 0.14);
+}
+
+.pillar-card:nth-child(4)::before {
+    background: linear-gradient(90deg, #EA4335, #D93025);
+}
+.pillar-card:nth-child(4) .pillar-icon-box {
+    background: rgba(234, 67, 53, 0.10);
+    color: #D93025;
+    border-color: rgba(234, 67, 53, 0.25);
+}
+.pillar-card:nth-child(4):hover {
+    border-color: rgba(234, 67, 53, 0.45);
+    box-shadow: 0 14px 32px rgba(234, 67, 53, 0.14);
 }
 
 .pillar-card:hover {
     background: #FFFFFF;
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--border-blue);
 }
 
 .pillar-top-row {
@@ -952,12 +1082,17 @@ header.scrolled .site-logo-img {
 }
 
 /* --------------------------------------------------------------------------
-   Core Services (3-Column Layout)
+   Core Services (Google Fresh Emerald & Mint Atmosphere)
    -------------------------------------------------------------------------- */
 .services-section {
-    padding: 6.5rem 0;
-    background: var(--bg-subtle);
-    border-block: 1px solid var(--border-light);
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 95% 15%, rgba(52, 168, 83, 0.12), transparent 60%),
+        radial-gradient(circle 700px at 5% 85%, rgba(66, 133, 244, 0.10), transparent 60%),
+        radial-gradient(circle 400px at 60% 50%, rgba(251, 188, 4, 0.06), transparent 70%),
+        linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 50%, #ECFDF5 100%);
+    border-block: 1px solid rgba(52, 168, 83, 0.16);
+    position: relative;
 }
 
 .services-grid-3 {
@@ -1057,11 +1192,17 @@ header.scrolled .site-logo-img {
 }
 
 /* --------------------------------------------------------------------------
-   Products / Panel Types (Filterable Catalog)
+   Products / Panel Types (Google Tech Cyan & Electric Indigo Atmosphere)
    -------------------------------------------------------------------------- */
 .products-section {
-    padding: 6.5rem 0;
-    background: var(--bg-light);
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 10% 20%, rgba(2, 132, 199, 0.12), transparent 60%),
+        radial-gradient(circle 700px at 90% 80%, rgba(99, 102, 241, 0.10), transparent 60%),
+        radial-gradient(circle 500px at 50% 30%, rgba(66, 133, 244, 0.07), transparent 70%),
+        linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 50%, #EEF2FF 100%);
+    border-bottom: 1px solid rgba(2, 132, 199, 0.15);
+    position: relative;
 }
 
 .product-filters {
@@ -1069,7 +1210,7 @@ header.scrolled .site-logo-img {
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    margin-bottom: 2.75rem;
+    margin-bottom: 2rem;
     flex-wrap: wrap;
 }
 
@@ -1198,23 +1339,31 @@ header.scrolled .site-logo-img {
 
 
 /* --------------------------------------------------------------------------
-   Manufacturing Capabilities ("Manufacturing Excellence") - Clean White Theme
+   Manufacturing Capabilities (Google AI Violet & Purple Atmosphere)
    -------------------------------------------------------------------------- */
 .capabilities-section {
-    padding: 6.5rem 0;
-    background: var(--bg-subtle);
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 90% 20%, rgba(161, 66, 244, 0.12), transparent 60%),
+        radial-gradient(circle 700px at 10% 80%, rgba(66, 133, 244, 0.10), transparent 60%),
+        radial-gradient(circle 500px at 50% 60%, rgba(234, 67, 53, 0.06), transparent 70%),
+        linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 50%, #F5F3FF 100%);
     color: var(--text-primary);
-    border-top: 1px solid var(--border-light);
-    border-bottom: 1px solid var(--border-light);
+    border-block: 1px solid rgba(161, 66, 244, 0.16);
     position: relative;
 }
 
 /* --------------------------------------------------------------------------
-   Fabrication Process / Workflow (7-Step Interactive Flow)
+   Fabrication Process / Workflow (Google Sun Amber & Warm Ochre Atmosphere)
    -------------------------------------------------------------------------- */
 .process-section {
-    padding: 6.5rem 0;
-    background: var(--bg-subtle);
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 15% 15%, rgba(251, 188, 4, 0.14), transparent 60%),
+        radial-gradient(circle 700px at 85% 85%, rgba(249, 115, 22, 0.10), transparent 60%),
+        radial-gradient(circle 500px at 50% 40%, rgba(52, 168, 83, 0.06), transparent 70%),
+        linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 50%, #FEF3C7 100%);
+    border-bottom: 1px solid rgba(251, 188, 4, 0.22);
     position: relative;
 }
 
@@ -1222,7 +1371,7 @@ header.scrolled .site-logo-img {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 0.75rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.75rem;
 }
 
 .process-step-btn {
@@ -1401,11 +1550,17 @@ header.scrolled .site-logo-img {
 }
 
 /* --------------------------------------------------------------------------
-   Gallery / Project Showcase & Lightbox
+   Gallery / Project Showcase (Google Soft Pearl & Lilac Atmosphere)
    -------------------------------------------------------------------------- */
 .gallery-section {
-    padding: 6.5rem 0;
-    background: var(--bg-light);
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 20% 20%, rgba(66, 133, 244, 0.10), transparent 60%),
+        radial-gradient(circle 700px at 80% 80%, rgba(161, 66, 244, 0.10), transparent 60%),
+        radial-gradient(circle 500px at 50% 50%, rgba(234, 67, 53, 0.06), transparent 70%),
+        linear-gradient(180deg, #F8FAFC 0%, #EFF6FF 50%, #F5F3FF 100%);
+    border-bottom: 1px solid rgba(66, 133, 244, 0.14);
+    position: relative;
 }
 
 .gallery-grid {
@@ -1546,13 +1701,16 @@ header.scrolled .site-logo-img {
 }
 
 /* --------------------------------------------------------------------------
-   Our Strengths / Differentiators - Clean White Theme
+   Our Strengths / Differentiators (Google Multi-Spectrum Atmospheric Glow)
    -------------------------------------------------------------------------- */
 .strengths-section {
-    padding: 6.5rem 0;
-    background: #FFFFFF;
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 85% 15%, rgba(52, 168, 83, 0.11), transparent 60%),
+        radial-gradient(circle 700px at 15% 85%, rgba(251, 188, 4, 0.10), transparent 60%),
+        linear-gradient(180deg, #F0FDF4 0%, #FFFFFF 50%, #EFF6FF 100%);
     color: var(--text-primary);
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid rgba(52, 168, 83, 0.16);
     position: relative;
 }
 
@@ -1560,7 +1718,7 @@ header.scrolled .site-logo-img {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.75rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .strength-card {
@@ -1583,13 +1741,56 @@ header.scrolled .site-logo-img {
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, var(--accent-teal), var(--accent-lime));
+    background: linear-gradient(90deg, #4285F4, #1A73E8);
+}
+
+.strength-card:nth-child(1)::before {
+    background: linear-gradient(90deg, #4285F4, #1A73E8);
+}
+.strength-card:nth-child(1) .strength-num {
+    color: #1A73E8;
+}
+.strength-card:nth-child(1):hover {
+    border-color: #4285F4;
+    box-shadow: 0 12px 30px rgba(66, 133, 244, 0.15);
+}
+
+.strength-card:nth-child(2)::before {
+    background: linear-gradient(90deg, #34A853, #1E8E3E);
+}
+.strength-card:nth-child(2) .strength-num {
+    color: #1E8E3E;
+}
+.strength-card:nth-child(2):hover {
+    border-color: #34A853;
+    box-shadow: 0 12px 30px rgba(52, 168, 83, 0.15);
+}
+
+.strength-card:nth-child(3)::before {
+    background: linear-gradient(90deg, #FBBC04, #F9AB00);
+}
+.strength-card:nth-child(3) .strength-num {
+    color: #D97706;
+}
+.strength-card:nth-child(3):hover {
+    border-color: #FBBC04;
+    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.15);
+}
+
+.strength-card:nth-child(4)::before {
+    background: linear-gradient(90deg, #EA4335, #D93025);
+}
+.strength-card:nth-child(4) .strength-num {
+    color: #D93025;
+}
+.strength-card:nth-child(4):hover {
+    border-color: #EA4335;
+    box-shadow: 0 12px 30px rgba(234, 67, 53, 0.15);
 }
 
 .strength-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--accent-teal);
 }
 
 .strength-num {
@@ -1616,11 +1817,14 @@ header.scrolled .site-logo-img {
 }
 
 /* --------------------------------------------------------------------------
-   Call-to-Action Section
+   Call-to-Action Section (Google Vibrant Mesh Gradient)
    -------------------------------------------------------------------------- */
 .cta-banner-section {
-    padding: 6rem 0;
-    background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 50%, #0284C7 100%);
+    padding: 3.5rem 0;
+    background: 
+        radial-gradient(circle 700px at 20% 30%, rgba(66, 133, 244, 0.4), transparent 70%),
+        radial-gradient(circle 600px at 80% 70%, rgba(52, 168, 83, 0.3), transparent 70%),
+        linear-gradient(135deg, #0A192F 0%, #1D4ED8 50%, #0C4A6E 100%);
     color: #FFFFFF;
     position: relative;
     overflow: hidden;
@@ -1657,20 +1861,25 @@ header.scrolled .site-logo-img {
 
 
 /* --------------------------------------------------------------------------
-   Footer - Executive Light Slate Theme
+   Footer - Executive Light Slate Theme with Google 4-Color Signature Accent Bar
    -------------------------------------------------------------------------- */
 footer.master-footer {
-    background: #F8FAFC;
+    background: 
+        radial-gradient(circle 800px at 10% 0%, rgba(66, 133, 244, 0.06), transparent 60%),
+        radial-gradient(circle 800px at 90% 0%, rgba(52, 168, 83, 0.06), transparent 60%),
+        #F8FAFC;
     color: var(--text-secondary);
-    padding: 5rem 0 2rem;
-    border-top: 1px solid var(--border-light);
+    padding: 3.5rem 0 2rem;
+    position: relative;
+    border-top: 4px solid transparent;
+    border-image: linear-gradient(90deg, #4285F4 0% 25%, #EA4335 25% 50%, #FBBC04 50% 75%, #34A853 75% 100%) 1;
 }
 
 .footer-top-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr 1.25fr;
     gap: 3rem;
-    margin-bottom: 4rem;
+    margin-bottom: 2.25rem;
 }
 
 .footer-brand p {
@@ -1958,13 +2167,18 @@ footer.master-footer {
    Dedicated Multi-Page Architecture Components
    ========================================================================== */
 .page-hero-header {
-    background: linear-gradient(135deg, #0B1120 0%, #0F172A 60%, #1E293B 100%);
+    background: 
+        radial-gradient(circle 600px at 15% 30%, rgba(66, 133, 244, 0.20), transparent 70%),
+        radial-gradient(circle 500px at 85% 70%, rgba(52, 168, 83, 0.16), transparent 70%),
+        radial-gradient(circle 400px at 50% 10%, rgba(251, 188, 4, 0.12), transparent 70%),
+        linear-gradient(135deg, #070D1B 0%, #0F172A 60%, #1E293B 100%);
     color: #FFFFFF;
-    padding-top: calc(var(--header-height) + 3rem);
-    padding-bottom: 3.5rem;
+    padding-top: calc(var(--header-height) + 1.5rem);
+    padding-bottom: 2rem;
     position: relative;
     overflow: hidden;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, #4285F4 0% 25%, #EA4335 25% 50%, #FBBC04 50% 75%, #34A853 75% 100%) 1;
 }
 
 .page-hero-header::before {
@@ -2053,7 +2267,7 @@ footer.master-footer {
     border-radius: var(--radius-lg);
     padding: 2.5rem 2.25rem;
     color: #FFFFFF;
-    margin: 3rem 0;
+    margin: 1.75rem 0 0.5rem;
     position: relative;
     overflow: hidden;
     box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.22);
@@ -2102,11 +2316,18 @@ footer.master-footer {
 
 /* Page Section Wrappers */
 .page-section {
-    padding: 5.5rem 0;
+    padding: 3.25rem 0;
+    position: relative;
 }
 
 .page-section-alt {
-    background-color: var(--bg-subtle);
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 10% 20%, rgba(66, 133, 244, 0.09), transparent 60%),
+        radial-gradient(circle 700px at 90% 80%, rgba(52, 168, 83, 0.08), transparent 60%),
+        linear-gradient(180deg, #F0F6FF 0%, #FFFFFF 50%, #F4F8FE 100%);
+    border-block: 1px solid rgba(66, 133, 244, 0.12);
+    position: relative;
 }
 
 /* Overview Content Alignment */
@@ -2483,11 +2704,17 @@ footer.master-footer {
 }
 
 /* ==========================================================================
-   Contact & RFQ Section Grid & Form Panel
+   Contact & RFQ Section Grid & Form Panel (Google Soft Cerulean & Sky Mesh)
    ========================================================================== */
 .contact-section {
-    padding: 5.5rem 0;
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 15% 20%, rgba(66, 133, 244, 0.12), transparent 60%),
+        radial-gradient(circle 700px at 85% 80%, rgba(52, 168, 83, 0.10), transparent 60%),
+        radial-gradient(circle 500px at 50% 50%, rgba(251, 188, 4, 0.06), transparent 70%),
+        linear-gradient(180deg, #F0F6FF 0%, #FFFFFF 50%, #E0F2FE 100%);
     position: relative;
+    border-top: 1px solid rgba(66, 133, 244, 0.14);
 }
 
 .contact-grid {
@@ -2641,11 +2868,16 @@ footer.master-footer {
 
 
 /* ==========================================================================
-   Semantic FAQ Accordion Components (SEO & Accessibility)
+   Semantic FAQ Accordion Components (Google Warm Cloud Tint)
    ========================================================================== */
 .faq-section {
-    padding: 5.5rem 0;
+    padding: 3.25rem 0;
+    background: 
+        radial-gradient(circle 800px at 80% 15%, rgba(161, 66, 244, 0.11), transparent 60%),
+        radial-gradient(circle 700px at 20% 85%, rgba(66, 133, 244, 0.09), transparent 60%),
+        linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 50%, #F8FAFC 100%);
     position: relative;
+    border-block: 1px solid rgba(161, 66, 244, 0.14);
 }
 
 .faq-container {
@@ -3046,8 +3278,8 @@ img, video, iframe, embed, object {
 
     /* Hero Section */
     .hero {
-        padding-top: calc(var(--header-height) + 2rem);
-        padding-bottom: 4rem;
+        padding-top: calc(var(--header-height) + 1rem);
+        padding-bottom: 1.5rem;
     }
 
     .hero-grid {
@@ -3201,11 +3433,11 @@ img, video, iframe, embed, object {
     /* Section Spacing */
     section,
     .page-section {
-        padding-block: 3.25rem !important;
+        padding-block: 2.5rem !important;
     }
 
     .page-section-alt {
-        padding-block: 3.25rem !important;
+        padding-block: 2.5rem !important;
     }
 
     /* Header Logo & Navigation Drawer */
@@ -3298,8 +3530,8 @@ img, video, iframe, embed, object {
 
     /* Homepage Hero */
     .hero {
-        padding-top: calc(var(--header-height) + 1.25rem) !important;
-        padding-bottom: 2.25rem !important;
+        padding-top: calc(var(--header-height) + 0.85rem) !important;
+        padding-bottom: 1rem !important;
         min-height: auto;
     }
 
